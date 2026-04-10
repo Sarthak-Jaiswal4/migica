@@ -92,12 +92,12 @@ export default function AddProductPage() {
                                 </div>
 
                                 <div className='grid grid-cols-3 gap-3'>
-                                    {product.images.map((img, idx) => (
+                                    {(product.images || []).map((img, idx) => (
                                         <div key={idx} className='aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-neutral-200 group'>
                                             <Image src={img} alt={`Gallery ${idx}`} fill className='object-cover' />
                                             <button
                                                 onClick={() => {
-                                                    const newImages = [...product.images]
+                                                    const newImages = [...(product.images || [])]
                                                     newImages.splice(idx, 1)
                                                     setProduct(prev => ({ ...prev, images: newImages }))
                                                 }}

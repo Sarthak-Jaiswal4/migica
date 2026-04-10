@@ -30,7 +30,7 @@ export default function EditProductPage() {
             setProduct({ ...data })
         }
         setIsLoading(false)
-    }, [productId])
+    }, [productId]) // eslint-disable-line react-hooks/set-state-in-effect
 
     if (isLoading) return <div className='min-h-screen bg-[#F6F4F1] flex items-center justify-center font-bold text-2xl'>Loading Magic...</div>
     if (!product) return <div className='min-h-screen bg-[#F6F4F1] flex items-center justify-center font-bold text-2xl'>Product Not Found</div>
@@ -59,7 +59,7 @@ export default function EditProductPage() {
     const removeImage = (index: number) => {
         setProduct(prev => {
             if (!prev) return null
-            const newImages = [...prev.images]
+            const newImages = [...(prev.images || [])]
             newImages.splice(index, 1)
             return { ...prev, images: newImages }
         })
@@ -97,7 +97,7 @@ export default function EditProductPage() {
                                 </div>
 
                                 <div className='grid grid-cols-3 gap-3'>
-                                    {product.images.map((img, idx) => (
+                                    {(product.images || []).map((img, idx) => (
                                         <div key={idx} className='aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-neutral-200 group'>
                                             <Image src={img} alt={`Gallery ${idx}`} fill className='object-cover' />
                                             <button
