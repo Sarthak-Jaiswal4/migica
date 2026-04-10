@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { supabase } from '@/supabase/client'
+// import { supabase } from '@/supabase/client'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
@@ -18,16 +18,16 @@ export default function LoginPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        })
-        if (error) {
-            console.log(error)
-        } else {
-            console.log(data)
-            router.push('/allproduct')
-        }
+        // const { data, error } = await supabase.auth.signInWithPassword({
+        //     email: email,
+        //     password: password,
+        // })
+        // if (error) {
+        //     console.log(error)
+        // } else {
+        //     console.log(data)
+        //     router.push('/allproduct')
+        // }
     }
 
     return (
