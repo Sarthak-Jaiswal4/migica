@@ -9,6 +9,7 @@ import { useState } from "react"
 import { ButtonGroup } from './ui/button-group'
 
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const CardComponent = ({ product }: { product: any }) => {
     const router = useRouter()
     const [added, setAdded] = useState(false)

@@ -229,10 +229,10 @@ export default function ProductPage() {
                                 </p>
                                 <h3 className="text-xl font-semibold mt-6 mb-3">What Makes It Special</h3>
                                 <p className="text-neutral-700 leading-relaxed">
-                                    Our Lavender Dream candle is more than just a source of light—it's an experience. We've carefully selected the finest ingredients to create a candle that not only looks beautiful but fills your space with a therapeutic aroma that promotes relaxation and well-being.
+                                    Our Lavender Dream candle is more than just a source of light—it&apos;s an experience. We&apos;ve carefully selected the finest ingredients to create a candle that not only looks beautiful but fills your space with a therapeutic aroma that promotes relaxation and well-being.
                                 </p>
                                 <p className="text-neutral-700 leading-relaxed">
-                                    Each candle is hand-poured in small batches, ensuring consistent quality and attention to detail. The clean-burning soy wax means you can enjoy your candle knowing it's better for you and the environment.
+                                    Each candle is hand-poured in small batches, ensuring consistent quality and attention to detail. The clean-burning soy wax means you can enjoy your candle knowing it&apos;s better for you and the environment.
                                 </p>
                             </div>
                         </div>
@@ -330,7 +330,7 @@ export default function ProductPage() {
                     <h2 className="text-3xl font-bold mb-6">You May Also Like</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {relatedProducts.map((relatedProduct) => (
-                            <CardComponent product={relatedProduct} />
+                            <CardComponent key={relatedProduct.id} product={relatedProduct} />
                         ))}
                     </div>
                 </div>

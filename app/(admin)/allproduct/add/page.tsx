@@ -18,7 +18,7 @@ export default function AddProductPage() {
     const router = useRouter()
     const [isSaving, setIsSaving] = useState(false)
 
-    const [product, setProduct] = useState<Product>({
+    const [product, setProduct] = useState<Product>(() => ({
         id: Date.now(), // Simple ID generation for demo
         name: '',
         category: 'Candles',
@@ -30,7 +30,7 @@ export default function AddProductPage() {
         inStock: true,
         description: '',
         quantity: 0,
-    })
+    }))
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
