@@ -22,8 +22,8 @@ export function CategoriesShop() {
         <section className="py-1 bg-[#F6F4F1] overflow-x-hidden">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-black text-neutral-900 mb-4">Shop by Category</h2>
-                    <p className="text-neutral-500 max-w-2xl mx-auto">Explore our curated collections of artisanal candles, elegant scarves, and timeless jewelry.</p>
+                    <h2 className="text-4xl font-bold tracking-tight text-neutral-900 mb-4">Shop by Category</h2>
+                    <p className="text-neutral-500 max-w-2xl mx-auto font-light tracking-wide">Explore our curated collections of artisanal candles, elegant scarves, and timeless jewelry.</p>
                 </div>
             </div>
 
@@ -44,7 +44,7 @@ function CategoryRow({ name, products }: { name: string; products: Product[] }) 
             {/* Category header */}
             <div className="mb-8 flex flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h3 className="text-2xl md:text-4xl tracking-tight font-bold text-neutral-900">{name}</h3>
+                    <h3 className="text-3xl md:text-4xl tracking-tight font-light text-neutral-900 font-[style]">{name}</h3>
                     <p className="text-sm text-neutral-400 mt-1">{products.length} items</p>
                 </div>
                 <Button

@@ -7,23 +7,54 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Headers } from "@/components/Headers"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { CardComponent } from "@/components/Card"
 import { Footer } from "@/components/Footer"
 import { featuredProduct, reviews, relatedProducts } from "@/lib/sampledata"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { FreeMode, Mousewheel, Pagination } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/pagination"
+import { useCartStore } from "@/store/store"
 
 const product = featuredProduct
 
 export default function ProductPage() {
-    const [selectedImage, setSelectedImage] = useState(0)
-    const [quantity, setQuantity] = useState(1)
     const [isFavorite, setIsFavorite] = useState(false)
     const router = useRouter()
+    const [added, setAdded] = useState(false)
 
-    const incrementQuantity = () => setQuantity(prev => prev + 1)
-    const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1))
+    const { addItem, incrementQuantity, decrementQuantity, getItemQuantity } = useCartStore()
+    const cartvalue = getItemQuantity(product.id)
+    const showControls = cartvalue > 0 && !added
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        if (added) return
+        setAdded(true)
+        addItem({
+            id: product.id,
+            name: product.name,
+            category: product.category,
+            price: product.price,
+            image: product.image,
+        })
+        setTimeout(() => { setAdded(false) }, 1000)
+    }
+
+    const decreaseControl = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        decrementQuantity(product.id)
+    }
+
+    const increaseControl = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        incrementQuantity(product.id)
+    }
 
     return (
         <div className="min-h-screen bg-[#F6F4F1]">
@@ -31,168 +62,224 @@ export default function ProductPage() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20">
                 {/* Breadcrumb */}
-                <div className="flex items-center gap-2 text-sm text-neutral-600 mb-8">
-                    <span className="hover:text-neutral-900 cursor-pointer">Home</span>
-                    <span>/</span>
-                    <span className="hover:text-neutral-900 cursor-pointer">Shop</span>
-                    <span>/</span>
-                    <span className="hover:text-neutral-900 cursor-pointer">{product.category}</span>
-                    <span>/</span>
-                    <span className="text-neutral-900 font-medium">{product.name}</span>
-                </div>
+                <Breadcrumb className="mb-8">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/shop/all">Shop</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/shop/all">{product.category}</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{product.name}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-                    {/* Image Gallery */}
-                    <div className="space-y-4">
-                        <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-200/40 via-amber-100/40 to-yellow-200/40 group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-300/30 via-amber-200/30 to-yellow-300/30 transition-transform duration-500 group-hover:scale-105" />
-                            {product.originalPrice && (
-                                <Badge className="absolute top-4 left-4 bg-red-500 text-white">
-                                    Save ${(product.originalPrice - product.price).toFixed(2)}
-                                </Badge>
-                            )}
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="absolute top-4 right-4 bg-white/90 hover:bg-white"
-                                onClick={() => setIsFavorite(!isFavorite)}
+                <div className="flex flex-col lg:flex-row gap-12 mb-16">
+                    {/* Images Column */}
+                    <div className="w-full lg:w-[55%]">
+                        {/* Mobile: Horizontal Swiper */}
+                        <div className="lg:hidden">
+                            <Swiper
+                                modules={[Pagination]}
+                                pagination={{ clickable: true }}
+                                spaceBetween={20}
+                                slidesPerView={1}
+                                className="w-full rounded-sm overflow-hidden [&_.swiper-pagination-bullet-active]:!bg-neutral-900"
                             >
-                                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                            </Button>
+                                {product.images.map((image, index) => (
+                                    <SwiperSlide key={image.id}>
+                                        <div className="relative w-full aspect-[3/4]">
+                                            <Image
+                                                src={image.url}
+                                                alt={image.alt}
+                                                fill
+                                                className="object-cover"
+                                                sizes="100vw"
+                                                priority={index === 0}
+                                            />
+                                            {index === 0 && product.originalPrice && (
+                                                <Badge className="absolute top-4 left-4 bg-red-500 text-white">
+                                                    Save ${(product.originalPrice - product.price).toFixed(2)}
+                                                </Badge>
+                                            )}
+                                            {index === 0 && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="absolute top-4 right-4 bg-white/90 hover:bg-white"
+                                                    onClick={() => setIsFavorite(!isFavorite)}
+                                                >
+                                                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
                         </div>
 
-                        {/* Thumbnails */}
-                        <div className="grid grid-cols-4 gap-4">
+                        {/* Desktop: Stacked Vertical Images */}
+                        <div className="hidden lg:flex flex-col gap-4">
                             {product.images.map((image, index) => (
-                                <button
+                                <div
                                     key={image.id}
-                                    onClick={() => setSelectedImage(index)}
-                                    className={`aspect-square rounded-lg overflow-hidden transition-all ${selectedImage === index
-                                        ? 'ring-2 ring-neutral-900 scale-95'
-                                        : 'hover:opacity-75'
-                                        }`}
+                                    className="relative w-full aspect-[3/4] rounded-md overflow-hidden group"
                                 >
-                                    <div className="w-full h-full bg-gradient-to-br from-orange-200/40 via-amber-100/40 to-yellow-200/40" />
-                                </button>
+                                    <Image
+                                        src={image.url}
+                                        alt={image.alt}
+                                        fill
+                                        className="object-cover transition-transform duration-700"
+                                        sizes="55vw"
+                                        priority={index === 0}
+                                    />
+                                    {index === 0 && product.originalPrice && (
+                                        <Badge className="absolute top-4 left-4 bg-red-500 text-white">
+                                            Save ${(product.originalPrice - product.price).toFixed(2)}
+                                        </Badge>
+                                    )}
+                                    {index === 0 && (
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="absolute top-4 right-4 bg-white/90 hover:bg-white"
+                                            onClick={() => setIsFavorite(!isFavorite)}
+                                        >
+                                            <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                                        </Button>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Product Details */}
-                    <div className="space-y-6">
-                        <div>
-                            <Badge variant="outline" className="mb-3">{product.category}</Badge>
-                            <h1 className="text-4xl font-bold text-neutral-900 mb-2">{product.name}</h1>
+                    {/* Product Details — Sticky Right */}
+                    <div className="w-full lg:w-[45%] lg:flex-shrink-0">
+                        <div className="lg:sticky lg:top-24 space-y-6">
+                            <div>
+                                <Badge variant="outline" className="mb-3">{product.category}</Badge>
+                                <h1 className="text-4xl font-semibold text-neutral-900 mb-2">{product.name}</h1>
 
-                            {/* Rating */}
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className={`w-5 h-5 ${i < Math.floor(product.rating)
-                                                ? 'fill-yellow-400 text-yellow-400'
-                                                : 'text-neutral-300'
-                                                }`}
-                                        />
-                                    ))}
+                                {/* Rating */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="flex items-center gap-1">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star
+                                                key={i}
+                                                className={`w-4 h-4 ${i < Math.floor(product.rating)
+                                                    ? 'fill-yellow-400 text-yellow-400'
+                                                    : 'text-neutral-300'
+                                                    }`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-sm font-medium">{product.rating}</span>
+                                    <span className="text-sm text-neutral-600">({product.reviews} reviews)</span>
                                 </div>
-                                <span className="text-sm font-medium">{product.rating}</span>
-                                <span className="text-sm text-neutral-600">({product.reviews} reviews)</span>
+
+                                {/* Price */}
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="text-2xl font-normal">${product.price}</span>
+                                    {product.originalPrice && (
+                                        <span className="text-md text-neutral-400 line-through">${product.originalPrice}</span>
+                                    )}
+                                </div>
+
+                                <p className="text-neutral-700 leading-relaxed tracking-wide mb-6">
+                                    {product.description}
+                                </p>
                             </div>
 
-                            {/* Price */}
-                            <div className="flex items-center gap-3 mb-6">
-                                <span className="text-4xl font-bold">${product.price}</span>
-                                {product.originalPrice && (
-                                    <span className="text-2xl text-neutral-400 line-through">${product.originalPrice}</span>
+                            {/* Quantity & Add to Cart */}
+                            <div className="space-y-4">
+                                <div className="relative h-12 flex items-center">
+                                    <Button
+                                        size="lg"
+                                        disabled={!product.inStock}
+                                        className={`${product.inStock
+                                            ? `bg-white text-black shadow-md hover:bg-amber-500 hover:scale-107 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? 'bg-emerald-500 text-white hover:bg-emerald-500' : ''}`
+                                            : 'bg-neutral-300 cursor-not-allowed text-neutral-500'
+                                            } transition-all duration-300 px-8 h-12 text-base rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
+                                        onClick={handleAddToCart}
+                                    >
+                                        <span className="relative block overflow-hidden h-6">
+                                            <span
+                                                className="flex flex-col transition-transform duration-300 ease-in-out"
+                                                style={{ transform: added ? 'translateY(-50%)' : 'translateY(0)' }}
+                                            >
+                                                <span className="h-6 flex items-center justify-center whitespace-nowrap">
+                                                    {product.inStock ? 'Add to cart' : 'Out of stock'}
+                                                </span>
+                                                <span className="h-6 flex items-center justify-center whitespace-nowrap">
+                                                    Added ✓
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </Button>
+
+                                    <div
+                                        className={`transition-all duration-300 ease-out ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
+                                    >
+                                        <ButtonGroup>
+                                            <Button variant="outline" size="default" className="h-10 w-10 text-base" onClick={(e) => decreaseControl(e) }>−</Button>
+                                            <Button variant="outline" size="default" className="pointer-events-none min-w-[3rem] h-10 text-base justify-center">{cartvalue}</Button>
+                                            <Button variant="outline" size="default" className="h-10 w-10 text-base" onClick={increaseControl}>+</Button>
+                                        </ButtonGroup>
+                                    </div>
+                                </div>
+
+                                {product.inStock ? (
+                                    <div className="flex items-center gap-2 text-green-600">
+                                        <Check className="w-5 h-5" />
+                                        <span className="font-medium">In Stock - Ships within 24 hours</span>
+                                    </div>
+                                ) : (
+                                    <div className="text-red-600 font-medium">Out of Stock</div>
                                 )}
                             </div>
 
-                            <p className="text-neutral-700 leading-relaxed mb-6">
-                                {product.description}
-                            </p>
-                        </div>
+                            <Separator />
 
-                        {/* Quantity & Add to Cart */}
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center border rounded-lg">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={decrementQuantity}
-                                        className="rounded-r-none"
-                                    >
-                                        <Minus className="w-4 h-4" />
-                                    </Button>
-                                    <span className="px-6 py-2 font-medium">{quantity}</span>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={incrementQuantity}
-                                        className="rounded-l-none"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                    </Button>
+                            {/* Features */}
+                            <div className="space-y-3">
+                                <h3 className="font-semibold text-lg">Key Features</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {product.features.map((feature, index) => (
+                                        <div key={index} className="flex items-start gap-2">
+                                            <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                            <span className="text-neutral-700">{feature}</span>
+                                        </div>
+                                    ))}
                                 </div>
-
-                                <Button
-                                    className="flex-1 bg-neutral-900 hover:bg-neutral-800 text-white h-12 text-lg"
-                                    disabled={!product.inStock}
-                                >
-                                    <ShoppingCart className="w-5 h-5 mr-2" />
-                                    Add to Cart
-                                </Button>
-
-                                <Button variant="outline" size="icon" className="h-12 w-12">
-                                    <Share2 className="w-5 h-5" />
-                                </Button>
                             </div>
 
-                            {product.inStock ? (
-                                <div className="flex items-center gap-2 text-green-600">
-                                    <Check className="w-5 h-5" />
-                                    <span className="font-medium">In Stock - Ships within 24 hours</span>
+                            <Separator />
+
+                            {/* Shipping Info */}
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
+                                    <Truck className="w-6 h-6 mb-2 text-neutral-700" />
+                                    <span className="text-sm font-medium">Free Shipping</span>
+                                    <span className="text-xs text-neutral-600">Orders over $50</span>
                                 </div>
-                            ) : (
-                                <div className="text-red-600 font-medium">Out of Stock</div>
-                            )}
-                        </div>
-
-                        <Separator />
-
-                        {/* Features */}
-                        <div className="space-y-3">
-                            <h3 className="font-semibold text-lg">Key Features</h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {product.features.map((feature, index) => (
-                                    <div key={index} className="flex items-start gap-2">
-                                        <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                                        <span className="text-neutral-700">{feature}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        {/* Shipping Info */}
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
-                                <Truck className="w-6 h-6 mb-2 text-neutral-700" />
-                                <span className="text-sm font-medium">Free Shipping</span>
-                                <span className="text-xs text-neutral-600">Orders over $50</span>
-                            </div>
-                            <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
-                                <Shield className="w-6 h-6 mb-2 text-neutral-700" />
-                                <span className="text-sm font-medium">Quality Guarantee</span>
-                                <span className="text-xs text-neutral-600">Premium materials</span>
-                            </div>
-                            <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
-                                <RotateCcw className="w-6 h-6 mb-2 text-neutral-700" />
-                                <span className="text-sm font-medium">30-Day Returns</span>
-                                <span className="text-xs text-neutral-600">Hassle-free</span>
+                                <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
+                                    <Shield className="w-6 h-6 mb-2 text-neutral-700" />
+                                    <span className="text-sm font-medium">Quality Guarantee</span>
+                                    <span className="text-xs text-neutral-600">Premium materials</span>
+                                </div>
+                                <div className="flex flex-col items-center text-center p-4 rounded-lg bg-neutral-50">
+                                    <RotateCcw className="w-6 h-6 mb-2 text-neutral-700" />
+                                    <span className="text-sm font-medium">30-Day Returns</span>
+                                    <span className="text-xs text-neutral-600">Hassle-free</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,14 +311,14 @@ export default function ProductPage() {
                     <TabsContent value="description" className="mt-6">
                         <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm space-y-4">
                             <div className="prose max-w-none">
-                                <p className="text-neutral-700 leading-relaxed">
+                                <p className="text-neutral-700 leading-relaxed tracking-wide">
                                     {product.description}
                                 </p>
                                 <h3 className="text-xl font-semibold mt-6 mb-3">What Makes It Special</h3>
-                                <p className="text-neutral-700 leading-relaxed">
+                                <p className="text-neutral-700 leading-relaxed tracking-wide">
                                     Our Lavender Dream candle is more than just a source of light—it&apos;s an experience. We&apos;ve carefully selected the finest ingredients to create a candle that not only looks beautiful but fills your space with a therapeutic aroma that promotes relaxation and well-being.
                                 </p>
-                                <p className="text-neutral-700 leading-relaxed">
+                                <p className="text-neutral-700 leading-relaxed tracking-wide">
                                     Each candle is hand-poured in small batches, ensuring consistent quality and attention to detail. The clean-burning soy wax means you can enjoy your candle knowing it&apos;s better for you and the environment.
                                 </p>
                             </div>
@@ -242,17 +329,17 @@ export default function ProductPage() {
                         <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm">
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="font-semibold text-lg mb-2">Top Notes</h3>
+                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Top Notes</h3>
                                     <p className="text-neutral-700">{product.scent.top}</p>
                                 </div>
                                 <Separator />
                                 <div>
-                                    <h3 className="font-semibold text-lg mb-2">Middle Notes</h3>
+                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Middle Notes</h3>
                                     <p className="text-neutral-700">{product.scent.middle}</p>
                                 </div>
                                 <Separator />
                                 <div>
-                                    <h3 className="font-semibold text-lg mb-2">Base Notes</h3>
+                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Base Notes</h3>
                                     <p className="text-neutral-700">{product.scent.base}</p>
                                 </div>
                             </div>
@@ -260,7 +347,7 @@ export default function ProductPage() {
                     </TabsContent>
 
                     <TabsContent value="reviews" className="mt-6">
-                        <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm space-y-6">
+                        <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm space-y-6 tracking-wide">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
                                     <div className="flex items-center gap-3 mb-2">
@@ -326,13 +413,29 @@ export default function ProductPage() {
                 </Tabs>
 
                 {/* Related Products */}
+                <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>
                 <div>
-                    <h2 className="text-3xl font-bold mb-6">You May Also Like</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {relatedProducts.map((relatedProduct) => (
+                    <Swiper
+                    modules={[FreeMode, Mousewheel]}
+                    slidesPerView="auto"
+                    spaceBetween={24}
+                    freeMode={{
+                        enabled: true,
+                        momentum: true,
+                        momentumRatio: 0.8,
+                        sticky: false,
+                    }}
+                    mousewheel={{
+                        forceToAxis: true,
+                    }}
+                    grabCursor={true}
+                >
+                    {relatedProducts.map((relatedProduct) => (
+                        <SwiperSlide key={product.id} style={{ width: "300px" }}>
                             <CardComponent key={relatedProduct.id} product={relatedProduct} />
-                        ))}
-                    </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
                 </div>
             </div>
             <Footer />

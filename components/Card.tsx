@@ -7,38 +7,44 @@ import Image from "next/image"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import { ButtonGroup } from './ui/button-group'
+import { useCartStore } from "@/store/store"
 
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const CardComponent = ({ product }: { product: any }) => {
     const router = useRouter()
     const [added, setAdded] = useState(false)
-    const [showControls, setShowControls] = useState(false)
-    const [cartvalue, setcartvalue] = useState(0)
+
+    const { addItem, incrementQuantity, decrementQuantity, getItemQuantity, removeItem } = useCartStore()
+    const cartvalue = getItemQuantity(product.id)
+    const showControls = cartvalue > 0 && !added
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation()
         if (added) return
         setAdded(true)
-        setcartvalue(1)
-        setTimeout(() =>  {setAdded(false); setShowControls(true)}, 1000)
+        addItem({
+            id: product.id,
+            name: product.name,
+            category: product.category,
+            price: product.price,
+            image: product.image,
+        })
+        setTimeout(() => { setAdded(false) }, 1000)
     }
 
-    const decreaseControl=(e: React.MouseEvent)=>{
-        e.stopPropagation();
-        if(cartvalue==1){
-            setShowControls(false)
-            setcartvalue(0)
-        }
-        if (cartvalue > 1) {
-            setcartvalue(cartvalue - 1)
-        }
+    const decreaseControl = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        decrementQuantity(product.id)
+    }
+
+    const increaseControl = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        incrementQuantity(product.id)
     }
 
     return <>
         <Card
             key={product.id}
-            className="group rounded-[8px] p-0 border border-neutral-200 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative hover:scale-102"
+            className="group rounded-[8px] p-0 border border-neutral-200 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative hover:scale-101"
             onClick={() => router.push(`/product/${product.id}`)}
         >
             {/* Image */}
@@ -64,16 +70,16 @@ export const CardComponent = ({ product }: { product: any }) => {
             </div>
 
             <CardContent className="px-4 pb-6 pt-1">
-                <h2 className="text-xl font-semibold tracking-wide mb-1 text-neutral-900 transition-colors">
+                <h2 className="text-xl font-bold tracking-tight mb-1 text-neutral-900 transition-colors">
                     {product.name}
                 </h2>
-                <p className="text-neutral-500 text-xs mb-3">{product.category}</p>
+                <p className="text-neutral-500 font-light tracking-wide text-sm mb-3">{product.category}</p>
 
                 {/* Price and Action */}
                 <div className="flex items-center justify-between pt-3 border-t border-neutral-200">
                     <div>
-                        <p className="text-[12px] text-neutral-500 mb-0.5">Price</p>
-                        <span className="text-lg font-normal text-neutral-900">₹{product.price}</span>
+                        <p className="text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
+                        <span className="text-lg font-normal tracking-tight text-neutral-900">₹{product.price}</span>
                     </div>
                     <div className="relative h-9 flex items-center">
                         <Button
@@ -104,9 +110,9 @@ export const CardComponent = ({ product }: { product: any }) => {
                             className={`transition-all duration-300 ease-out ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
                         >
                             <ButtonGroup>
-                                <Button variant="outline" size="sm" onClick={(e) => decreaseControl(e) }>−</Button>
+                                <Button variant="outline" size="sm" onClick={decreaseControl}>−</Button>
                                 <Button variant="outline" size="sm" className="pointer-events-none min-w-[2rem] justify-center">{cartvalue}</Button>
-                                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setcartvalue(cartvalue + 1) }}>+</Button>
+                                <Button variant="outline" size="sm" onClick={increaseControl}>+</Button>
                             </ButtonGroup>
                         </div>
                     </div>

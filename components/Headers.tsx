@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { CartSheet } from "./SideCart";
+import { useCartStore } from "@/store/store";
 
 export function Headers() {
     const router = useRouter()
@@ -14,6 +15,7 @@ export function Headers() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const cartItemCount = useCartStore((state) => state.totalItems());
 
     useEffect(() => {
         const handleScroll = () => {
@@ -72,6 +74,11 @@ export function Headers() {
                         <SheetTrigger asChild>
                             <div className="relative group hover:cursor-pointer p-2 rounded-full hover:bg-neutral-100 transition-colors">
                                 <ShoppingCart strokeWidth={1.75} className="h-6 w-6 text-neutral-800" />
+                                {cartItemCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                        {cartItemCount}
+                                    </span>
+                                )}
                             </div>
                         </SheetTrigger>
                         <CartSheet />
@@ -89,7 +96,14 @@ export function Headers() {
                     <div className="flex items-center gap-6">
                         <Sheet>
                             <SheetTrigger asChild>
-                                <ShoppingCart strokeWidth={1.75} className="h-6 w-6 cursor-pointer" />
+                                <div className="relative">
+                                    <ShoppingCart strokeWidth={1.75} className="h-6 w-6 cursor-pointer" />
+                                    {cartItemCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                            {cartItemCount}
+                                        </span>
+                                    )}
+                                </div>
                             </SheetTrigger>
                             <CartSheet />
                         </Sheet>

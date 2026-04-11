@@ -9,8 +9,8 @@ export function BestSelling() {
 
     return (
         <div className="py-20 w-full flex flex-col items-center bg-[#F6F4F1]">
-            <h2 className="text-4xl md:text-5xl font-black mb-4">Best Sellers</h2>
-            <p className="text-neutral-500 mb-12 text-center max-w-2xl">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Best Sellers</h2>
+            <p className="text-neutral-500 mb-12 font-light tracking-wide text-center max-w-2xl">
                 Discover our most-loved scents, handcrafted to create the perfect ambiance for your home.
             </p>
 

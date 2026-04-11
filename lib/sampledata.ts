@@ -132,10 +132,10 @@ export const featuredProduct: Omit<Product, 'images'> & {
     inStock: true,
     image: "/1.jpeg",
     images: [
-        { id: 1, url: "/1.jpg", alt: "Lavender Dream - Front view" },
-        { id: 2, url: "/2.jpg", alt: "Lavender Dream - Side view" },
-        { id: 3, url: "/3.jpg", alt: "Lavender Dream - Top view" },
-        { id: 4, url: "/4.jpg", alt: "Lavender Dream - Lifestyle" },
+        { id: 1, url: "/jar candle.png", alt: "Lavender Dream - Front view" },
+        { id: 2, url: "/jar candle-2.png", alt: "Lavender Dream - Side view" },
+        { id: 3, url: "/3.jpeg", alt: "Lavender Dream - Top view" },
+        { id: 4, url: "/4.jpeg", alt: "Lavender Dream - Lifestyle" },
     ],
     description: "Immerse yourself in the calming embrace of our Lavender Dream candle. Hand-poured with premium soy wax and infused with pure lavender essential oil, this candle creates a serene atmosphere perfect for relaxation and meditation. Each candle is carefully crafted to ensure an even burn and long-lasting fragrance.",
     features: [
@@ -188,22 +188,22 @@ export const reviews: Review[] = [
 // ---------- Cart Items ----------
 
 export const cartItems: CartItem[] = [
-    {
-        id: 1,
-        name: "Lavender Dream",
-        category: "Aromatherapy",
-        price: 2099,
-        image: "/1.jpeg",
-        quantity: 1,
-    },
-    {
-        id: 2,
-        name: "Vanilla Bliss",
-        category: "Classic",
-        price: 1699,
-        image: "/2.jpeg",
-        quantity: 2,
-    },
+    // {
+    //     id: 1,
+    //     name: "Lavender Dream",
+    //     category: "Aromatherapy",
+    //     price: 2099,
+    //     image: "/1.jpeg",
+    //     quantity: 1,
+    // },
+    // {
+    //     id: 2,
+    //     name: "Vanilla Bliss",
+    //     category: "Classic",
+    //     price: 1699,
+    //     image: "/2.jpeg",
+    //     quantity: 2,
+    // },
 ];
 
 // ---------- Helper Functions ----------
