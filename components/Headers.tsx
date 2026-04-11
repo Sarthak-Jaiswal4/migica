@@ -51,7 +51,7 @@ export function Headers() {
     return (
         <header className="relative z-50">
             {/* Desktop Header */}
-            <div className={`hidden md:flex items-center justify-between w-[70%] mx-auto py-1 fixed top-4 right-1/2 translate-x-1/2 rounded-2xl px-8 ${desktopHeaderBg}`}>
+            <div className={`hidden md:flex items-center justify-between w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-8 ${desktopHeaderBg}`}>
                 <div className="flex items-center gap-5">
                     <h1 className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500" onClick={() => router.push("/")}>Home</h1>
                     <HoverCard openDelay={20} closeDelay={200}>
@@ -87,7 +87,7 @@ export function Headers() {
             </div>
 
             {/* Mobile/Tablet Header */}
-            <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-1/2 -translate-x-1/2 rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
+            <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                 <div className="flex items-center justify-between py-3 px-6">
                     <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
                         <h1>magica</h1>

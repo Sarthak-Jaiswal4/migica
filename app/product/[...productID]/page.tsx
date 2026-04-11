@@ -57,7 +57,7 @@ export default function ProductPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F6F4F1]">
+        <div className="min-h-screen bg-[#F6F4F1] overflow-x-hidden">
             <Headers />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20">
@@ -287,29 +287,29 @@ export default function ProductPage() {
 
                 {/* Tabs Section */}
                 <Tabs defaultValue="description" className="mb-16">
-                    <TabsList className="w-full justify-start h-16 p-0.5 bg-neutral-100/80 backdrop-blur-sm border border-neutral-200 rounded-2xl gap-2">
+                    <TabsList className="w-full justify-start h-14 sm:h-16 p-0.5 bg-neutral-100/80 backdrop-blur-sm border border-neutral-200 rounded-xl sm:rounded-2xl gap-1 sm:gap-2 overflow-x-auto">
                         <TabsTrigger
                             value="description"
-                            className="rounded-xl px-6 py-5 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
+                            className="rounded-lg sm:rounded-xl px-3 sm:px-6 py-3 sm:py-5 text-sm sm:text-base whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
                         >
                             Description
                         </TabsTrigger>
                         <TabsTrigger
                             value="scent"
-                            className="rounded-xl px-6 py-5 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
+                            className="rounded-lg sm:rounded-xl px-3 sm:px-6 py-3 sm:py-5 text-sm sm:text-base whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
                         >
                             Scent Profile
                         </TabsTrigger>
                         <TabsTrigger
                             value="reviews"
-                            className="rounded-xl px-6 py-5 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
+                            className="rounded-lg sm:rounded-xl px-3 sm:px-6 py-3 sm:py-5 text-sm sm:text-base whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-neutral-900 transition-all duration-300"
                         >
                             Reviews ({product.reviews})
                         </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="description" className="mt-6">
-                        <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm space-y-4">
+                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-4">
                             <div className="prose max-w-none">
                                 <p className="text-neutral-700 leading-relaxed tracking-wide">
                                     {product.description}
@@ -326,7 +326,7 @@ export default function ProductPage() {
                     </TabsContent>
 
                     <TabsContent value="scent" className="mt-6">
-                        <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm">
+                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm">
                             <div className="space-y-6">
                                 <div>
                                     <h3 className="font-semibold text-lg mb-2 tracking-wide">Top Notes</h3>
@@ -347,7 +347,7 @@ export default function ProductPage() {
                     </TabsContent>
 
                     <TabsContent value="reviews" className="mt-6">
-                        <div className="p-8 border border-neutral-200 rounded-2xl bg-white shadow-sm space-y-6 tracking-wide">
+                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-6 tracking-wide">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
                                     <div className="flex items-center gap-3 mb-2">
@@ -414,28 +414,29 @@ export default function ProductPage() {
 
                 {/* Related Products */}
                 <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>
-                <div>
+                <div className="overflow-hidden">
                     <Swiper
-                    modules={[FreeMode, Mousewheel]}
-                    slidesPerView="auto"
-                    spaceBetween={24}
-                    freeMode={{
-                        enabled: true,
-                        momentum: true,
-                        momentumRatio: 0.8,
-                        sticky: false,
-                    }}
-                    mousewheel={{
-                        forceToAxis: true,
-                    }}
-                    grabCursor={true}
-                >
-                    {relatedProducts.map((relatedProduct) => (
-                        <SwiperSlide key={product.id} style={{ width: "300px" }}>
-                            <CardComponent key={relatedProduct.id} product={relatedProduct} />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                        modules={[FreeMode, Mousewheel]}
+                        slidesPerView="auto"
+                        spaceBetween={16}
+                        freeMode={{
+                            enabled: true,
+                            momentum: true,
+                            momentumRatio: 0.8,
+                            sticky: false,
+                        }}
+                        mousewheel={{
+                            forceToAxis: true,
+                        }}
+                        grabCursor={true}
+                        className="!overflow-visible"
+                    >
+                        {relatedProducts.map((relatedProduct) => (
+                            <SwiperSlide key={relatedProduct.id} style={{ width: "260px" }} className="sm:!w-[300px]">
+                                <CardComponent key={relatedProduct.id} product={relatedProduct} />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
                 </div>
             </div>
             <Footer />
