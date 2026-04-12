@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Headers } from '@/components/Headers'
 import { Footer } from '@/components/Footer'
-import { getProductById, Product, updateProduct } from '@/lib/products'
+import type { Product } from '@/lib/product'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,19 +18,26 @@ import Image from 'next/image'
 export default function EditProductPage() {
     const params = useParams()
     const router = useRouter()
-    const productId = Number(params.id)
 
-    const [product, setProduct] = useState<Product | null>(null)
+    const [product, setProduct] = useState<(Product & { _id?: string }) | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
-
     useEffect(() => {
-        const data = getProductById(productId)
-        if (data) {
-            setProduct({ ...data })
+        const fetchProduct = async () => {
+            try {
+                const res = await fetch(`/api/products/${params.id}`)
+                const data = await res.json()
+                if (data.product) {
+                    setProduct({ ...data.product, id: String(data.product._id) })
+                }
+            } catch (error) {
+                console.error('Error fetching product:', error)
+            } finally {
+                setIsLoading(false)
+            }
         }
-        setIsLoading(false)
-    }, [productId]) // eslint-disable-line react-hooks/set-state-in-effect
+        fetchProduct()
+    }, [params.id])
 
     if (isLoading) return <div className='min-h-screen bg-[#F6F4F1] flex items-center justify-center font-bold text-2xl'>Loading Magic...</div>
     if (!product) return <div className='min-h-screen bg-[#F6F4F1] flex items-center justify-center font-bold text-2xl'>Product Not Found</div>
@@ -44,16 +51,39 @@ export default function EditProductPage() {
         setProduct(prev => prev ? { ...prev, category: value } : null)
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsSaving(true)
-        // Simulate API call
-        setTimeout(() => {
-            if (product) {
-                updateProduct(product)
-                router.push('/allproduct')
-            }
+        try {
+            const { _id, ...payload } = product as Product & { _id?: string }
+            const res = await fetch(`/api/products/${params.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            })
+
+            if (!res.ok) throw new Error('Failed to update product')
+
+            router.push('/allproduct')
+        } catch (error) {
+            console.error('Error updating product:', error)
+            alert('Failed to update product')
+        } finally {
             setIsSaving(false)
-        }, 1000)
+        }
+    }
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this product?')) return
+        try {
+            const res = await fetch(`/api/products/${params.id}`, {
+                method: 'DELETE',
+            })
+            if (!res.ok) throw new Error('Failed to delete product')
+            router.push('/allproduct')
+        } catch (error) {
+            console.error('Error deleting product:', error)
+            alert('Failed to delete product')
+        }
     }
 
     const removeImage = (index: number) => {
@@ -154,11 +184,17 @@ export default function EditProductPage() {
                                                 <SelectValue placeholder='Select Category' />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value='Candles'>Candles</SelectItem>
-                                                <SelectItem value='fashion Accessories'>Fashion Accessories</SelectItem>
-                                                <SelectItem value='Handmade Jewelry'>Handmade Jewelry</SelectItem>
-                                                <SelectItem value='Custom Gifts'>Custom Gifts</SelectItem>
-                                                <SelectItem value='Custom T-Shirts'>Custom T-Shirts</SelectItem>
+                                                <SelectItem value="Candles">Candles</SelectItem>
+                                                <SelectItem value="Aromatherapy">Aromatherapy</SelectItem>
+                                                <SelectItem value="Fresh">Fresh</SelectItem>
+                                                <SelectItem value="Floral">Floral</SelectItem>
+                                                <SelectItem value="Woodsy">Woodsy</SelectItem>
+                                                <SelectItem value="Luxury">Luxury</SelectItem>
+                                                <SelectItem value="Seasonal">Seasonal</SelectItem>
+                                                <SelectItem value="Scarves">Scarves</SelectItem>
+                                                <SelectItem value="Jewelry">Jewelry</SelectItem>
+                                                <SelectItem value="Gift">Gift</SelectItem>
+                                                <SelectItem value="T-Shirt">T-Shirt</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -212,11 +248,15 @@ export default function EditProductPage() {
                                     </div>
                                 </div>
                             </CardContent>
-                            <CardFooter className='bg-neutral-50 p-8 flex justify-between items-center border-t border-neutral-200'>
-                                <Button variant='ghost' className='text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all flex gap-2 font-bold'>
+                            <CardFooter className='bg-neutral-50  flex-col md:flex-row gap-6 md:gap-0 p-8 flex justify-between items-center border-t border-neutral-200'>
+                                <Button 
+                                    variant='ghost' 
+                                    className='text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl md:w-auto w-full mx-auto bg-red-200 transition-all flex gap-2 font-bold'
+                                    onClick={handleDelete}
+                                >
                                     <Trash2 size={20} /> Delete Product
                                 </Button>
-                                <div className='flex gap-4'>
+                                <div className='flex gap-4 md:flex-row flex-col md:w-auto w-full'>
                                     <Button variant='outline' className='rounded-xl h-12 px-8 font-bold border-neutral-200' onClick={() => router.push('/allproduct')}>
                                         Cancel
                                     </Button>

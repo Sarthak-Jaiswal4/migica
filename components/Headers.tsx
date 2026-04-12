@@ -122,7 +122,7 @@ export function Headers() {
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
                 >
                     <div className="flex flex-col gap-8 px-6 pb-12 pt-6 text-4xl tracking-tight font-semibold">
-                        {["Home", "Categories", "Collections", "Login"].map((item, i) => (
+                        {["Home", "Shop","Categories", "Collections", "Login"].map((item, i) => (
                             <div 
                                 key={item} 
                                 ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
@@ -130,6 +130,7 @@ export function Headers() {
                                 onClick={() => {
                                     setIsMobileMenuOpen(false);
                                     if (item === "Home") router.push("/");
+                                    else if (item === "Shop") router.push("/shop/all");
                                     else if (item === "Login") router.push("/login");
                                 }}
                             >
@@ -161,13 +162,13 @@ const Categories = [
     },
     {
         img: "/4.jpeg",
-        name: "Gifts",
-        description: "Timeless jewelry pieces that capture the essence of sophistication."
+        name: "Gift",
+        description: "Curated boxes and bundles for every celebration."
     },
     {
         img: "/5.jpeg",
-        name: "T-Shirts",
-        description: "Timeless jewelry pieces that capture the essence of sophistication."
+        name: "T-Shirt",
+        description: "Soft cotton tees with thoughtful details and prints."
     }
 ]
 

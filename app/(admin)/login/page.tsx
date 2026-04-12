@@ -1,34 +1,49 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { Headers } from '@/components/Headers'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-// import { supabase } from '@/supabase/client'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log(email,password)
-        // const { data, error } = await supabase.auth.signInWithPassword({
-        //     email: email,
-        //     password: password,
-        // })
-        // if (error) {
-        //     console.log(error)
-        // } else {
-        //     console.log(data)
-        //     router.push('/allproduct')
-        // }
+        setError('')
+        setLoading(true)
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                setError(data.error || 'Login failed. Please check your credentials.')
+                setLoading(false)
+                return
+            }
+
+            // Success! 
+            // We keep loading true while we redirect
+            router.push('/allproduct')
+        } catch (err) {
+            console.error('Login error:', err)
+            setError('Connection error. Please check if the server is running.')
+            setLoading(false)
+        }
     }
 
     return (
@@ -80,8 +95,21 @@ export default function LoginPage() {
                                 </button>
                             </div>
                         </div>
-                        <Button className='w-full h-12 mt-4 bg-black text-white hover:bg-neutral-800 rounded-xl transition-all duration-300 font-semibold shadow-lg shadow-black/10' onClick={handleSubmit}>
-                            Sign In
+                        {error && (
+                            <div className='bg-red-50 text-red-600 text-sm px-4 py-2.5 rounded-xl border border-red-200'>
+                                {error}
+                            </div>
+                        )}
+                        <Button
+                            className='w-full h-12 mt-4 bg-black text-white hover:bg-neutral-800 rounded-xl transition-all duration-300 font-semibold shadow-lg shadow-black/10 disabled:opacity-60'
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <><Loader2 className='w-4 h-4 mr-2 animate-spin' /> Signing in...</>
+                            ) : (
+                                'Sign In'
+                            )}
                         </Button>
                     </CardContent>
                 </Card>

@@ -9,7 +9,7 @@ import { useState } from "react"
 import { ButtonGroup } from './ui/button-group'
 import { useCartStore } from "@/store/store"
 
-export const CardComponent = ({ product }: { product: any }) => {
+export const CardComponent = ({ product, compact = false }: { product: any; compact?: boolean }) => {
     const router = useRouter()
     const [added, setAdded] = useState(false)
 
@@ -48,7 +48,7 @@ export const CardComponent = ({ product }: { product: any }) => {
             onClick={() => router.push(`/product/${product.id}`)}
         >
             {/* Image */}
-            <div className="h-72 w-full overflow-hidden relative">
+            <div className={`${compact ? 'h-44 sm:h-64' : 'h-64'} w-full overflow-hidden relative`}>
                 <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                     <div className="w-1/2 h-full relative flex-shrink-0">
                         <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
@@ -69,17 +69,17 @@ export const CardComponent = ({ product }: { product: any }) => {
                 )}
             </div>
 
-            <CardContent className="px-4 pb-6 pt-1">
-                <h2 className="text-xl font-bold tracking-tight mb-1 text-neutral-900 transition-colors">
+            <CardContent className="px-2 sm:px-4 pb-3 sm:pb-6 pt-1">
+                <h2 className="text-sm sm:text-xl font-bold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors line-clamp-1">
                     {product.name}
                 </h2>
-                <p className="text-neutral-500 font-light tracking-wide text-sm mb-3">{product.category}</p>
+                <p className="text-neutral-500 font-light tracking-wide text-xs sm:text-sm mb-1.5 sm:mb-3">{product.category}</p>
 
                 {/* Price and Action */}
-                <div className="flex items-center justify-between pt-3 border-t border-neutral-200">
+                <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-neutral-200">
                     <div>
-                        <p className="text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
-                        <span className="text-lg font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                        <p className="hidden sm:block text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
+                        <span className="text-sm sm:text-lg font-semibold sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
                     </div>
                     <div className="relative h-9 flex items-center">
                         <Button
@@ -88,7 +88,7 @@ export const CardComponent = ({ product }: { product: any }) => {
                             className={`${product.inStock
                                 ? `bg-white text-black shadow-md hover:bg-amber-500 hover:scale-107 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? 'bg-emerald-500 text-white hover:bg-emerald-500' : ''}`
                                 : 'bg-neutral-300 cursor-not-allowed text-neutral-500'
-                                } transition-all duration-300 px-4 h-9 rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
+                                } transition-all duration-300 px-3 sm:px-4 h-8 sm:h-9 text-sm rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
                             onClick={handleAddToCart}
                         >
                             <span className="relative block overflow-hidden h-5">
@@ -97,7 +97,7 @@ export const CardComponent = ({ product }: { product: any }) => {
                                     style={{ transform: added ? 'translateY(-50%)' : 'translateY(0)' }}
                                 >
                                     <span className="h-5 flex items-center justify-center whitespace-nowrap">
-                                        {product.inStock ? 'Add to cart' : 'Out of stock'}
+                                        {product.inStock ? <><span className="hidden sm:inline">Add to cart</span><span className="sm:hidden">Add</span></> : 'Out of stock'}
                                     </span>
                                     <span className="h-5 flex items-center justify-center whitespace-nowrap">
                                         Added ✓
