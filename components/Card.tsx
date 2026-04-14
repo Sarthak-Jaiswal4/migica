@@ -80,7 +80,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                 </div>
 
                 {/* Price and Action */}
-                <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 sm:flex-row justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
+                <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
                     <div>
                         <p className="hidden sm:block md:text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
                         <div className="flex gap-2 items-center">
@@ -88,7 +88,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                             <span className="text-md text-neutral-400 line-through decoration-2">₹{699}</span>
                         </div>
                     </div>
-                    <div className="relative h-9 flex items-center w-full mx-auto py-1">
+                    <div className="relative h-9 flex items-center w-full mx-auto py-1 md:mt-2">
                         <Button
                             size="sm"
                             disabled={!product.inStock}
@@ -114,7 +114,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         </Button>
 
                         <div
-                            className={`${compact ? 'w-full' :'w-[70%]'} mx-auto h-full transition-all duration-300 ease-out flex items-center justify-center ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
+                            className={`${compact ? 'w-full sm:w-auto' :'w-[70%]'} mx-auto h-full transition-all duration-300 ease-out flex items-center justify-center ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
                         >
                             <ButtonGroup className="w-full h-full">
                                 <Button variant="outline" size="sm" className="flex-1 rounded-l-full" onClick={decreaseControl}>−</Button>
