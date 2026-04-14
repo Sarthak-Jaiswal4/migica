@@ -167,7 +167,7 @@ export default function ProductPage() {
                                 slidesPerView={1}
                                 className="w-full rounded-sm overflow-hidden [&_.swiper-pagination-bullet-active]:!bg-neutral-900"
                             >
-                                {product.images.map((image: { id: string; url: string; alt: string }, index: number) => (
+                                {product.images.slice(0, 2).map((image: { id: string; url: string; alt: string }, index: number) => (
                                     <SwiperSlide key={image.id}>
                                         <div className="w-full">
                                             <Image
@@ -179,11 +179,11 @@ export default function ProductPage() {
                                                 sizes="100vw"
                                                 priority={index === 0}
                                             />
-                                            {index === 0 && product.originalPrice && (
+                                            {/* {index === 0 && product.originalPrice && (
                                                 <Badge className="absolute top-4 left-4 bg-red-500 text-white">
                                                     Save ${(product.originalPrice - product.price).toFixed(2)}
                                                 </Badge>
-                                            )}
+                                            )} */}
                                             {index === 0 && (
                                                 <Button
                                                     variant="outline"
@@ -202,7 +202,7 @@ export default function ProductPage() {
 
                         {/* Desktop: Stacked Vertical Images (Scrolling) */}
                         <div className="hidden lg:flex flex-col gap-6">
-                            {product.images.map((image: { id: string; url: string; alt: string }, index: number) => (
+                            {product.images.slice(0, 2).map((image: { id: string; url: string; alt: string }, index: number) => (
                                 <div
                                     key={image.id}
                                     className="w-full rounded-2xl overflow-hidden shadow-sm border border-neutral-200"
@@ -216,11 +216,11 @@ export default function ProductPage() {
                                         sizes="55vw"
                                         priority={index === 0}
                                     />
-                                    {index === 0 && product.originalPrice && (
+                                    {/* {index === 0 && product.originalPrice && (
                                         <Badge className="absolute top-6 left-6 bg-red-500 text-white px-3 py-1 text-sm font-bold shadow-lg">
                                             Save ${(product.originalPrice - product.price).toFixed(2)}
                                         </Badge>
-                                    )}
+                                    )} */}
                                     {index === 0 && (
                                         <Button
                                             variant="outline"
@@ -237,7 +237,7 @@ export default function ProductPage() {
                     </div>
 
                     {/* Product Details (Now on the Left — Pinned/Sticky) */}
-                        <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-32">
+                        <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-20">
                             <div className="space-y-8">
                             <div>
                                 <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-white/50">{product.category}</Badge>

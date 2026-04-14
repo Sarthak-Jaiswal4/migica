@@ -45,8 +45,10 @@ export function Headers() {
         : "bg-white/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg";
 
     const mobileHeaderBg = pathname === "/"
-        ? (isScrolled || isMobileMenuOpen ? "bg-white/90 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-white/30 backdrop-blur-none duration-300 ease-in invert")
-        : "bg-white/90 backdrop-blur-md duration-300 ease-in text-black shadow-lg";
+        ? (isScrolled || isMobileMenuOpen
+            ? "bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 duration-300 ease-in text-black shadow-lg"
+            : "bg-white/50 backdrop-blur-none duration-300 ease-in invert")
+        : "bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 duration-300 ease-in text-black shadow-lg";
 
     return (
         <header className="relative z-50">
