@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { useEffect, useState } from "react";
 import type { Product } from "@/lib/product";
@@ -61,7 +62,11 @@ export function CategoriesShop() {
 
       <div className="flex flex-col gap-10">
         {isLoading ? (
-          <div className="text-center text-neutral-500">Loading collections...</div>
+          <>
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <CategoryRowSkeleton key={idx} />
+            ))}
+          </>
         ) : (
           allCats.map((cat) => <CategoryRow key={cat.name} name={cat.name} products={cat.products} />)
         )}
@@ -117,6 +122,35 @@ function CategoryRow({ name, products }: { name: string; products: Product[] }) 
             </SwiperSlide>
           ))}
         </Swiper>
+      </div>
+    </div>
+  );
+}
+
+function CategoryRowSkeleton() {
+  return (
+    <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-gray-200 rounded-lg pt-8 pb-4">
+      <div className="mb-8 flex flex-row md:items-end justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-44" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-10 w-28 rounded-full" />
+      </div>
+
+      <div className="mb-6 flex gap-6 overflow-hidden">
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <div key={idx} className="w-[300px] shrink-0 rounded-[8px] border border-neutral-200 bg-white p-0">
+            <Skeleton className="h-64 w-full rounded-none" />
+            <div className="space-y-3 px-4 pb-6 pt-3">
+              <Skeleton className="h-6 w-3/4 mx-auto" />
+              <Skeleton className="h-5 w-24 mx-auto rounded-full" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-full rounded-full mt-2" />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

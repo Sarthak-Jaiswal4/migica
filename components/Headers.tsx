@@ -65,7 +65,7 @@ export function Headers() {
                     <h1 className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500">Collections</h1>
                 </div>
                 <div className="text-3xl font-bold absolute tracking-tighter left-1/2 -translate-x-1/2 cursor-pointer" onClick={() => router.push("/")}>
-                    <h1>magica</h1>
+                    <h1>Silver Star</h1>
                 </div>
                 <div className="flex items-center gap-4">
                     <Search className="hover:cursor-pointer" strokeWidth={1.75} />

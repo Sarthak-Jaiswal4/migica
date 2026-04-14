@@ -169,12 +169,13 @@ export default function ProductPage() {
                             >
                                 {product.images.map((image: { id: string; url: string; alt: string }, index: number) => (
                                     <SwiperSlide key={image.id}>
-                                        <div className="relative w-full aspect-[3/4]">
+                                        <div className="w-full">
                                             <Image
                                                 src={image.url}
                                                 alt={image.alt}
-                                                fill
-                                                className="object-cover"
+                                                width={1200}
+                                                height={1600}
+                                                className="w-full h-auto object-contain"
                                                 sizes="100vw"
                                                 priority={index === 0}
                                             />
@@ -204,13 +205,14 @@ export default function ProductPage() {
                             {product.images.map((image: { id: string; url: string; alt: string }, index: number) => (
                                 <div
                                     key={image.id}
-                                    className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden group shadow-sm border border-neutral-200"
+                                    className="w-full rounded-2xl overflow-hidden shadow-sm border border-neutral-200"
                                 >
                                     <Image
                                         src={image.url}
                                         alt={image.alt}
-                                        fill
-                                        className="object-cover transition-transform duration-700 hover:scale-105"
+                                        width={1200}
+                                        height={1600}
+                                        className="w-full h-auto object-contain"
                                         sizes="55vw"
                                         priority={index === 0}
                                     />

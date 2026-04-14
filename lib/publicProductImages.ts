@@ -3,12 +3,20 @@ const IMAGE_POOL = [
   "/jar candle.png",
   "/jar candle-2.png",
   "/1.jpeg",
+  "/2.1.png",
+  "/6.1.png",
+  "/4.1.png",
+  "/4.2.png",
   "/2.jpeg",
   "/3.jpeg",
   "/4.jpeg",
   "/5.jpeg",
-  "/6.jpeg",
   "/8.jpeg",
+  "/8.1.png",
+  "/8.2.png",
+  "/9.png",
+  "/9.1.png",
+  "/10.1.png",
 ] as const;
 
 function hashSeed(seed: string): number {
