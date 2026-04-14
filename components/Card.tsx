@@ -69,17 +69,17 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                 )}
             </div>
 
-            <CardContent className="px-2 sm:px-4 pb-3 sm:pb-6 pt-1">
-                <h2 className="text-sm sm:text-xl font-bold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors line-clamp-1">
+            <CardContent className="px-2 sm:px-4 pb-4 sm:pb-6 pt-1">
+                <h2 className="text-md sm:text-xl font-bold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors line-clamp-1">
                     {product.name}
                 </h2>
                 <p className="text-neutral-500 font-light tracking-wide text-xs sm:text-sm mb-1.5 sm:mb-3">{product.category}</p>
 
                 {/* Price and Action */}
-                <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-neutral-200">
+                <div className="flex items-center justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
                     <div>
-                        <p className="hidden sm:block text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
-                        <span className="text-sm sm:text-lg font-semibold sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                        <p className="hidden sm:block md:text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
+                        <span className="text-md sm:text-lg font-normal sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
                     </div>
                     <div className="relative h-9 flex items-center">
                         <Button
