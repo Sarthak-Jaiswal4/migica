@@ -18,76 +18,30 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import { FreeMode, Mousewheel, Pagination } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/pagination"
-import { useCartStore } from "@/store/store"
+import { useCartStore, useProductStore } from "@/store/store"
+import type { ProductDetail } from "@/store/store"
 
 export default function ProductPage() {
     const params = useParams()
     const router = useRouter()
-    const [product, setProduct] = useState<any>(null)
-    const [relatedProducts, setRelatedProducts] = useState<any[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [isFavorite, setIsFavorite] = useState(false)
     const [added, setAdded] = useState(false)
 
     const { addItem, incrementQuantity, decrementQuantity, getItemQuantity } = useCartStore()
+    const fetchProductPageData = useProductStore((state) => state.fetchProductPageData)
+    const productById = useProductStore((state) => state.productById)
+    const relatedByProductId = useProductStore((state) => state.relatedByProductId)
+    const loadingById = useProductStore((state) => state.loadingById)
+
+    const id = Array.isArray(params.productID) ? params.productID[0] : params.productID;
+    const product: ProductDetail | null = id ? productById[id] : null;
+    const relatedProducts = id ? relatedByProductId[id] ?? [] : [];
+    const isLoading = id ? loadingById[id] ?? !product : false;
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const id = Array.isArray(params.productID) ? params.productID[0] : params.productID
-                if (!id) return
-
-                const [detailRes, relatedRes] = await Promise.all([
-                    fetch(`/api/products/${id}`),
-                    fetch(`/api/products?relatedTo=${encodeURIComponent(id)}`),
-                ])
-                const data = await detailRes.json()
-                const relatedJson = await relatedRes.json()
-
-                if (data.product) {
-                    const p = data.product
-                    const rawUrls = (Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image]).filter(Boolean)
-                    const urls = Array.from(new Set(rawUrls as string[]))
-                    const mappedProduct = {
-                        ...p,
-                        id: String(p._id),
-                        images: urls.map((url: string, i: number) => ({
-                            id: `img-${i}`,
-                            url,
-                            alt: `${p.name} — ${i + 1}`,
-                        })),
-                        features:
-                            p.features?.length > 0
-                                ? p.features
-                                : [
-                                      "Premium materials",
-                                      "Small-batch craftsmanship",
-                                      "Thoughtful packaging",
-                                      "Designed for everyday ritual",
-                                  ],
-                        scent: p.scent?.top ? p.scent : { top: "Opening notes", middle: "Heart notes", base: "Base notes" },
-                    }
-                    setProduct(mappedProduct)
-                }
-
-                if (relatedJson.products?.length) {
-                    setRelatedProducts(
-                        relatedJson.products.map((rp: { _id: string }) => ({
-                            ...rp,
-                            id: String(rp._id),
-                        }))
-                    )
-                } else {
-                    setRelatedProducts([])
-                }
-            } catch (error) {
-                console.error("Failed to fetch product", error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        fetchProduct()
-    }, [params.productID])
+        if (!id) return
+        fetchProductPageData(id)
+    }, [id, fetchProductPageData])
 
     if (isLoading) {
         return <ProductPageSkeleton />
