@@ -70,36 +70,43 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
             </div>
 
             <CardContent className="px-2 sm:px-4 pb-4 sm:pb-6 pt-1">
-                <h2 className="text-md sm:text-xl font-bold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors line-clamp-1">
-                    {product.name}
-                </h2>
-                <p className="text-neutral-500 font-light tracking-wide text-xs sm:text-sm mb-1.5 sm:mb-3">{product.category}</p>
+                <div className="w-full flex items-center flex-col gap-2">
+                    <h2 className="text-md sm:text-xl font-semibold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors text-center line-clamp-1">
+                        {product.name}
+                    </h2>
+                    <Badge className=" text-center mb-2" variant="secondary">
+                        <p className="text-neutral-500 font-light tracking-wide text-xs sm:text-sm text-center">{product.category}</p>
+                    </Badge>
+                </div>
 
                 {/* Price and Action */}
-                <div className="flex items-center justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
+                <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 sm:flex-row justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
                     <div>
                         <p className="hidden sm:block md:text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
-                        <span className="text-md sm:text-lg font-normal sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                        <div className="flex gap-2 items-center">
+                            <span className="text-lg sm:text-lg font-normal sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                            <span className="text-md text-neutral-400 line-through decoration-2">₹{699}</span>
+                        </div>
                     </div>
-                    <div className="relative h-9 flex items-center">
+                    <div className="relative h-9 flex items-center w-full mx-auto py-1">
                         <Button
                             size="sm"
                             disabled={!product.inStock}
                             className={`${product.inStock
-                                ? `bg-white text-black shadow-md hover:bg-amber-500 hover:scale-107 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? 'bg-emerald-500 text-white hover:bg-emerald-500' : ''}`
+                                ? `bg-gray-900 text-white shadow-md hover:bg-amber-500 hover:scale-107 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? 'bg-emerald-500 text-white hover:bg-emerald-500' : ''}`
                                 : 'bg-neutral-300 cursor-not-allowed text-neutral-500'
-                                } transition-all duration-300 px-3 sm:px-4 h-8 sm:h-9 text-sm rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
+                                } transition-all duration-300 px-4 sm:px-4 h-9 sm:h-9 tracking-tight w-full mx-auto text-md rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
                             onClick={handleAddToCart}
                         >
-                            <span className="relative block overflow-hidden h-5">
+                            <span className="relative block overflow-hidden h-6">
                                 <span
                                     className="flex flex-col transition-transform duration-300 ease-in-out"
                                     style={{ transform: added ? 'translateY(-50%)' : 'translateY(0)' }}
                                 >
-                                    <span className="h-5 flex items-center justify-center whitespace-nowrap">
-                                        {product.inStock ? <><span className="hidden sm:inline">Add to cart</span><span className="sm:hidden">Add</span></> : 'Out of stock'}
+                                    <span className="h-6 flex items-center justify-center whitespace-nowrap">
+                                        {product.inStock ? <><span className="hidden sm:inline">Add to cart</span><span className="sm:hidden">Add to cart</span></> : 'Out of stock'}
                                     </span>
-                                    <span className="h-5 flex items-center justify-center whitespace-nowrap">
+                                    <span className="h-6 flex items-center justify-center whitespace-nowrap">
                                         Added ✓
                                     </span>
                                 </span>
@@ -107,12 +114,12 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         </Button>
 
                         <div
-                            className={`transition-all duration-300 ease-out ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
+                            className={`${compact ? 'w-full' :'w-[70%]'} mx-auto h-full transition-all duration-300 ease-out flex items-center justify-center ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
                         >
-                            <ButtonGroup>
-                                <Button variant="outline" size="sm" onClick={decreaseControl}>−</Button>
-                                <Button variant="outline" size="sm" className="pointer-events-none min-w-[2rem] justify-center">{cartvalue}</Button>
-                                <Button variant="outline" size="sm" onClick={increaseControl}>+</Button>
+                            <ButtonGroup className="w-full h-full">
+                                <Button variant="outline" size="sm" className="flex-1 rounded-l-full" onClick={decreaseControl}>−</Button>
+                                <Button variant="outline" size="sm" className="pointer-events-none flex-1 justify-center font-bold">{cartvalue}</Button>
+                                <Button variant="outline" size="sm" className="flex-1 rounded-r-full" onClick={increaseControl}>+</Button>
                             </ButtonGroup>
                         </div>
                     </div>

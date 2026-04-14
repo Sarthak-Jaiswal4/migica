@@ -14,8 +14,10 @@ import Image from "next/image"
 import { Separator } from "@/components/ui/separator"
 import { SHIPPING_COST } from "@/lib/constants"
 import { useCartStore } from "@/store/store"
+import { useRouter } from "next/navigation"
 
 export function CartSheet() {
+    const router=useRouter()
     const { items, incrementQuantity, decrementQuantity, removeItem, totalPrice } = useCartStore()
 
     const subtotal = totalPrice()
@@ -101,9 +103,9 @@ export function CartSheet() {
                         <div className="p-6 bg-neutral-50 rounded-full mb-4">
                             <ShoppingBag className="h-12 w-12 text-neutral-300" />
                         </div>
-                        <h1 className="text-lg leading-6 tracking-wide font-bold text-neutral-900 mb-2 font-[style]">YOUR CART IS EMPTY</h1>
+                        <h1 className="text-lg leading-6 tracking-wider font-bold text-neutral-900 mb-2 font-[style]">YOUR CART IS EMPTY</h1>
                         <p className="text-sm font-semibold text-neutral-500 mb-8 ">Add some magic to your life with our artisanal scented candles.</p>
-                        <Button className="bg-neutral-900 text-white rounded-xl px-8">Start Shopping</Button>
+                        <Button onClick={()=>router.push('/shop/all')} className="bg-neutral-900 text-white rounded-xl px-8">Start Shopping</Button>
                     </div>
                 )}
             </div>
