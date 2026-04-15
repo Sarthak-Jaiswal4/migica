@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Star, Heart, ShoppingCart, Minus, Plus, Check, Truck, Shield, RotateCcw } from "lucide-react"
+import { useEffect } from "react"
+import { Star, Heart, Check, Truck, Shield, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -18,16 +18,14 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import { FreeMode, Mousewheel, Pagination } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/pagination"
-import { useCartStore, useProductStore } from "@/store/store"
+import { useUserStore, useProductStore } from "@/store/store"
 import type { ProductDetail } from "@/store/store"
+import { AddToCartButton } from "@/components/AddToCartButton"
 
 export default function ProductPage() {
     const params = useParams()
     const router = useRouter()
-    const [isFavorite, setIsFavorite] = useState(false)
-    const [added, setAdded] = useState(false)
-
-    const { addItem, incrementQuantity, decrementQuantity, getItemQuantity } = useCartStore()
+    const { toggleWishlist, isInWishlist, recordVisit } = useUserStore()
     const fetchProductPageData = useProductStore((state) => state.fetchProductPageData)
     const productById = useProductStore((state) => state.productById)
     const relatedByProductId = useProductStore((state) => state.relatedByProductId)
@@ -43,6 +41,15 @@ export default function ProductPage() {
         fetchProductPageData(id)
     }, [id, fetchProductPageData])
 
+    useEffect(() => {
+        if (!product) return
+        recordVisit({
+            id: product.id,
+            name: product.name,
+            image: product.image,
+        })
+    }, [product?.id, product?.name, product?.image, recordVisit])
+
     if (isLoading) {
         return <ProductPageSkeleton />
     }
@@ -56,32 +63,7 @@ export default function ProductPage() {
         )
     }
 
-    const cartvalue = getItemQuantity(product.id)
-    const showControls = cartvalue > 0 && !added
-
-    const handleAddToCart = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        if (added) return
-        setAdded(true)
-        addItem({
-            id: product.id,
-            name: product.name,
-            category: product.category,
-            price: product.price,
-            image: product.image,
-        })
-        setTimeout(() => { setAdded(false) }, 1000)
-    }
-
-    const decreaseControl = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        decrementQuantity(product.id)
-    }
-
-    const increaseControl = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        incrementQuantity(product.id)
-    }
+    const wishlisted = isInWishlist(product.id)
 
     return (
         <div className="min-h-screen bg-[#F6F4F1]">
@@ -143,9 +125,20 @@ export default function ProductPage() {
                                                     variant="outline"
                                                     size="icon"
                                                     className="absolute top-4 right-4 bg-white/90 hover:bg-white"
-                                                    onClick={() => setIsFavorite(!isFavorite)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        toggleWishlist({
+                                                            id: product.id,
+                                                            name: product.name,
+                                                            category: product.category,
+                                                            price: product.price,
+                                                            image: product.image,
+                                                            inStock: product.inStock,
+                                                        })
+                                                    }}
+                                                    aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                                                 >
-                                                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                                                    <Heart className={`w-5 h-5 ${wishlisted ? "fill-rose-600 text-rose-600" : ""}`} />
                                                 </Button>
                                             )}
                                         </div>
@@ -180,9 +173,20 @@ export default function ProductPage() {
                                             variant="outline"
                                             size="icon"
                                             className="absolute top-6 right-6 bg-white/95 hover:bg-white shadow-md border-none rounded-full h-12 w-12"
-                                            onClick={() => setIsFavorite(!isFavorite)}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                toggleWishlist({
+                                                    id: product.id,
+                                                    name: product.name,
+                                                    category: product.category,
+                                                    price: product.price,
+                                                    image: product.image,
+                                                    inStock: product.inStock,
+                                                })
+                                            }}
+                                            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                                         >
-                                            <Heart className={`w-6 h-6 ${isFavorite ? 'fill-red-500 text-red-500 border-none' : ''}`} />
+                                            <Heart className={`w-6 h-6 ${wishlisted ? "fill-rose-600 text-rose-600 border-none" : ""}`} />
                                         </Button>
                                     )}
                                 </div>
@@ -229,48 +233,18 @@ export default function ProductPage() {
 
                             {/* Quantity & Add to Cart */}
                             <div className="space-y-6">
-                                <div className="relative h-14 flex items-center">
-                                    <Button
-                                        size="lg"
-                                        disabled={!product.inStock}
-                                        className={`${product.inStock
-                                            ? `bg-black text-white shadow-xl hover:bg-neutral-800 hover:scale-[1.02] ${added ? 'bg-emerald-600 hover:bg-emerald-600' : ''}`
-                                            : 'bg-neutral-300 cursor-not-allowed text-neutral-500'
-                                            } transition-all duration-300 px-10 h-14 text-lg font-bold rounded-2xl w-full ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
-                                        onClick={handleAddToCart}
-                                    >
-                                        <span className="relative block overflow-hidden h-7">
-                                            <span
-                                                className="flex flex-col transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)"
-                                                style={{ transform: added ? 'translateY(-50%)' : 'translateY(0)' }}
-                                            >
-                                                <span className="h-7 flex items-center justify-center whitespace-nowrap">
-                                                    {product.inStock ? (
-                                                        <span className="flex items-center gap-2">
-                                                            <ShoppingCart size={20} /> Add to Cart
-                                                        </span>
-                                                    ) : 'Out of stock'}
-                                                </span>
-                                                <span className="h-7 flex items-center justify-center whitespace-nowrap">
-                                                    <Check size={20} className="mr-2" /> Added to Collection
-                                                </span>
-                                            </span>
-                                        </span>
-                                    </Button>
-
-                                    <div
-                                        className={`w-full transition-all duration-300 ease-out ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
-                                    >
-                                        <div className="flex items-center justify-between bg-white rounded-2xl border border-neutral-200 p-1 shadow-sm h-14">
-                                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-xl hover:bg-neutral-100" onClick={(e) => decreaseControl(e)}>−</Button>
-                                            <div className="flex flex-col items-center">
-                                                <span className="text-xs font-bold text-neutral-400 uppercase tracking-tighter">Quantity</span>
-                                                <span className="font-bold text-lg leading-tight">{cartvalue}</span>
-                                            </div>
-                                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-xl hover:bg-neutral-100" onClick={increaseControl}>+</Button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <AddToCartButton
+                                    product={{
+                                        id: product.id,
+                                        name: product.name,
+                                        category: product.category,
+                                        price: product.price,
+                                        image: product.image,
+                                        inStock: product.inStock,
+                                    }}
+                                    stopClickPropagation={false}
+                                    className="max-w-md"
+                                />
 
                                 {product.inStock ? (
                                     <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">

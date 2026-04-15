@@ -1,13 +1,14 @@
 "use client"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import gsap from "gsap";
-import { Search, ShoppingCart, User } from "lucide-react";
+import { Heart, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { CartSheet } from "./SideCart";
-import { useCartStore } from "@/store/store";
+import { useUserStore } from "@/store/store";
+import { WishlistSignupNudge } from "@/components/WishlistSignupNudge";
 
 export function Headers() {
     const router = useRouter()
@@ -15,7 +16,8 @@ export function Headers() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuItemsRef = useRef<(HTMLDivElement | null)[]>([]);
-    const cartItemCount = useCartStore((state) => state.totalItems());
+    const cartItemCount = useUserStore((state) => state.totalItems());
+    const wishlistCount = useUserStore((state) => state.wishlistCount());
 
     useEffect(() => {
         const handleScroll = () => {
@@ -51,6 +53,7 @@ export function Headers() {
         : "bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 duration-300 ease-in text-black shadow-lg";
 
     return (
+        <>
         <header className="relative z-50">
             {/* Desktop Header */}
             <div className={`hidden md:flex items-center justify-between w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-8 ${desktopHeaderBg}`}>
@@ -69,8 +72,21 @@ export function Headers() {
                 <div className="text-3xl font-bold absolute tracking-tighter left-1/2 -translate-x-1/2 cursor-pointer" onClick={() => router.push("/")}>
                     <h1>Silver Star</h1>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <Search className="hover:cursor-pointer" strokeWidth={1.75} />
+                    <button
+                        type="button"
+                        onClick={() => router.push("/wishlist")}
+                        className="relative flex h-10 w-10 items-center justify-center rounded-full text-rose-700 shadow-sm transition-all hover:border-rose-300 hover:bg-rose-100 hover:shadow"
+                        aria-label={`Wishlist${wishlistCount > 0 ? `, ${wishlistCount} items` : ""}`}
+                    >
+                        <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "hover:fill-rose-600 hover:text-rose-600" : ""}`} strokeWidth={2} />
+                        {wishlistCount > 0 && (
+                            <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-sm">
+                                {wishlistCount > 99 ? "99+" : wishlistCount}
+                            </span>
+                        )}
+                    </button>
                     <User onClick={() => router.push("/login")} className="hover:cursor-pointer" strokeWidth={1.75} />
                     <Sheet>
                         <SheetTrigger asChild>
@@ -95,7 +111,20 @@ export function Headers() {
                         <h1>magica</h1>
                     </div>
                     
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
+                        <button
+                            type="button"
+                            onClick={() => router.push("/wishlist")}
+                            className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-rose-700 shadow-sm transition-all hover:bg-rose-100 hover:shadow"
+                            aria-label={`Wishlist${wishlistCount > 0 ? `, ${wishlistCount} items` : ""}`}
+                        >
+                            <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "hover:fill-rose-600 hover:text-rose-600" : ""}`} strokeWidth={2} />
+                            {wishlistCount > 0 && (
+                                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white">
+                                    {wishlistCount > 99 ? "99+" : wishlistCount}
+                                </span>
+                            )}
+                        </button>
                         <Sheet>
                             <SheetTrigger asChild>
                                 <div className="relative">
@@ -124,7 +153,7 @@ export function Headers() {
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
                 >
                     <div className="flex flex-col gap-8 px-6 pb-12 pt-6 text-4xl tracking-tight font-semibold">
-                        {["Home", "Shop","Categories", "Collections", "Login"].map((item, i) => (
+                        {["Home", "Shop", "Wishlist", "Categories", "Collections", "Login"].map((item, i) => (
                             <div 
                                 key={item} 
                                 ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
@@ -133,6 +162,7 @@ export function Headers() {
                                     setIsMobileMenuOpen(false);
                                     if (item === "Home") router.push("/");
                                     else if (item === "Shop") router.push("/shop/all");
+                                    else if (item === "Wishlist") router.push("/wishlist");
                                     else if (item === "Login") router.push("/login");
                                 }}
                             >
@@ -143,6 +173,8 @@ export function Headers() {
                 </div>
             </div>
         </header>
+        <WishlistSignupNudge />
+        </>
     )
 }
 

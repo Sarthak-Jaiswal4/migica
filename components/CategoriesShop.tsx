@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { useEffect, useState } from "react";
 import type { Product } from "@/lib/product";
+import { getInlineQuoteForCategory } from "@/lib/categoryInlineQuotes";
 
 export function CategoriesShop() {
   const [allCats, setAllCats] = useState<{ name: string; products: Product[] }[]>([]);
@@ -50,12 +51,12 @@ export function CategoriesShop() {
   }, []);
 
   return (
-    <section className="py-20 bg-[#F6F4F1] overflow-x-hidden">
+    <section id="categories-shop" className="scroll-mt-24 py-20 bg-[#F6F4F1] overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold tracking-tight text-neutral-900 mb-4">Shop by Category</h2>
-          <p className="text-neutral-500 max-w-2xl mx-auto font-light tracking-wide">
-            Explore our curated collections — every image is served from our static gallery while product facts live in the database.
+          <p className="text-neutral-600 max-w-2xl mx-auto font-normal tracking-wide text-[15px] leading-relaxed sm:text-base">
+            Candles, scarves, jewellery, gifts — browse by mood. When something speaks to you, the details are a click away.
           </p>
         </div>
       </div>
@@ -77,13 +78,14 @@ export function CategoriesShop() {
 
 function CategoryRow({ name, products }: { name: string; products: Product[] }) {
   const router = useRouter();
+  const inlineQuote = getInlineQuoteForCategory(name);
 
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-gray-200 rounded-lg pt-8 pb-4">
       <div className="mb-8 flex flex-row md:items-end justify-between gap-4">
         <div>
-          <h3 className="text-3xl md:text-4xl tracking-tight font-light text-neutral-900 font-[style]">{name}</h3>
-          <p className="text-sm text-neutral-400 mt-1">{products.length} items</p>
+          <h3 className="text-3xl md:text-4xl tracking-normal font-light text-neutral-900 font-[style]">{name}</h3>
+          <p className="text-sm font-medium text-neutral-500 mt-1">{products.length} items</p>
         </div>
         <Button
           variant="outline"
@@ -99,6 +101,22 @@ function CategoryRow({ name, products }: { name: string; products: Product[] }) 
           </span>
         </Button>
       </div>
+
+      {inlineQuote ? (
+        <aside className="mb-8 max-w-3xl" aria-label="Customer quote">
+          <div className="border-l border-neutral-900/20 pl-5 sm:pl-6">
+            <blockquote className="font-[style] text-[18px] font-normal italic leading-[1.65] text-neutral tracking-wide text-neutral-700">
+              {inlineQuote.quote}
+            </blockquote>
+            <footer className="mt-3 text-[14px] font-medium tracking-tight text-neutral tracking-wide text-neutral-500">
+              <span className="text-neutral-400" aria-hidden>
+                —{" "}
+              </span>
+              {inlineQuote.attribution}
+            </footer>
+          </div>
+        </aside>
+      ) : null}
 
       <div className="mb-6">
         <Swiper

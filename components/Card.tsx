@@ -4,42 +4,15 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "./ui/card"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Button } from "./ui/button"
-import { useState } from "react"
-import { ButtonGroup } from './ui/button-group'
-import { useCartStore } from "@/store/store"
+import { Heart } from "lucide-react"
+import { useUserStore } from "@/store/store"
+import { AddToCartButton } from "@/components/AddToCartButton"
 
 export const CardComponent = ({ product, compact = false }: { product: any; compact?: boolean }) => {
     const router = useRouter()
-    const [added, setAdded] = useState(false)
 
-    const { addItem, incrementQuantity, decrementQuantity, getItemQuantity, removeItem } = useCartStore()
-    const cartvalue = getItemQuantity(product.id)
-    const showControls = cartvalue > 0 && !added
-
-    const handleAddToCart = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        if (added) return
-        setAdded(true)
-        addItem({
-            id: product.id,
-            name: product.name,
-            category: product.category,
-            price: product.price,
-            image: product.image,
-        })
-        setTimeout(() => { setAdded(false) }, 1000)
-    }
-
-    const decreaseControl = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        decrementQuantity(product.id)
-    }
-
-    const increaseControl = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        incrementQuantity(product.id)
-    }
+    const { toggleWishlist, isInWishlist } = useUserStore()
+    const wishlisted = isInWishlist(product.id)
 
     return <>
         <Card
@@ -58,7 +31,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                     </div>
                 </div>
                 {!product.inStock && (
-                    <Badge className="absolute top-2 right-2 bg-red-500 z-10" variant="destructive">
+                    <Badge className="absolute bottom-2 left-2 z-10 bg-red-500" variant="destructive">
                         Out of Stock
                     </Badge>
                 )}
@@ -67,6 +40,27 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         Bestseller
                     </Badge>
                 )}
+                <button
+                    type="button"
+                    className="absolute top-2 right-2 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/80 bg-white/95 shadow-md transition hover:scale-105 hover:bg-white"
+                    aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        toggleWishlist({
+                            id: product.id,
+                            name: product.name,
+                            category: product.category,
+                            price: product.price,
+                            image: product.image,
+                            inStock: product.inStock,
+                        })
+                    }}
+                >
+                    <Heart
+                        className={`h-4 w-4 ${wishlisted ? "fill-rose-600 text-rose-600" : "text-neutral-700"}`}
+                        strokeWidth={2}
+                    />
+                </button>
             </div>
 
             <CardContent className="px-2 sm:px-4 pb-4 sm:pb-6 pt-1">
@@ -88,41 +82,17 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                             <span className="text-md text-neutral-400 line-through decoration-2">₹{699}</span>
                         </div>
                     </div>
-                    <div className="relative h-9 flex items-center w-full mx-auto py-1 md:mt-2">
-                        <Button
-                            size="sm"
-                            disabled={!product.inStock}
-                            className={`${product.inStock
-                                ? `bg-gray-900 text-white shadow-md hover:bg-amber-500 hover:scale-107 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? 'bg-emerald-500 text-white hover:bg-emerald-500' : ''}`
-                                : 'bg-neutral-300 cursor-not-allowed text-neutral-500'
-                                } transition-all duration-300 px-4 sm:px-4 h-9 sm:h-9 tracking-tight w-full mx-auto text-md rounded-full overflow-hidden ${showControls ? 'opacity-0 scale-90 pointer-events-none absolute' : 'opacity-100 scale-100'}`}
-                            onClick={handleAddToCart}
-                        >
-                            <span className="relative block overflow-hidden h-6">
-                                <span
-                                    className="flex flex-col transition-transform duration-300 ease-in-out"
-                                    style={{ transform: added ? 'translateY(-50%)' : 'translateY(0)' }}
-                                >
-                                    <span className="h-6 flex items-center justify-center whitespace-nowrap">
-                                        {product.inStock ? <><span className="hidden sm:inline">Add to cart</span><span className="sm:hidden">Add to cart</span></> : 'Out of stock'}
-                                    </span>
-                                    <span className="h-6 flex items-center justify-center whitespace-nowrap">
-                                        Added ✓
-                                    </span>
-                                </span>
-                            </span>
-                        </Button>
-
-                        <div
-                            className={`${compact ? 'w-full sm:w-auto' :'w-[70%]'} mx-auto h-full transition-all duration-300 ease-out flex items-center justify-center ${showControls ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}`}
-                        >
-                            <ButtonGroup className="w-full h-full">
-                                <Button variant="outline" size="sm" className="flex-1 rounded-l-full" onClick={decreaseControl}>−</Button>
-                                <Button variant="outline" size="sm" className="pointer-events-none flex-1 justify-center font-bold">{cartvalue}</Button>
-                                <Button variant="outline" size="sm" className="flex-1 rounded-r-full" onClick={increaseControl}>+</Button>
-                            </ButtonGroup>
-                        </div>
-                    </div>
+                    <AddToCartButton
+                        product={{
+                            id: product.id,
+                            name: product.name,
+                            category: product.category,
+                            price: product.price,
+                            image: product.image,
+                            inStock: product.inStock,
+                        }}
+                        compact={compact}
+                    />
                 </div>
             </CardContent>
         </Card>

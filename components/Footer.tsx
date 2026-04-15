@@ -19,7 +19,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
                     {/* Brand Section */}
                     <div className="space-y-6">
-                        <h2 className="text-3xl font-black tracking-tighter">magica</h2>
+                        <h2 className="text-3xl font-black tracking-tighter">Silver Star</h2>
                         <p className="text-neutral-400 text-sm leading-relaxed max-w-xs">
                             Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.
                         </p>

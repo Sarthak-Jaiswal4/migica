@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppInitializer } from "@/components/AppInitializer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,6 +19,7 @@ export default function RootLayout({
         style={{ fontFamily: "'Switzer', sans-serif, 'style" }}
       >
         {children}
+        <AppInitializer />
       </body>
     </html>
   );

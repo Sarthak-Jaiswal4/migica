@@ -13,12 +13,12 @@ import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react"
 import Image from "next/image"
 import { Separator } from "@/components/ui/separator"
 import { SHIPPING_COST } from "@/lib/constants"
-import { useCartStore } from "@/store/store"
+import { useUserStore } from "@/store/store"
 import { useRouter } from "next/navigation"
 
 export function CartSheet() {
     const router=useRouter()
-    const { items, incrementQuantity, decrementQuantity, removeItem, totalPrice } = useCartStore()
+    const { items, incrementQuantity, decrementQuantity, removeItem, totalPrice } = useUserStore()
 
     const subtotal = totalPrice()
     const shipping = items.length > 0 ? SHIPPING_COST : 0

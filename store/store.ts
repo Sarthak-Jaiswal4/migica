@@ -2,26 +2,8 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { Product } from "@/lib/product";
 
-export interface CartProduct {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
-interface CartStore {
-  items: CartProduct[];
-  addItem: (product: Omit<CartProduct, "quantity">) => void;
-  removeItem: (id: string) => void;
-  incrementQuantity: (id: string) => void;
-  decrementQuantity: (id: string) => void;
-  getItemQuantity: (id: string) => number;
-  clearCart: () => void;
-  totalItems: () => number;
-  totalPrice: () => number;
-}
+export type { CartProduct, WishlistEntry, RecentlyVisitedEntry, UserInfo } from "./userStore";
+export { useUserStore, useCartStore } from "./userStore";
 
 export type ProductDetail = Omit<Product, "images" | "features" | "scent" | "quantity"> & {
   images: { id: string; url: string; alt: string }[];
@@ -32,11 +14,20 @@ export type ProductDetail = Omit<Product, "images" | "features" | "scent" | "qua
 interface ProductStore {
   productById: Record<string, ProductDetail>;
   productsPoolById: Record<string, Product>;
+  productFetchedAtById: Record<string, number>;
+  relatedFetchedAtById: Record<string, number>;
   relatedByProductId: Record<string, Product[]>;
   loadingById: Record<string, boolean>;
   errorById: Record<string, string | null>;
   fetchProductPageData: (id: string) => Promise<void>;
 }
+
+const PRODUCT_CACHE_TTL_MS = 1000 * 60 * 15;
+
+const isFresh = (fetchedAt?: number): boolean => {
+  if (!fetchedAt) return false;
+  return Date.now() - fetchedAt < PRODUCT_CACHE_TTL_MS;
+};
 
 const toProductDetail = (p: Product & { _id?: string }): ProductDetail => {
   const rawUrls = (Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image]).filter(Boolean);
@@ -64,64 +55,13 @@ const toProductDetail = (p: Product & { _id?: string }): ProductDetail => {
   };
 };
 
-export const useCartStore = create<CartStore>((set, get) => ({
-  items: [],
-
-  addItem: (product) => {
-    set((state) => {
-      const existing = state.items.find((item) => item.id === product.id);
-      if (existing) {
-        return {
-          items: state.items.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-          ),
-        };
-      }
-      return { items: [...state.items, { ...product, quantity: 1 }] };
-    });
-  },
-
-  removeItem: (id) => {
-    set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
-    }));
-  },
-
-  incrementQuantity: (id) => {
-    set((state) => ({
-      items: state.items.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item)),
-    }));
-  },
-
-  decrementQuantity: (id) => {
-    set((state) => {
-      const item = state.items.find((i) => i.id === id);
-      if (item && item.quantity <= 1) {
-        return { items: state.items.filter((i) => i.id !== id) };
-      }
-      return {
-        items: state.items.map((i) => (i.id === id ? { ...i, quantity: i.quantity - 1 } : i)),
-      };
-    });
-  },
-
-  getItemQuantity: (id) => {
-    const item = get().items.find((i) => i.id === id);
-    return item?.quantity ?? 0;
-  },
-
-  clearCart: () => set({ items: [] }),
-
-  totalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-
-  totalPrice: () => get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-}));
-
 export const useProductStore = create<ProductStore>()(
   persist(
     (set, get) => ({
       productById: {},
       productsPoolById: {},
+      productFetchedAtById: {},
+      relatedFetchedAtById: {},
       relatedByProductId: {},
       loadingById: {},
       errorById: {},
@@ -132,27 +72,31 @@ export const useProductStore = create<ProductStore>()(
         const state = get();
         const hasProduct = Boolean(state.productById[id]);
         const hasRelated = id in state.relatedByProductId;
+        const hasFreshProduct = hasProduct && isFresh(state.productFetchedAtById[id]);
+        const hasFreshRelated = hasRelated && isFresh(state.relatedFetchedAtById[id]);
         const isLoading = Boolean(state.loadingById[id]);
 
-        if ((hasProduct && hasRelated) || isLoading) {
+        if ((hasFreshProduct && hasFreshRelated) || isLoading) {
           return;
         }
         // Build related from already cached catalog items before hitting API again.
-        if (!hasRelated) {
+        if (!hasFreshRelated) {
           const pooledRelated = Object.values(state.productsPoolById).filter((p) => p.id !== id);
           if (pooledRelated.length > 0) {
             set((current) => ({
               relatedByProductId: { ...current.relatedByProductId, [id]: pooledRelated },
+              relatedFetchedAtById: { ...current.relatedFetchedAtById, [id]: Date.now() },
             }));
           }
         }
 
         // If product already exists in pool, promote it to detail without API.
-        if (!hasProduct && state.productsPoolById[id]) {
+        if (!hasFreshProduct && state.productsPoolById[id]) {
           set((current) => ({
             productById: { ...current.productById, [id]: toProductDetail(state.productsPoolById[id]) },
+            productFetchedAtById: { ...current.productFetchedAtById, [id]: Date.now() },
           }));
-          if (id in get().relatedByProductId) return;
+          if (isFresh(get().relatedFetchedAtById[id])) return;
         }
 
         set((current) => ({
@@ -162,8 +106,8 @@ export const useProductStore = create<ProductStore>()(
 
         try {
           const nextState = get();
-          const needDetail = !nextState.productById[id];
-          const needRelated = !(id in nextState.relatedByProductId);
+          const needDetail = !isFresh(nextState.productFetchedAtById[id]);
+          const needRelated = !isFresh(nextState.relatedFetchedAtById[id]);
 
           const detailPromise = needDetail ? fetch(`/api/products/${id}`) : Promise.resolve(null);
           const relatedPromise = needRelated ? fetch(`/api/products?relatedTo=${encodeURIComponent(id)}`) : Promise.resolve(null);
@@ -198,6 +142,14 @@ export const useProductStore = create<ProductStore>()(
             return {
               productById: nextProductById,
               productsPoolById: nextProductsPoolById,
+              productFetchedAtById: {
+                ...current.productFetchedAtById,
+                ...(detailJson?.product ? { [id]: Date.now() } : {}),
+              },
+              relatedFetchedAtById: {
+                ...current.relatedFetchedAtById,
+                ...(relatedJson?.products ? { [id]: Date.now() } : {}),
+              },
               relatedByProductId: nextRelatedByProductId,
             };
           });
@@ -219,6 +171,8 @@ export const useProductStore = create<ProductStore>()(
       partialize: (state) => ({
         productById: state.productById,
         productsPoolById: state.productsPoolById,
+        productFetchedAtById: state.productFetchedAtById,
+        relatedFetchedAtById: state.relatedFetchedAtById,
         relatedByProductId: state.relatedByProductId,
       }),
     }
