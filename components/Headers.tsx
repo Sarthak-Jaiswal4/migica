@@ -73,7 +73,6 @@ export function Headers() {
                     <h1>Silver Star</h1>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Search className="hover:cursor-pointer" strokeWidth={1.75} />
                     <button
                         type="button"
                         onClick={() => router.push("/wishlist")}
