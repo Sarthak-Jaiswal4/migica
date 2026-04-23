@@ -9,7 +9,7 @@ const CRAFT_IMAGE = "/10.jpeg";
 export function CraftStorySection() {
   return (
     <section
-      className="w-full border-y border-neutral-200/60 bg-[#F4EFE8]"
+      className="w-full border-y border-neutral-200/60 bg-[#F4EFE8] py-20"
       aria-labelledby="craft-story-heading"
     >
       <div className="mx-auto grid max-w-[1600px] md:grid-cols-2 md:items-stretch">

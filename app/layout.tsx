@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppInitializer } from "@/components/AppInitializer";
+import { SmoothScrolling } from "@/components/SmoothScrolling";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,8 +19,10 @@ export default function RootLayout({
         className="antialiased"
         style={{ fontFamily: "'Switzer', sans-serif, 'style" }}
       >
-        {children}
-        <AppInitializer />
+        <SmoothScrolling>
+          {children}
+          <AppInitializer />
+        </SmoothScrolling>
       </body>
     </html>
   );
