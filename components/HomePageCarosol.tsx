@@ -5,10 +5,18 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectFade, Pagination } from "swiper/modules";
 import { ChevronDown } from "lucide-react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 type HeroSlide = {
   imageSrc: string;
@@ -23,7 +31,7 @@ type HeroSlide = {
 
 const slides: HeroSlide[] = [
   {
-    imageSrc: "/10.jpeg",
+    imageSrc: "/9.1.png",
     imageAlt: "Soft candlelight and shadows in a quiet room",
     eyebrow: "Magica",
     headline: "For the evenings you don't want to end.",
@@ -47,8 +55,26 @@ function scrollToCategories() {
 }
 
 export function HomePageCarosol() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.to(".parallax-bg", {
+        yPercent: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div className="relative h-full min-h-0 w-full">
+    <div ref={containerRef} className="relative h-full min-h-0 w-full bg-black">
       <Swiper
         className="h-full w-full pb-14 [&_.swiper-pagination]:bottom-8 [&_.swiper-pagination-bullet]:h-2 [&_.swiper-pagination-bullet]:w-2 [&_.swiper-pagination-bullet]:bg-white/40 [&_.swiper-pagination-bullet-active]:w-6 [&_.swiper-pagination-bullet-active]:rounded-full [&_.swiper-pagination-bullet-active]:bg-white"
         modules={[EffectFade, Pagination]}
@@ -60,16 +86,18 @@ export function HomePageCarosol() {
         slidesPerView={1}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={slide.headline} className="relative h-full w-full">
+          <SwiperSlide key={slide.headline} className="relative h-full w-full overflow-hidden">
             <div className="relative h-full w-full">
-              <Image
-                src={slide.imageSrc}
-                alt={slide.imageAlt}
-                fill
-                className="object-cover object-center"
-                sizes="100vw"
-                priority={index === 0}
-              />
+              <div className="absolute inset-0 parallax-bg">
+                <Image
+                  src={slide.imageSrc}
+                  alt={slide.imageAlt}
+                  fill
+                  className="object-cover object-center"
+                  sizes="100vw"
+                  priority={index === 0}
+                />
+              </div>
               <div
                 className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/25 md:bg-gradient-to-r md:from-black/70 md:via-black/35 md:to-black/10"
                 aria-hidden

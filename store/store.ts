@@ -16,7 +16,7 @@ interface ProductStore {
   productsPoolById: Record<string, Product>;
   productFetchedAtById: Record<string, number>;
   relatedFetchedAtById: Record<string, number>;
-  relatedByProductId: Record<string, Product[]>;
+  relatedByProductId: Record<string, string[]>;
   loadingById: Record<string, boolean>;
   errorById: Record<string, string | null>;
   fetchProductPageData: (id: string) => Promise<void>;
@@ -84,7 +84,7 @@ export const useProductStore = create<ProductStore>()(
           const pooledRelated = Object.values(state.productsPoolById).filter((p) => p.id !== id);
           if (pooledRelated.length > 0) {
             set((current) => ({
-              relatedByProductId: { ...current.relatedByProductId, [id]: pooledRelated },
+              relatedByProductId: { ...current.relatedByProductId, [id]: pooledRelated.map((p) => p.id) },
               relatedFetchedAtById: { ...current.relatedFetchedAtById, [id]: Date.now() },
             }));
           }
@@ -133,7 +133,7 @@ export const useProductStore = create<ProductStore>()(
                 ...rp,
                 id: String(rp._id),
               })) as Product[];
-              nextRelatedByProductId[id] = related;
+              nextRelatedByProductId[id] = related.map((p) => p.id);
               for (const product of related) {
                 nextProductsPoolById[product.id] = product;
               }

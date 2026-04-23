@@ -39,6 +39,7 @@ export function AddToCartButton({
   const showControls = cartvalue > 0 && !added;
 
   const wrapClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (stopClickPropagation) e.stopPropagation();
   };
 
@@ -101,7 +102,7 @@ export function AddToCartButton({
       </Button>
 
       <div
-        className={`${compact ? "w-full sm:w-full" : "w-[70%]"} mx-auto flex h-full items-center justify-center transition-all duration-300 ease-out${
+        className={`${compact ? "w-full sm:w-full" : "w-[70%]"} mx-auto flex h-full items-center justify-center transition-all duration-300 ease-out ${
           showControls ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none absolute scale-75 opacity-0"
         }`}
       >

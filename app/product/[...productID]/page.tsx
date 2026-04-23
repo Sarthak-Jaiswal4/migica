@@ -29,11 +29,12 @@ export default function ProductPage() {
     const fetchProductPageData = useProductStore((state) => state.fetchProductPageData)
     const productById = useProductStore((state) => state.productById)
     const relatedByProductId = useProductStore((state) => state.relatedByProductId)
+    const productsPoolById = useProductStore((state) => state.productsPoolById)
     const loadingById = useProductStore((state) => state.loadingById)
 
     const id = Array.isArray(params.productID) ? params.productID[0] : params.productID;
     const product: ProductDetail | null = id ? productById[id] : null;
-    const relatedProducts = id ? relatedByProductId[id] ?? [] : [];
+    const relatedProducts = id ? (relatedByProductId[id] ?? []).map(rId => productsPoolById[rId]).filter(Boolean) : [];
     const isLoading = id ? loadingById[id] ?? !product : false;
 
     useEffect(() => {
