@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "./ui/card"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
+import { AppImage as Image } from "@/components/AppImage"
 import { Heart } from "lucide-react"
 import { useUserStore } from "@/store/store"
 import { AddToCartButton } from "@/components/AddToCartButton"
@@ -27,7 +27,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
                     </div>
                     <div className="w-1/2 h-full relative flex-shrink-0">
-                        <Image src={product?.hoverImage || "/jar candle-2.png"} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
+                        <Image src={product?.hoverImage || ""} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
                     </div>
                 </div>
                 {!product.inStock && (

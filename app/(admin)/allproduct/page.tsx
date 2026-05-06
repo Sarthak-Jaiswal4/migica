@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import { AppImage as Image } from '@/components/AppImage'
 import { Pencil, Plus, Trash2, Loader2 } from 'lucide-react'
 import type { Product } from '@/lib/product'
 
@@ -98,7 +98,7 @@ export default function AllProductsPage() {
                                                     <div className='flex items-center gap-4'>
                                                         <div className='h-12 w-12 rounded-lg bg-neutral-100 overflow-hidden relative border border-neutral-200'>
                                                             <Image
-                                                                src={product.image || "/jar candle.png"}
+                                                                src={product.image || ""}
                                                                 alt={product.name}
                                                                 fill
                                                                 sizes="48px"

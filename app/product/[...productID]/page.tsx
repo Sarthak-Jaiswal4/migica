@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Headers } from "@/components/Headers"
 import { useRouter, useParams } from "next/navigation"
-import Image from "next/image"
+import { AppImage as Image } from "@/components/AppImage"
 import { CardComponent } from "@/components/Card"
 import { Footer } from "@/components/Footer"
 import { ProductPageSkeleton } from "./ProductPageSkeleton"
@@ -83,7 +83,7 @@ export default function ProductPage() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/shop/all">{product.category}</BreadcrumbLink>
+                            <BreadcrumbLink href={`/shop/${product.category}`}>{product.category}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>

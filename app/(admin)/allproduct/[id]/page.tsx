@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Headers } from '@/components/Headers'
 import { Footer } from '@/components/Footer'
@@ -12,8 +12,17 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, Save, Trash2, Upload, X, AlertCircle, Plus } from 'lucide-react'
-import Image from 'next/image'
+import { ChevronLeft, Save, Trash2, Upload, X, AlertCircle, Plus, Loader2 } from 'lucide-react'
+import { AppImage as Image } from '@/components/AppImage'
+
+async function uploadToCloudinary(file: File): Promise<string> {
+    const formData = new FormData()
+    formData.append("file", file)
+    const res = await fetch("/api/upload", { method: "POST", body: formData })
+    if (!res.ok) throw new Error("Upload failed")
+    const data = await res.json()
+    return data.url
+}
 
 export default function EditProductPage() {
     const params = useParams()
@@ -22,6 +31,11 @@ export default function EditProductPage() {
     const [product, setProduct] = useState<(Product & { _id?: string }) | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
+
+    const mainImageInputRef = useRef<HTMLInputElement>(null)
+    const galleryImageInputRef = useRef<HTMLInputElement>(null)
+
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -86,6 +100,42 @@ export default function EditProductPage() {
         }
     }
 
+    async function handleMainImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
+        setIsUploading(true)
+        try {
+            const url = await uploadToCloudinary(file)
+            setProduct(prev => prev ? { ...prev, image: url } : null)
+        } catch (error) {
+            console.error("Upload error:", error)
+            alert("Failed to upload image. Make sure Cloudinary is configured.")
+        } finally {
+            setIsUploading(false)
+            if (mainImageInputRef.current) mainImageInputRef.current.value = ""
+        }
+    }
+
+    async function handleGalleryImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
+        setIsUploading(true)
+        try {
+            const url = await uploadToCloudinary(file)
+            setProduct(prev => {
+                if (!prev) return null
+                const newImages = [...(prev.images || []), url]
+                return { ...prev, images: newImages }
+            })
+        } catch (error) {
+            console.error("Upload error:", error)
+            alert("Failed to upload image. Make sure Cloudinary is configured.")
+        } finally {
+            setIsUploading(false)
+            if (galleryImageInputRef.current) galleryImageInputRef.current.value = ""
+        }
+    }
+
     const removeImage = (index: number) => {
         setProduct(prev => {
             if (!prev) return null
@@ -114,18 +164,46 @@ export default function EditProductPage() {
                         <Card className='border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden'>
                             <CardHeader>
                                 <CardTitle className='text-xl'>Product Images</CardTitle>
-                                <CardDescription>Manage how your product looks</CardDescription>
+                                <CardDescription>Upload and manage product images via Cloudinary</CardDescription>
                             </CardHeader>
                             <CardContent className='space-y-4'>
-                                <div className='aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-neutral-200 group'>
-                                    <Image src={product.image} alt={product.name} fill className='object-cover' />
-                                    <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
-                                        <Button size='sm' className='bg-white text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg'>
-                                            Change Main Image
-                                        </Button>
-                                    </div>
+                                {/* Main Image */}
+                                <div
+                                    className='aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-neutral-200 group cursor-pointer'
+                                    onClick={() => mainImageInputRef.current?.click()}
+                                >
+                                    {product.image ? (
+                                        <>
+                                            <Image src={product.image} alt={product.name} fill className='object-cover' />
+                                            <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
+                                                <Button size='sm' className='bg-white text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg'>
+                                                    {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                                                    Change Main Image
+                                                </Button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-neutral-400">
+                                            {isUploading ? (
+                                                <Loader2 className="h-8 w-8 animate-spin" />
+                                            ) : (
+                                                <>
+                                                    <Upload className="h-10 w-10" />
+                                                    <span className="text-sm font-semibold">Upload main image</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                    <input
+                                        ref={mainImageInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleMainImageUpload}
+                                    />
                                 </div>
 
+                                {/* Gallery */}
                                 <div className='grid grid-cols-3 gap-3'>
                                     {(product.images || []).map((img, idx) => (
                                         <div key={idx} className='aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-neutral-200 group'>
@@ -138,10 +216,27 @@ export default function EditProductPage() {
                                             </button>
                                         </div>
                                     ))}
-                                    <button className='aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-neutral-400 hover:border-amber-500 hover:text-amber-500 transition-all'>
-                                        <Plus size={20} />
-                                        <span className='text-[10px] uppercase font-black'>Add</span>
+                                    <button
+                                        className='aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-neutral-400 hover:border-amber-500 hover:text-amber-500 transition-all'
+                                        onClick={() => galleryImageInputRef.current?.click()}
+                                        disabled={isUploading}
+                                    >
+                                        {isUploading ? (
+                                            <Loader2 size={20} className="animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Plus size={20} />
+                                                <span className='text-[10px] uppercase font-black'>Add</span>
+                                            </>
+                                        )}
                                     </button>
+                                    <input
+                                        ref={galleryImageInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleGalleryImageUpload}
+                                    />
                                 </div>
                             </CardContent>
                         </Card>

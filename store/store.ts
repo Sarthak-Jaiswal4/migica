@@ -167,6 +167,7 @@ export const useProductStore = create<ProductStore>()(
     }),
     {
       name: "magica-product-store",
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         productById: state.productById,

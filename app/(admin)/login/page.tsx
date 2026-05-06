@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
@@ -73,9 +74,9 @@ export default function LoginPage() {
                         <div className='space-y-2'>
                             <div className='flex items-center justify-between'>
                                 <Label htmlFor='password' className='text-sm font-medium ml-1'>Password</Label>
-                                <a href='#' className='text-xs text-amber-600 hover:text-amber-700 transition-colors'>
+                                <Link href='/login/forgot-password' className='text-xs text-amber-600 hover:text-amber-700 transition-colors'>
                                     Forgot password?
-                                </a>
+                                </Link>
                             </div>
                             <div className='relative'>
                                 <Input

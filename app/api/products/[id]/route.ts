@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { jwtVerify } from "jose";
-import { attachPublicImages } from "@/lib/publicProductImages";
 
 async function checkAdmin(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
@@ -18,7 +17,7 @@ async function checkAdmin(req: NextRequest) {
 }
 
 function stripPresentationFields(body: object) {
-  const { _id, __v, id, image, images, hoverImage, ...rest } = body as Record<string, unknown>;
+  const { _id, __v, id, hoverImage, ...rest } = body as Record<string, unknown>;
   return rest;
 }
 
@@ -43,7 +42,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     return NextResponse.json(
-      { product: attachPublicImages(updatedProduct), message: "Product updated successfully" },
+      { product: updatedProduct, message: "Product updated successfully" },
       { status: 200 }
     );
   } catch (error: unknown) {
@@ -91,7 +90,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ product: attachPublicImages(product) }, { status: 200 });
+    return NextResponse.json({ product }, { status: 200 });
   } catch (error: unknown) {
     console.error("Fetch product error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

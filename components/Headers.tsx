@@ -1,4 +1,5 @@
 "use client"
+import { AppImage as Image } from "@/components/AppImage";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import gsap from "gsap";
 import { Heart, Search, ShoppingCart, User } from "lucide-react";
@@ -213,7 +214,7 @@ function CategoriesDropDown() {
         <div className="flex flex-wrap w-[560px] mx-auto gap-2 bg-white rounded-lg p-2 hover:cursor-pointer" ref={container}>
             {Categories.map((category, index) => (
                 <div key={index} className="flex flex-col px-2" onClick={() => router.push(`/shop/${category.name}`)}>
-                    <img src={category.img} alt="" className="w-40 h-36 rounded-lg bg-orange-500" />
+                    <Image src={category.img} alt={category.name} width={160} height={144} className="w-40 h-36 rounded-lg bg-orange-500 object-cover" />
                     <h1 className="text-lg font-medium pt-2 w-[60px]">{category.name}</h1>
                     <h4 className="text-sm text-gray-500 w-[120px]">{category.description}</h4>
                 </div>

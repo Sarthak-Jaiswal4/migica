@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Instagram, Twitter, Facebook, Mail, MapPin, Phone } from "lucide-react"
+import Link from "next/link"
 
 export function Footer() {
     return (
@@ -40,10 +41,10 @@ export function Footer() {
                     <div>
                         <h3 className="text-lg font-bold mb-6">Shop</h3>
                         <ul className="space-y-4 text-sm text-neutral-400">
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Candles</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Scarves</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Jewelry</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Collections</a></li>
+                            <li><Link href="/shop/Candles" className="hover:text-amber-500 transition-colors">Candles</Link></li>
+                            <li><Link href="/shop/Scarves" className="hover:text-amber-500 transition-colors">Scarves</Link></li>
+                            <li><Link href="/shop/Jewelry" className="hover:text-amber-500 transition-colors">Jewelry</Link></li>
+                            <li><Link href="/shop/all" className="hover:text-amber-500 transition-colors">Collections</Link></li>
                         </ul>
                     </div>
 
@@ -51,10 +52,10 @@ export function Footer() {
                     <div>
                         <h3 className="text-lg font-bold mb-6">Support</h3>
                         <ul className="space-y-4 text-sm text-neutral-400">
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Shipping Policy</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Refund Policy</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">Contact Us</a></li>
-                            <li><a href="#" className="hover:text-amber-500 transition-colors">FAQs</a></li>
+                            <li><Link href="/shipping-policy" className="hover:text-amber-500 transition-colors">Shipping Policy</Link></li>
+                            <li><Link href="/refund-policy" className="hover:text-amber-500 transition-colors">Refund Policy</Link></li>
+                            <li><Link href="/contact" className="hover:text-amber-500 transition-colors">Contact Us</Link></li>
+                            <li><Link href="/faqs" className="hover:text-amber-500 transition-colors">FAQs</Link></li>
                         </ul>
                     </div>
 
@@ -78,9 +79,9 @@ export function Footer() {
                 <div className="mt-16 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 text-xs text-neutral-500">
                     <p>© 2026 magica Inc. All rights reserved.</p>
                     <div className="flex gap-8">
-                        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-white transition-colors">Cookies Settings</a>
+                        <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <Link href="/cookies-settings" className="hover:text-white transition-colors">Cookies Settings</Link>
                     </div>
                 </div>
             </div>

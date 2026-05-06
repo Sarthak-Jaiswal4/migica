@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { AppImage as Image } from "@/components/AppImage";
 import Link from "next/link";
 import { Play, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { jwtVerify } from "jose";
-import { attachPublicImages } from "@/lib/publicProductImages";
 
 async function checkAdmin(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
@@ -18,7 +17,7 @@ async function checkAdmin(req: NextRequest) {
 }
 
 function stripPresentationFields(body: object) {
-  const { _id, __v, id, image, images, hoverImage, ...rest } = body as Record<string, unknown>;
+  const { _id, __v, id, hoverImage, ...rest } = body as Record<string, unknown>;
   return rest;
 }
 
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const plain = product.toObject();
     return NextResponse.json(
-      { product: attachPublicImages(plain), message: "Product created successfully" },
+      { product: plain, message: "Product created successfully" },
       { status: 201 }
     );
   } catch (error: unknown) {
@@ -64,13 +63,11 @@ export async function GET(req: NextRequest) {
         .sort({ rating: -1, reviews: -1 })
         .limit(12)
         .lean();
-      const enriched = others.map((p) => attachPublicImages(p));
-      return NextResponse.json({ products: enriched }, { status: 200 });
+      return NextResponse.json({ products: others }, { status: 200 });
     }
 
     const products = await Product.find({}).sort({ createdAt: -1 }).lean();
-    const enriched = products.map((p) => attachPublicImages(p));
-    return NextResponse.json({ products: enriched }, { status: 200 });
+    return NextResponse.json({ products }, { status: 200 });
   } catch (error: unknown) {
     console.error("Fetch products error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -1,4 +1,6 @@
-import Image from "next/image";
+"use client";
+
+import { AppImage as Image } from "@/components/AppImage";
 
 const CRAFT_IMAGE = "/10.jpeg";
 

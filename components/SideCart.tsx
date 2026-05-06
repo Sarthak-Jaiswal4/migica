@@ -10,7 +10,7 @@ import {
     SheetClose,
 } from "@/components/ui/sheet"
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react"
-import Image from "next/image"
+import { AppImage as Image } from "@/components/AppImage"
 import { Separator } from "@/components/ui/separator"
 import { SHIPPING_COST } from "@/lib/constants"
 import { useUserStore } from "@/store/store"

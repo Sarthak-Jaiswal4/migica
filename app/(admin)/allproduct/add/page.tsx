@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Headers } from "@/components/Headers";
 import { Footer } from "@/components/Footer";
@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, Save } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, Save, Upload, X, Loader2, Plus } from "lucide-react";
+import { AppImage as Image } from "@/components/AppImage";
 
 type NewProductPayload = {
   name: string;
@@ -24,11 +24,24 @@ type NewProductPayload = {
   quantity: number;
 };
 
-const STOREFRONT_PREVIEW = "/jar candle.png";
+async function uploadToCloudinary(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch("/api/upload", { method: "POST", body: formData });
+  if (!res.ok) throw new Error("Upload failed");
+  const data = await res.json();
+  return data.url;
+}
 
 export default function AddProductPage() {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [mainImage, setMainImage] = useState("");
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const mainImageInputRef = useRef<HTMLInputElement>(null);
+  const galleryImageInputRef = useRef<HTMLInputElement>(null);
 
   const [product, setProduct] = useState<NewProductPayload>({
     name: "",
@@ -53,6 +66,42 @@ export default function AddProductPage() {
     setProduct((prev) => ({ ...prev, category: value }));
   };
 
+  async function handleMainImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setMainImage(url);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload image. Make sure Cloudinary is configured.");
+    } finally {
+      setIsUploading(false);
+      if (mainImageInputRef.current) mainImageInputRef.current.value = "";
+    }
+  }
+
+  async function handleGalleryImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setGalleryImages((prev) => [...prev, url]);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload image. Make sure Cloudinary is configured.");
+    } finally {
+      setIsUploading(false);
+      if (galleryImageInputRef.current) galleryImageInputRef.current.value = "";
+    }
+  }
+
+  function removeGalleryImage(index: number) {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -61,8 +110,8 @@ export default function AddProductPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...product,
-          image: "",
-          images: [],
+          image: mainImage,
+          images: galleryImages.length > 0 ? galleryImages : mainImage ? [mainImage] : [],
           features: [],
           scent: { top: "", middle: "", base: "" },
         }),
@@ -94,14 +143,81 @@ export default function AddProductPage() {
           <div className="lg:w-1/3 space-y-6">
             <Card className="border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden">
               <CardHeader>
-                <CardTitle className="text-xl">Storefront images</CardTitle>
+                <CardTitle className="text-xl">Product Images</CardTitle>
                 <CardDescription className="font-semibold text-neutral-500">
-                  Images are not saved on the product. The shop maps each product to files in <code className="text-xs">/public</code> automatically.
+                  Upload images to Cloudinary. They will be auto-optimised for the storefront.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-neutral-200">
-                  <Image src={STOREFRONT_PREVIEW} alt="Preview" fill className="object-cover" />
+                {/* Main Image */}
+                <div
+                  className="aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-neutral-200 group cursor-pointer"
+                  onClick={() => mainImageInputRef.current?.click()}
+                >
+                  {mainImage ? (
+                    <>
+                      <Image src={mainImage} alt="Main product image" fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button size="sm" className="bg-white text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg">
+                          Change Image
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-neutral-400">
+                      {isUploading ? (
+                        <Loader2 className="h-8 w-8 animate-spin" />
+                      ) : (
+                        <>
+                          <Upload className="h-10 w-10" />
+                          <span className="text-sm font-semibold">Upload main image</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  <input
+                    ref={mainImageInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleMainImageUpload}
+                  />
+                </div>
+
+                {/* Gallery Images */}
+                <div className="grid grid-cols-3 gap-3">
+                  {galleryImages.map((img, idx) => (
+                    <div key={idx} className="aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-neutral-200 group">
+                      <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
+                      <button
+                        onClick={() => removeGalleryImage(idx)}
+                        className="absolute top-1 right-1 h-6 w-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-neutral-400 hover:border-amber-500 hover:text-amber-500 transition-all"
+                    onClick={() => galleryImageInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      <>
+                        <Plus size={20} />
+                        <span className="text-[10px] uppercase font-black">Add</span>
+                      </>
+                    )}
+                  </button>
+                  <input
+                    ref={galleryImageInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleGalleryImageUpload}
+                  />
                 </div>
               </CardContent>
             </Card>
