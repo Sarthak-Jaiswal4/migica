@@ -68,7 +68,7 @@ export function AddToCartButton({
   };
 
   return (
-    <div className={cn("relative flex h-11 w-full items-center py-1 md:mt-2", className)}>
+    <div className={cn("relative flex h-9 w-full items-center md:mt-1", className)}>
       <Button
         size="sm"
         disabled={!inStock}
@@ -76,7 +76,7 @@ export function AddToCartButton({
           inStock
             ? `bg-gray-900 text-white shadow-md hover:bg-amber-500 hover:scale-103 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? "bg-emerald-500 text-white hover:bg-emerald-500 hover:scale-103 hover:text-white hover:cursor-pointer hover:shadow-emerald-500/10 hover:shadow-black/10" : ""}`
             : "cursor-not-allowed bg-neutral-300 text-neutral-500"
-        } transition-all duration-300 px-4 sm:px-4 h-11 sm:h-11 tracking-tight w-full mx-auto text-md rounded-full overflow-hidden ${
+        } transition-all duration-300 px-4 sm:px-4 h-9 sm:h-9 tracking-tight w-full mx-auto text-sm rounded-full overflow-hidden ${
           showControls ? "pointer-events-none absolute scale-90 opacity-0" : "scale-100 opacity-100"
         }`}
         onClick={handleAddToCart}

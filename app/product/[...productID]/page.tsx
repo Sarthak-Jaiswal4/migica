@@ -197,13 +197,13 @@ export default function ProductPage() {
 
                     {/* Product Details (Now on the Left — Pinned/Sticky) */}
                         <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-20">
-                            <div className="space-y-8">
+                            <div className="space-y-6">
                             <div>
-                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-white/50">{product.category}</Badge>
-                                <h1 className="text-4xl md:text-4xl font-bold text-neutral-900 mb-4 tracking-tight leading-tight">{product.name}</h1>
+                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-white/50 tracking-[0.2em] uppercase text-[10px] font-bold">{product.category}</Badge>
+                                <h1 className="font-[style] text-4xl md:text-5xl font-semibold text-neutral-900 mb-3 tracking-tight leading-tight">{product.name}</h1>
 
                                 {/* Rating */}
-                                <div className="flex items-center gap-3 mb-6">
+                                <div className="flex items-center gap-3 mb-5">
                                     <div className="flex items-center gap-1">
                                         {[...Array(5)].map((_, i) => (
                                             <Star
@@ -220,16 +220,18 @@ export default function ProductPage() {
                                 </div>
 
                                 {/* Price */}
-                                <div className="flex items-center gap-4 mb-8">
-                                    <span className="text-2xl font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                                <div className="flex items-center gap-4 mb-6">
+                                    <span className="text-3xl font-normal tracking-tight text-neutral-900">₹{product.price}</span>
                                     {product.originalPrice && (
-                                        <span className="text-lg text-neutral-400 line-through decoration-red-400/50 decoration-2">₹{product.originalPrice}</span>
+                                        <span className="text-xl text-neutral-400 line-through decoration-red-400/50 decoration-2">₹{product.originalPrice}</span>
                                     )}
                                 </div>
 
-                                <p className="text-neutral-600 leading-relaxed text-lg mb-8">
-                                    {product.description}
-                                </p>
+                                <div className="border-l border-neutral-900/20 pl-4 sm:pl-5 mb-4">
+                                    <p className="font-[style] text-[20px] font-normal italic leading-[1.65] text-neutral-700 tracking-wide">
+                                        {product.description}
+                                    </p>
+                                </div>
                             </div>
 
                             {/* Quantity & Add to Cart */}
@@ -261,14 +263,14 @@ export default function ProductPage() {
 
                             {/* Features */}
                             <div className="space-y-4">
-                                <h3 className="font-bold text-xl text-neutral-900">Premium Features</h3>
+                                <h3 className="font-[style] text-2xl font-medium text-neutral-900 tracking-tight">Premium Features</h3>
                                 <div className="grid grid-cols-1 gap-3">
                                     {product.features.map((feature: string, index: number) => (
                                         <div key={index} className="flex items-center gap-3 group">
-                                            <div className="h-8 w-8 rounded-lg bg-neutral-100 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                                <Check className="w-5 h-5" />
+                                            <div className="h-8 w-8 shrink-0 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-900 group-hover:text-white transition-all duration-300">
+                                                <Check className="w-4 h-4" strokeWidth={2.5} />
                                             </div>
-                                            <span className="text-neutral-700 font-medium"> {feature}</span>
+                                            <span className="text-neutral-700 tracking-wide font-medium leading-snug"> {feature}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -322,16 +324,16 @@ export default function ProductPage() {
                     </TabsList>
 
                     <TabsContent value="description" className="mt-6">
-                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-4">
+                        <div className="p-6 sm:p-10 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-6">
                             <div className="prose max-w-none">
-                                <p className="text-neutral-700 leading-relaxed tracking-wide">
+                                <p className="text-neutral-700 leading-relaxed tracking-wide text-lg">
                                     {product.description}
                                 </p>
-                                <h3 className="text-xl font-semibold mt-6 mb-3">What Makes It Special</h3>
-                                <p className="text-neutral-700 leading-relaxed tracking-wide">
+                                <h3 className="font-[style] text-2xl font-medium mt-10 mb-5 tracking-tight text-neutral-900">What Makes It Special</h3>
+                                <p className="text-neutral-600 leading-relaxed tracking-wide">
                                     {product.name} is part of our living catalog: details and inventory are maintained in our database, while photography is rendered from curated assets in the public gallery so the storefront stays fast and consistent.
                                 </p>
-                                <p className="text-neutral-700 leading-relaxed tracking-wide">
+                                <p className="text-neutral-600 leading-relaxed tracking-wide mt-4">
                                     Read the scent profile and features tabs for specifics. If something feels unclear, reach out before you buy—we are happy to help you pick the right piece.
                                 </p>
                             </div>

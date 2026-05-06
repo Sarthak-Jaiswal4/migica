@@ -21,7 +21,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
             onClick={() => router.push(`/product/${product.id}`)}
         >
             {/* Image */}
-            <div className={`${compact ? 'h-44 sm:h-64' : 'h-64'} w-full overflow-hidden relative`}>
+            <div className={`${compact ? 'h-40 sm:h-56' : 'h-56'} w-full overflow-hidden relative`}>
                 <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                     <div className="w-1/2 h-full relative flex-shrink-0">
                         <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
@@ -63,9 +63,9 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                 </button>
             </div>
 
-            <CardContent className="px-2 sm:px-4 pb-4 sm:pb-6 pt-1">
+            <CardContent className="px-2 sm:px-3 pb-3 sm:pb-4 pt-1">
                 <div className="w-full flex items-center flex-col gap-2">
-                    <h2 className="text-md sm:text-xl font-semibold tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors text-center line-clamp-1">
+                    <h2 className="text-sm sm:text-lg font-medium tracking-tight mb-0.5 sm:mb-1 text-neutral-900 transition-colors text-center line-clamp-1">
                         {product.name}
                     </h2>
                     <Badge className=" text-center mb-2" variant="secondary">

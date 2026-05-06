@@ -53,9 +53,12 @@ export function CategoriesShop() {
   return (
     <section id="categories-shop" className="scroll-mt-24 py-20 bg-[#F6F4F1] overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold tracking-tight text-neutral-900 mb-4">Shop by Category</h2>
-          <p className="text-neutral-600 max-w-2xl mx-auto font-normal tracking-wide text-[15px] leading-relaxed sm:text-base">
+        <div className="mx-auto max-w-2xl text-center mb-16">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-500">Collections</p>
+          <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">
+            Shop by Category
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-neutral tracking-wide text-neutral-600 sm:text-base">
             Candles, scarves, jewellery, gifts — browse by mood. When something speaks to you, the details are a click away.
           </p>
         </div>
@@ -135,7 +138,7 @@ function CategoryRow({ name, products }: { name: string; products: Product[] }) 
           grabCursor={true}
         >
           {products.map((product) => (
-            <SwiperSlide key={product.id} style={{ width: "300px" }}>
+            <SwiperSlide key={product.id} style={{ width: "260px" }}>
               <CardComponent product={product} />
             </SwiperSlide>
           ))}
@@ -158,8 +161,8 @@ function CategoryRowSkeleton() {
 
       <div className="mb-6 flex gap-6 overflow-hidden">
         {Array.from({ length: 4 }).map((_, idx) => (
-          <div key={idx} className="w-[300px] shrink-0 rounded-[8px] border border-neutral-200 bg-white p-0">
-            <Skeleton className="h-64 w-full rounded-none" />
+          <div key={idx} className="w-[260px] shrink-0 rounded-[8px] border border-neutral-200 bg-white p-0">
+            <Skeleton className="h-56 w-full rounded-none" />
             <div className="space-y-3 px-4 pb-6 pt-3">
               <Skeleton className="h-6 w-3/4 mx-auto" />
               <Skeleton className="h-5 w-24 mx-auto rounded-full" />
