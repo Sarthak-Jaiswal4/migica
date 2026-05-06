@@ -31,6 +31,17 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const data = stripPresentationFields((await req.json()) as object);
 
+    if (!data.slug && data.name) {
+      let baseSlug = (data.name as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      let uniqueSlug = baseSlug;
+      let count = 1;
+      while (await Product.findOne({ slug: uniqueSlug })) {
+        uniqueSlug = `${baseSlug}-${count}`;
+        count++;
+      }
+      data.slug = uniqueSlug;
+    }
+
     const product = new Product(data);
     await product.save();
 

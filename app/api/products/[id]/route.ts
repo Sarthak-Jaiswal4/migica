@@ -75,6 +75,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 }
 
+import mongoose from "mongoose";
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
@@ -84,7 +86,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Product ID is missing" }, { status: 400 });
     }
 
-    const product = await Product.findById(id).lean();
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+
+    const product = await Product.findOne(query).lean();
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });

@@ -18,7 +18,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
         <Card
             key={product.id}
             className="group rounded-[8px] p-0 border border-neutral-200 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative hover:scale-101"
-            onClick={() => router.push(`/product/${product.id}`)}
+            onClick={() => router.push(`/product/${product.slug || product.id}`)}
         >
             {/* Image */}
             <div className={`${compact ? 'h-40 sm:h-56' : 'h-56'} w-full overflow-hidden relative`}>
