@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     if (process.env.RESEND_API_KEY) {
       try {
         await resend.emails.send({
-          from: "silverstar.live",
+          from: "orders@silverstar.live",
           to: user.email,
           subject: "Your Order Receipt",
           html: htmlContent,

@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     if (process.env.RESEND_API_KEY) {
       try {
         await resend.emails.send({
-          from: "Acme <onboarding@resend.dev>",
+          from: "login@silverstar.live",
           to: email,
           subject: "Welcome to Magica!",
           html: `<h1>Welcome ${name || ""}!</h1><p>Your account has been successfully created.</p>`,
