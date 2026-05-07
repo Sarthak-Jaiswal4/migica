@@ -3,21 +3,28 @@ import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // Add the routes you want to protect with admin verification
-const protectedRoutes = ['/allproduct'];
+const adminProtectedRoutes = ['/allproduct', '/orders'];
+const userProtectedRoutes = ['/checkout', '/my-orders'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Check if current route matches any of the protected routes or sub-routes
-  const isProtectedRoute = protectedRoutes.some(
+  // Check if current route matches any of the admin protected routes or sub-routes
+  const isAdminRoute = adminProtectedRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
-  if (isProtectedRoute) {
+  const isUserRoute = userProtectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+
+  if (isAdminRoute || isUserRoute) {
     const token = request.cookies.get('token')?.value;
 
     if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     try {
@@ -25,14 +32,16 @@ export async function middleware(request: NextRequest) {
       
       const { payload } = await jwtVerify(token, secret);
       
-      if (!payload.isAdmin) {
+      if (isAdminRoute && !payload.isAdmin) {
         return NextResponse.redirect(new URL('/login', request.url));
       }
 
       return NextResponse.next();
     } catch (error) {
       // Invalid token
-      return NextResponse.redirect(new URL('/login', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
@@ -40,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/allproduct/:path*', '/allproduct'],
+  matcher: ['/allproduct/:path*', '/allproduct', '/checkout/:path*', '/checkout', '/orders/:path*', '/orders', '/my-orders/:path*', '/my-orders'],
 };

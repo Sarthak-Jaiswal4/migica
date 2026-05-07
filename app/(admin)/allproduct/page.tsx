@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { AppImage as Image } from '@/components/AppImage'
-import { Pencil, Plus, Trash2, Loader2 } from 'lucide-react'
+import { Pencil, Plus, Trash2, Loader2, Package } from 'lucide-react'
 import type { Product } from '@/lib/product'
 
 export default function AllProductsPage() {
@@ -45,12 +45,21 @@ export default function AllProductsPage() {
                         <h1 className='text-2xl md:text-3xl font-bold tracking-normal text-neutral-900'>Product Management</h1>
                         <p className='text-sm md:text-base text-neutral-500 font-semibold'>View and manage your entire product catalog</p>
                     </div>
-                    <Button
-                        className='bg-black text-white hover:bg-neutral-800 rounded-xl px-4 md:px-6 h-10 md:h-12 text-sm md:text-base font-bold transition-all shadow-lg shadow-black/10 flex gap-2 w-full md:w-auto'
-                        onClick={() => router.push('/allproduct/add')}
-                    >
-                        <Plus size={20} /> Add New Product
-                    </Button>
+                    <div className='flex items-center gap-3 w-full md:w-auto flex-col md:flex-row'>
+                        <Button
+                            variant="outline"
+                            className='rounded-xl px-4 md:px-6 h-10 md:h-12 text-sm md:text-base font-bold transition-all flex gap-2 w-full md:w-auto border-neutral-200'
+                            onClick={() => router.push('/orders')}
+                        >
+                            <Package size={20} /> Manage Orders
+                        </Button>
+                        <Button
+                            className='bg-black text-white hover:bg-neutral-800 rounded-xl px-4 md:px-6 h-10 md:h-12 text-sm md:text-base font-bold transition-all shadow-lg shadow-black/10 flex gap-2 w-full md:w-auto'
+                            onClick={() => router.push('/allproduct/add')}
+                        >
+                            <Plus size={20} /> Add New Product
+                        </Button>
+                    </div>
                 </div>
 
                 <Card className='border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden'>

@@ -129,7 +129,10 @@ export function CartSheet() {
                                 <span>₹{total.toFixed(2)}</span>
                             </div>
                         </div>
-                        <Button className="w-full tracking-wide text-white h-12 rounded-md font-semibold shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98]">
+                        <Button 
+                            onClick={() => router.push('/checkout')}
+                            className="w-full tracking-wide text-white h-12 rounded-md font-semibold shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98]"
+                        >
                             Checkout Now
                         </Button>
                         {/* <p className="text-center text-[10px] text-neutral-400 mt-4 uppercase tracking-widest font-bold">

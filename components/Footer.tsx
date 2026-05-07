@@ -13,15 +13,15 @@ export function Footer() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full -mr-20 -mt-20" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full -ml-20 -mb-20" />
                 <div
-                    className="absolute inset-0 opacity-[0.5] mix-blend-overlay pointer-events-none"
+                    className="absolute inset-0 opacity-[0.6] mix-blend-overlay pointer-events-none"
                     style={{ backgroundImage: "url('/gaussian-noise.png')", backgroundRepeat: 'repeat' }}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
                     {/* Brand Section */}
                     <div className="space-y-6">
-                        <h2 className="text-3xl font-black tracking-tighter">Silver Star</h2>
-                        <p className="text-neutral-400 text-sm leading-relaxed max-w-xs">
+                        <h2 className="text-3xl font-black tracking-tight font-[style]">Silver Star</h2>
+                        <p className="text-neutral-400 text-sm leading-relaxed text-neutral tracking-wide font-medium max-w-xs">
                             Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.
                         </p>
                         <div className="flex gap-4">

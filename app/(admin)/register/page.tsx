@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Eye, EyeOff, Loader2, Sparkles } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Sparkles, Gift } from 'lucide-react'
 import { Headers } from '@/components/Headers'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -10,8 +10,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Footer } from '@/components/Footer'
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false)
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -23,27 +24,24 @@ export default function LoginPage() {
         setError('')
         setLoading(true)
         try {
-            const res = await fetch('/api/auth/login', {
+            const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ name, email, password }),
             })
 
             const data = await res.json()
 
             if (!res.ok) {
-                setError(data.error || 'Login failed. Please check your credentials.')
+                setError(data.error || 'Registration failed.')
                 setLoading(false)
                 return
             }
 
-            // Success! 
-            // We keep loading true while we redirect
-            const searchParams = new URLSearchParams(window.location.search)
-            const redirectUrl = searchParams.get('redirect') || '/'
-            router.push(redirectUrl)
+            // Success! Send user to login
+            router.push('/login?message=registered')
         } catch (err) {
-            console.error('Login error:', err)
+            console.error('Registration error:', err)
             setError('Connection error. Please check if the server is running.')
             setLoading(false)
         }
@@ -83,17 +81,17 @@ export default function LoginPage() {
                                     <Sparkles className='h-5 w-5 text-amber-600' />
                                 </div>
                                 <div>
-                                    <h4 className='font-semibold text-sm text-neutral-800'>Hand-Crafted with Love</h4>
-                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Every product is meticulously crafted in small batches for the finest quality.</p>
+                                    <h4 className='font-semibold text-sm text-neutral-800'>Welcome Email & Offers</h4>
+                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Get a personalized welcome and exclusive member deals right in your inbox.</p>
                                 </div>
                             </div>
                             <div className='flex items-start gap-4'>
                                 <div className='p-2.5 bg-white/60 border border-rose-200/50 rounded-xl shrink-0 mt-0.5 shadow-sm'>
-                                    <Sparkles className='h-5 w-5 text-amber-600' />
+                                    <Gift className='h-5 w-5 text-amber-600' />
                                 </div>
                                 <div>
-                                    <h4 className='font-semibold text-sm text-neutral-800'>Exclusive Collections</h4>
-                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Access members-only launches, deals & early drops when you sign in.</p>
+                                    <h4 className='font-semibold text-sm text-neutral-800'>Early Access & Rewards</h4>
+                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Be the first to know about limited drops, new collections, and seasonal sales.</p>
                                 </div>
                             </div>
                         </div>
@@ -105,11 +103,22 @@ export default function LoginPage() {
                     <div className='flex-1 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative'>
                         <div className='max-w-sm mx-auto w-full'>
                             <div className='mb-8'>
-                                <h1 className='text-3xl font-bold tracking-tight text-neutral-900'>Welcome Back</h1>
-                                <p className='text-neutral-500 text-sm mt-2'>Enter your credentials to access your account</p>
+                                <h1 className='text-3xl font-bold tracking-tight text-neutral-900'>Create Account</h1>
+                                <p className='text-neutral-500 text-sm mt-2'>Join us and explore the world of artisan luxury</p>
                             </div>
 
                             <form onSubmit={handleSubmit} className='space-y-5'>
+                                <div className='space-y-2'>
+                                    <Label htmlFor='name' className='text-sm font-medium text-neutral-700'>Full Name</Label>
+                                    <Input
+                                        id='name'
+                                        placeholder='John Doe'
+                                        type='text'
+                                        className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                </div>
                                 <div className='space-y-2'>
                                     <Label htmlFor='email' className='text-sm font-medium text-neutral-700'>Email</Label>
                                     <Input
@@ -123,12 +132,7 @@ export default function LoginPage() {
                                     />
                                 </div>
                                 <div className='space-y-2'>
-                                    <div className='flex items-center justify-between'>
-                                        <Label htmlFor='password' className='text-sm font-medium text-neutral-700'>Password</Label>
-                                        <Link href='/login/forgot-password' className='text-xs text-amber-600 hover:text-amber-700 transition-colors font-medium'>
-                                            Forgot password?
-                                        </Link>
-                                    </div>
+                                    <Label htmlFor='password' className='text-sm font-medium text-neutral-700'>Password</Label>
                                     <div className='relative'>
                                         <Input
                                             id='password'
@@ -147,6 +151,7 @@ export default function LoginPage() {
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
+                                    <p className='text-[11px] text-neutral-400 ml-1'>Must be at least 6 characters</p>
                                 </div>
 
                                 {error && (
@@ -162,9 +167,9 @@ export default function LoginPage() {
                                     disabled={loading}
                                 >
                                     {loading ? (
-                                        <><Loader2 className='w-4 h-4 mr-2 animate-spin' /> Signing in...</>
+                                        <><Loader2 className='w-4 h-4 mr-2 animate-spin' /> Creating Account...</>
                                     ) : (
-                                        'Sign In'
+                                        'Sign Up'
                                     )}
                                 </Button>
                             </form>
@@ -172,14 +177,14 @@ export default function LoginPage() {
                             <div className='mt-8 text-center'>
                                 <div className='relative flex items-center gap-4 mb-6'>
                                     <div className='flex-1 h-px bg-neutral-200' />
-                                    <span className='text-xs text-neutral-400 font-medium uppercase tracking-widest'>New here?</span>
+                                    <span className='text-xs text-neutral-400 font-medium uppercase tracking-widest'>Already a member?</span>
                                     <div className='flex-1 h-px bg-neutral-200' />
                                 </div>
                                 <Link
-                                    href='/register'
+                                    href='/login'
                                     className='inline-flex items-center justify-center w-full h-12 border-2 border-neutral-200 text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 rounded-xl font-semibold transition-all duration-300 text-sm'
                                 >
-                                    Create an Account
+                                    Sign In Instead
                                 </Link>
                             </div>
                         </div>
