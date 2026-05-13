@@ -27,6 +27,7 @@ export function Headers() {
     const pathname = usePathname()
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileAccountOpen, setIsMobileAccountOpen] = useState(false);
     const mobileMenuItemsRef = useRef<(HTMLDivElement | null)[]>([]);
     const cartItemCount = useUserStore((state) => state.totalItems());
     const wishlistCount = useUserStore((state) => state.wishlistCount());
@@ -206,25 +207,63 @@ export function Headers() {
                         className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
                     >
                         <div className="flex flex-col gap-8 px-6 pb-12 pt-6 text-4xl tracking-tight font-semibold">
-                            {["Home", "Shop", "Wishlist", "Categories", "Collections", ...(isLoggedIn ? ["Logout"] : ["Login"])].map((item, i) => (
-                                <div
-                                    key={item}
-                                    ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                    className="cursor-pointer hover:text-orange-500 will-change-transform"
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        if (item === "Home") router.push("/");
-                                        else if (item === "Shop") router.push("/shop/all");
-                                        else if (item === "Wishlist") router.push("/wishlist");
-                                        else if (item === "Login") router.push("/login");
-                                        else if (item === "Logout") {
-                                            setShowLogoutDialog(true);
-                                        }
-                                    }}
-                                >
-                                    {item}
-                                </div>
-                            ))}
+                            {["Home", "Shop", "Wishlist", "Categories", "Collections", ...(isLoggedIn ? ["Account", "Logout"] : ["Login"])].map((item, i) => {
+                                if (item === "Account") {
+                                    return (
+                                        <div key={item} ref={(el) => { mobileMenuItemsRef.current[i] = el; }} className="will-change-transform">
+                                            <div
+                                                className="cursor-pointer hover:text-orange-500 flex items-center justify-between"
+                                                onClick={() => setIsMobileAccountOpen(!isMobileAccountOpen)}
+                                            >
+                                                Account
+                                                <svg
+                                                    className={`w-8 h-8 transition-transform duration-300 ${isMobileAccountOpen ? "rotate-180" : ""}`}
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                            <div
+                                                className={`flex flex-col gap-4 overflow-hidden transition-all duration-300 ${isMobileAccountOpen ? "max-h-40 mt-6 opacity-100" : "max-h-0 opacity-0"}`}
+                                            >
+                                                <div
+                                                    className="text-2xl text-neutral-500 hover:text-orange-500 cursor-pointer pl-4 font-medium"
+                                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/profile"); }}
+                                                >
+                                                    My Profile
+                                                </div>
+                                                <div
+                                                    className="text-2xl text-neutral-500 hover:text-orange-500 cursor-pointer pl-4 font-medium"
+                                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/my-orders"); }}
+                                                >
+                                                    Track Orders
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <div
+                                        key={item}
+                                        ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                        className="cursor-pointer hover:text-orange-500 will-change-transform"
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            if (item === "Home") router.push("/");
+                                            else if (item === "Shop") router.push("/shop/all");
+                                            else if (item === "Wishlist") router.push("/wishlist");
+                                            else if (item === "Login") router.push("/login");
+                                            else if (item === "Logout") {
+                                                setShowLogoutDialog(true);
+                                            }
+                                        }}
+                                    >
+                                        {item}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

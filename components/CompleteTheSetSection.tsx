@@ -1,5 +1,3 @@
-"use client";
-
 import { AppImage as Image } from "@/components/AppImage";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";

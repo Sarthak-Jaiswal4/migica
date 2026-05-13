@@ -1,5 +1,3 @@
-"use client";
-
 import Image, { ImageProps } from "next/image";
 import { CldImage } from "next-cloudinary";
 
