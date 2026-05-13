@@ -64,14 +64,14 @@ export function Headers() {
 
     // Style for header backgrounds based on scroll & pathname
     const desktopHeaderBg = pathname === "/"
-        ? (isScrolled ? "bg-white/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-white/30 backdrop-blur-none duration-300 ease-in invert")
-        : "bg-white/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg";
+        ? (isScrolled ? "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-card/30 backdrop-blur-none duration-300 ease-in invert")
+        : "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg";
 
     const mobileHeaderBg = pathname === "/"
         ? (isScrolled || isMobileMenuOpen
-            ? "bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 duration-300 ease-in text-black shadow-lg"
-            : "bg-white/50 backdrop-blur-none duration-300 ease-in invert")
-        : "bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 duration-300 ease-in text-black shadow-lg";
+            ? "bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 duration-300 ease-in text-black shadow-lg"
+            : "bg-card/50 backdrop-blur-none duration-300 ease-in invert")
+        : "bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 duration-300 ease-in text-black shadow-lg";
 
     return (
         <>
@@ -104,19 +104,19 @@ export function Headers() {
                                         <UserCheck className="h-5 w-5" strokeWidth={1.75} />
                                     </div>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-56 rounded-2xl p-2 bg-white/95 backdrop-blur-md shadow-xl border-neutral-100" align="end" alignOffset={-10} sideOffset={8}>
+                                <PopoverContent className="w-56 rounded-2xl p-2 bg-card/95 backdrop-blur-md shadow-xl border-border" align="end" alignOffset={-10} sideOffset={8}>
                                     <div className="flex flex-col gap-1">
                                         <button 
                                             className="flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
                                             onClick={() => router.push('/profile')}
                                         >
-                                            <User size={16} className="text-neutral-500" /> My Profile
+                                            <User size={16} className="text-muted-foreground" /> My Profile
                                         </button>
                                         <button 
                                             className="flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
                                             onClick={() => router.push('/my-orders')}
                                         >
-                                            <Package size={16} className="text-neutral-500" /> Order History
+                                            <Package size={16} className="text-muted-foreground" /> Order History
                                         </button>
                                         <div className="h-[1px] bg-neutral-100 my-1 w-full" />
                                         <button 
@@ -145,7 +145,7 @@ export function Headers() {
                         <Sheet>
                             <SheetTrigger asChild>
                                 <div className="relative group hover:cursor-pointer p-2 rounded-full hover:bg-neutral-100 transition-colors">
-                                    <ShoppingCart strokeWidth={1.75} className="h-6 w-6 text-neutral-800" />
+                                    <ShoppingCart strokeWidth={1.75} className="h-6 w-6 text-foreground" />
                                     {cartItemCount > 0 && (
                                         <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                                             {cartItemCount}
@@ -229,13 +229,13 @@ export function Headers() {
                                                 className={`flex flex-col gap-4 overflow-hidden transition-all duration-300 ${isMobileAccountOpen ? "max-h-40 mt-6 opacity-100" : "max-h-0 opacity-0"}`}
                                             >
                                                 <div
-                                                    className="text-2xl text-neutral-500 hover:text-orange-500 cursor-pointer pl-4 font-medium"
+                                                    className="text-2xl text-muted-foreground hover:text-orange-500 cursor-pointer pl-4 font-medium"
                                                     onClick={() => { setIsMobileMenuOpen(false); router.push("/profile"); }}
                                                 >
                                                     My Profile
                                                 </div>
                                                 <div
-                                                    className="text-2xl text-neutral-500 hover:text-orange-500 cursor-pointer pl-4 font-medium"
+                                                    className="text-2xl text-muted-foreground hover:text-orange-500 cursor-pointer pl-4 font-medium"
                                                     onClick={() => { setIsMobileMenuOpen(false); router.push("/my-orders"); }}
                                                 >
                                                     Track Orders
@@ -273,12 +273,12 @@ export function Headers() {
                 <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
                     <AlertDialogHeader>
                         <AlertDialogTitle className="text-xl">Log Out</AlertDialogTitle>
-                        <AlertDialogDescription className="text-neutral-500">
+                        <AlertDialogDescription className="text-muted-foreground">
                             Are you sure you want to log out of your account? You will need to log back in to access your profile and saved details.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="mt-4">
-                        <AlertDialogCancel className="rounded-xl border-neutral-200">Cancel</AlertDialogCancel>
+                        <AlertDialogCancel className="rounded-xl border-border">Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={async () => {
                                 await fetch('/api/auth/logout', { method: 'POST' });
@@ -332,7 +332,7 @@ function CategoriesDropDown() {
     const router = useRouter()
 
     return (
-        <div className="flex flex-wrap w-[560px] mx-auto gap-2 bg-white rounded-lg p-2 hover:cursor-pointer" ref={container}>
+        <div className="flex flex-wrap w-[560px] mx-auto gap-2 bg-card rounded-lg p-2 hover:cursor-pointer" ref={container}>
             {Categories.map((category, index) => (
                 <div key={index} className="flex flex-col px-2" onClick={() => router.push(`/shop/${category.name}`)}>
                     <Image src={category.img} alt={category.name} width={160} height={144} className="w-40 h-36 rounded-lg bg-orange-500 object-cover" />

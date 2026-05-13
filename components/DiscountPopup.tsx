@@ -169,8 +169,8 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
           aria-label="Close popup"
           className={cn(
             "absolute right-3.5 top-3.5 z-[2] flex h-[30px] w-[30px] items-center justify-center rounded-full",
-            "border border-[#EDD9C8] bg-white/60 text-[#A07060] transition-colors",
-            "hover:bg-white hover:text-[#5C3D2E]"
+            "border border-[#EDD9C8] bg-card/60 text-[#A07060] transition-colors",
+            "hover:bg-card hover:text-[#5C3D2E]"
           )}
         >
           <X className="h-3.5 w-3.5" strokeWidth={2} />
@@ -179,7 +179,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
         {phase === "form" && (
           <>
             <div className="relative border-b border-[#EDD9C8] bg-[#F9EDE3] px-9 pb-7 pt-9 text-center">
-              <div className="mx-auto mb-[18px] flex h-[60px] w-[60px] items-center justify-center rounded-full border border-[#EDD9C8] bg-white">
+              <div className="mx-auto mb-[18px] flex h-[60px] w-[60px] items-center justify-center rounded-full border border-[#EDD9C8] bg-card">
                 <svg
                   width="26"
                   height="26"
@@ -218,7 +218,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
                   ref={inputRef}
                   type="email"
                   className={cn(
-                    "box-border w-full rounded-[10px] border bg-white px-4 py-3 text-sm text-[#3A1E10] outline-none transition-[border-color,box-shadow]",
+                    "box-border w-full rounded-[10px] border bg-card px-4 py-3 text-sm text-[#3A1E10] outline-none transition-[border-color,box-shadow]",
                     "placeholder:text-[#C4A090]",
                     "focus:border-[#A0522D] focus:shadow-[0_0_0_3px_rgba(160,82,45,0.12)]",
                     emailError

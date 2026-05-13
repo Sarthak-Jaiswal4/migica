@@ -34,10 +34,10 @@ export function BestSelling() {
     }, [])
 
     return (
-        <div className="py-20 w-full flex flex-col items-center bg-[#F6F4F1]">
+        <div className="py-20 w-full flex flex-col items-center bg-background">
             <div className="mx-auto max-w-2xl text-center mb-12 px-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-500">Customer Favorites</p>
-                <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Customer Favorites</p>
+                <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                     Best Sellers
                 </h2>
                 <p className="mt-4 text-sm leading-relaxed text-neutral tracking-wide text-neutral-600 sm:text-base">
@@ -47,7 +47,7 @@ export function BestSelling() {
 
             <div className="max-w-7xl mx-auto px-4 w-full">
                 {isLoading ? (
-                    <div className="flex justify-center text-neutral-500">
+                    <div className="flex justify-center text-muted-foreground">
                         <Loader2 className="animate-spin" />
                     </div>
                 ) : (

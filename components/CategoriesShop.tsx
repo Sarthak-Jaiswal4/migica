@@ -26,11 +26,11 @@ export async function CategoriesShop() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <section id="categories-shop" className="scroll-mt-24 py-20 bg-[#F6F4F1] overflow-x-hidden">
+    <section id="categories-shop" className="scroll-mt-24 py-20 bg-background overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-500">Collections</p>
-          <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Collections</p>
+          <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Shop by Category
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-neutral tracking-wide text-neutral-600 sm:text-base">

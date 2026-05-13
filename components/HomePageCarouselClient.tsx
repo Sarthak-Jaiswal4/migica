@@ -55,7 +55,7 @@ export function HomePageCarouselClient({ slides }: { slides: HeroSlide[] }) {
   return (
     <div ref={containerRef} className="relative h-full min-h-0 w-full bg-black">
       <Swiper
-        className="h-full w-full pb-14 [&_.swiper-pagination]:bottom-8 [&_.swiper-pagination-bullet]:h-2 [&_.swiper-pagination-bullet]:w-2 [&_.swiper-pagination-bullet]:bg-white/40 [&_.swiper-pagination-bullet-active]:w-6 [&_.swiper-pagination-bullet-active]:rounded-full [&_.swiper-pagination-bullet-active]:bg-white"
+        className="h-full w-full pb-14 [&_.swiper-pagination]:bottom-8 [&_.swiper-pagination-bullet]:h-2 [&_.swiper-pagination-bullet]:w-2 [&_.swiper-pagination-bullet]:bg-card/40 [&_.swiper-pagination-bullet-active]:w-6 [&_.swiper-pagination-bullet-active]:rounded-full [&_.swiper-pagination-bullet-active]:bg-card"
         modules={[EffectFade, Pagination]}
         effect="fade"
         fadeEffect={{ crossFade: true }}

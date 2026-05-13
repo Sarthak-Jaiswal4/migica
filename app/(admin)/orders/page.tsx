@@ -42,42 +42,42 @@ export default function AdminOrders() {
     const deliveredCount = orders.filter(o => o.status === 'delivered').length;
 
     return (
-        <div className="min-h-screen bg-[#F6F4F1] flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col">
             <Headers />
             <main className="flex-grow pt-28 pb-16 px-4 sm:px-8">
                 <div className="max-w-6xl mx-auto">
-                    <h1 className="text-4xl font-bold tracking-tight text-neutral-900 mb-8">Order Management</h1>
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground mb-8">Order Management</h1>
 
                     {/* Stats */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-100 flex items-center gap-4">
+                        <div className="bg-card p-6 rounded-2xl shadow-sm border border-border flex items-center gap-4">
                             <div className="p-4 bg-blue-50 text-blue-600 rounded-xl"><Package size={24} /></div>
                             <div>
-                                <p className="text-sm text-neutral-500 font-medium">Total Orders</p>
-                                <p className="text-3xl font-bold text-neutral-900">{orders.length}</p>
+                                <p className="text-sm text-muted-foreground font-medium">Total Orders</p>
+                                <p className="text-3xl font-bold text-foreground">{orders.length}</p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-100 flex items-center gap-4">
+                        <div className="bg-card p-6 rounded-2xl shadow-sm border border-border flex items-center gap-4">
                             <div className="p-4 bg-amber-50 text-amber-600 rounded-xl"><Clock size={24} /></div>
                             <div>
-                                <p className="text-sm text-neutral-500 font-medium">Pending / Processing</p>
-                                <p className="text-3xl font-bold text-neutral-900">{pendingCount}</p>
+                                <p className="text-sm text-muted-foreground font-medium">Pending / Processing</p>
+                                <p className="text-3xl font-bold text-foreground">{pendingCount}</p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-100 flex items-center gap-4">
+                        <div className="bg-card p-6 rounded-2xl shadow-sm border border-border flex items-center gap-4">
                             <div className="p-4 bg-emerald-50 text-emerald-600 rounded-xl"><CheckCircle size={24} /></div>
                             <div>
-                                <p className="text-sm text-neutral-500 font-medium">Delivered</p>
-                                <p className="text-3xl font-bold text-neutral-900">{deliveredCount}</p>
+                                <p className="text-sm text-muted-foreground font-medium">Delivered</p>
+                                <p className="text-3xl font-bold text-foreground">{deliveredCount}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Orders Table */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 overflow-hidden">
+                    <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
-                                <thead className="bg-neutral-50 text-neutral-500 uppercase text-xs font-semibold tracking-wider">
+                                <thead className="bg-neutral-50 text-muted-foreground uppercase text-xs font-semibold tracking-wider">
                                     <tr>
                                         <th className="px-6 py-4">Order ID & Date</th>
                                         <th className="px-6 py-4">Customer</th>
@@ -90,12 +90,12 @@ export default function AdminOrders() {
                                     {loading ? (
                                         <tr>
                                             <td colSpan={5} className="px-6 py-12 text-center">
-                                                <Loader2 className="w-8 h-8 animate-spin mx-auto text-neutral-400" />
+                                                <Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
                                             </td>
                                         </tr>
                                     ) : orders.length === 0 ? (
                                         <tr>
-                                            <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">
+                                            <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
                                                 No orders found.
                                             </td>
                                         </tr>
@@ -103,24 +103,24 @@ export default function AdminOrders() {
                                         orders.map((order) => (
                                             <tr key={order._id} className="hover:bg-neutral-50/50 transition-colors">
                                                 <td className="px-6 py-4">
-                                                    <div className="font-mono text-xs text-neutral-900 bg-neutral-100 px-2 py-1 rounded inline-block mb-1">
+                                                    <div className="font-mono text-xs text-foreground bg-neutral-100 px-2 py-1 rounded inline-block mb-1">
                                                         {order._id.slice(-8).toUpperCase()}
                                                     </div>
-                                                    <div className="text-neutral-500 text-xs">
+                                                    <div className="text-muted-foreground text-xs">
                                                         {new Date(order.createdAt).toLocaleDateString()}
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="font-medium text-neutral-900">{order.shippingAddress.name}</div>
-                                                    <div className="text-neutral-500 text-xs truncate max-w-[150px]">{order.shippingAddress.city}, {order.shippingAddress.country}</div>
+                                                    <div className="font-medium text-foreground">{order.shippingAddress.name}</div>
+                                                    <div className="text-muted-foreground text-xs truncate max-w-[150px]">{order.shippingAddress.city}, {order.shippingAddress.country}</div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="text-neutral-900">{order.items?.length || 0} items</div>
-                                                    <div className="text-neutral-500 text-xs truncate max-w-[200px]">
+                                                    <div className="text-foreground">{order.items?.length || 0} items</div>
+                                                    <div className="text-muted-foreground text-xs truncate max-w-[200px]">
                                                         {order.items?.map((i: any) => i.name).join(', ')}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 font-semibold text-neutral-900">
+                                                <td className="px-6 py-4 font-semibold text-foreground">
                                                     ₹{order.totalAmount?.toFixed(2) || '0.00'}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">

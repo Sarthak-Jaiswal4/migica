@@ -27,7 +27,7 @@ export function AppImage({ src, alt, ...props }: AppImageProps) {
         const { fill, width, height, className, ...rest } = props as any;
         return (
             <div
-                className={`bg-neutral-200 flex items-center justify-center text-neutral-400 ${fill ? "absolute inset-0" : ""} ${className ?? ""}`}
+                className={`bg-neutral-200 flex items-center justify-center text-muted-foreground ${fill ? "absolute inset-0" : ""} ${className ?? ""}`}
                 style={!fill ? { width: width ?? "100%", height: height ?? "100%" } : undefined}
                 aria-label={alt}
             >

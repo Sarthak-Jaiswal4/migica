@@ -57,7 +57,7 @@ export default function ProductPage() {
 
     if (!product) {
         return (
-            <div className="min-h-screen bg-[#F6F4F1] flex flex-col items-center justify-center p-4">
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
                 <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
                 <Button onClick={() => router.push('/shop/all')}>Return to Shop</Button>
             </div>
@@ -67,7 +67,7 @@ export default function ProductPage() {
     const wishlisted = isInWishlist(product.id)
 
     return (
-        <div className="min-h-screen bg-[#F6F4F1]">
+        <div className="min-h-screen bg-background">
             <Headers />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20 overflow-x-clip">
@@ -125,7 +125,7 @@ export default function ProductPage() {
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
-                                                    className="absolute top-4 right-4 bg-white/90 hover:bg-white"
+                                                    className="absolute top-4 right-4 bg-card/90 hover:bg-card"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         toggleWishlist({
@@ -153,7 +153,7 @@ export default function ProductPage() {
                             {product.images.slice(0, 2).map((image: { id: string; url: string; alt: string }, index: number) => (
                                 <div
                                     key={image.id}
-                                    className="w-full rounded-2xl overflow-hidden shadow-sm border border-neutral-200"
+                                    className="w-full rounded-2xl overflow-hidden shadow-sm border border-border"
                                 >
                                     <Image
                                         src={image.url}
@@ -173,7 +173,7 @@ export default function ProductPage() {
                                         <Button
                                             variant="outline"
                                             size="icon"
-                                            className="absolute top-6 right-6 bg-white/95 hover:bg-white shadow-md border-none rounded-full h-12 w-12"
+                                            className="absolute top-6 right-6 bg-card/95 hover:bg-card shadow-md border-none rounded-full h-12 w-12"
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 toggleWishlist({
@@ -199,8 +199,8 @@ export default function ProductPage() {
                         <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-20">
                             <div className="space-y-6">
                             <div>
-                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-white/50 tracking-[0.2em] uppercase text-[10px] font-bold">{product.category}</Badge>
-                                <h1 className="font-[style] text-4xl md:text-5xl font-semibold text-neutral-900 mb-3 tracking-tight leading-tight">{product.name}</h1>
+                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-card/50 tracking-[0.2em] uppercase text-[10px] font-bold">{product.category}</Badge>
+                                <h1 className="font-[style] text-4xl md:text-5xl font-semibold text-foreground mb-3 tracking-tight leading-tight">{product.name}</h1>
 
                                 {/* Rating */}
                                 <div className="flex items-center gap-3 mb-5">
@@ -216,14 +216,14 @@ export default function ProductPage() {
                                         ))}
                                     </div>
                                     <span className="text-sm font-bold">{product.rating}</span>
-                                    <span className="text-sm text-neutral-500 font-medium">({product.reviews} reviews)</span>
+                                    <span className="text-sm text-muted-foreground font-medium">({product.reviews} reviews)</span>
                                 </div>
 
                                 {/* Price */}
                                 <div className="flex items-center gap-4 mb-6">
-                                    <span className="text-3xl font-normal tracking-tight text-neutral-900">₹{product.price}</span>
+                                    <span className="text-3xl font-normal tracking-tight text-foreground">₹{product.price}</span>
                                     {product.originalPrice && (
-                                        <span className="text-xl text-neutral-400 line-through decoration-red-400/50 decoration-2">₹{product.originalPrice}</span>
+                                        <span className="text-xl text-muted-foreground line-through decoration-red-400/50 decoration-2">₹{product.originalPrice}</span>
                                     )}
                                 </div>
 
@@ -245,6 +245,7 @@ export default function ProductPage() {
                                         image: product.image,
                                         inStock: product.inStock,
                                     }}
+                                    large={true}
                                     stopClickPropagation={false}
                                     className="max-w-md"
                                 />
@@ -263,7 +264,7 @@ export default function ProductPage() {
 
                             {/* Features */}
                             <div className="space-y-4">
-                                <h3 className="font-[style] text-2xl font-medium text-neutral-900 tracking-tight">Premium Features</h3>
+                                <h3 className="font-[style] text-2xl font-medium text-foreground tracking-tight">Premium Features</h3>
                                 <div className="grid grid-cols-1 gap-3">
                                     {product.features.map((feature: string, index: number) => (
                                         <div key={index} className="flex items-center gap-3 group">
@@ -280,19 +281,19 @@ export default function ProductPage() {
 
                             {/* Shipping Info */}
                             <div className="grid grid-cols-3 gap-3">
-                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-white border border-neutral-100 shadow-sm">
-                                    <Truck className="w-6 h-6 mb-2 text-neutral-800" />
-                                    <span className="text-[10px] font-black uppercase text-neutral-400 mb-1">Shipping</span>
+                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
+                                    <Truck className="w-6 h-6 mb-2 text-foreground" />
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Shipping</span>
                                     <span className="text-xs font-bold leading-tight">Free over ₹4,999</span>
                                 </div>
-                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-white border border-neutral-100 shadow-sm">
-                                    <Shield className="w-6 h-6 mb-2 text-neutral-800" />
-                                    <span className="text-[10px] font-black uppercase text-neutral-400 mb-1">Warranty</span>
+                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
+                                    <Shield className="w-6 h-6 mb-2 text-foreground" />
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Warranty</span>
                                     <span className="text-xs font-bold leading-tight">100% Quality</span>
                                 </div>
-                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-white border border-neutral-100 shadow-sm">
-                                    <RotateCcw className="w-6 h-6 mb-2 text-neutral-800" />
-                                    <span className="text-[10px] font-black uppercase text-neutral-400 mb-1">Returns</span>
+                                <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
+                                    <RotateCcw className="w-6 h-6 mb-2 text-foreground" />
+                                    <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Returns</span>
                                     <span className="text-xs font-bold leading-tight">30 Days Easy</span>
                                 </div>
                             </div>
@@ -302,34 +303,34 @@ export default function ProductPage() {
 
                 {/* Tabs Section */}
                 <Tabs defaultValue="description" className="mb-16">
-                    <TabsList className="flex h-auto min-h-11 w-full flex-nowrap items-center justify-start gap-1 rounded-xl border border-neutral-200 bg-neutral-100/80 p-1 backdrop-blur-sm sm:min-h-12 sm:gap-2 sm:rounded-2xl sm:p-1.5 overflow-y-hidden overflow-x-auto lg:overflow-x-visible [scrollbar-width:thin]">
+                    <TabsList className="flex h-auto min-h-11 w-full flex-nowrap items-center justify-start gap-1 rounded-xl border border-border bg-neutral-100/80 p-1 backdrop-blur-sm sm:min-h-12 sm:gap-2 sm:rounded-2xl sm:p-1.5 overflow-y-hidden overflow-x-auto lg:overflow-x-visible [scrollbar-width:thin]">
                         <TabsTrigger
                             value="description"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
+                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
                         >
                             Description
                         </TabsTrigger>
                         <TabsTrigger
                             value="scent"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
+                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
                         >
                             Scent Profile
                         </TabsTrigger>
                         <TabsTrigger
                             value="reviews"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
+                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
                         >
                             Reviews ({product.reviews})
                         </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="description" className="mt-6">
-                        <div className="p-6 sm:p-10 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-6">
+                        <div className="p-6 sm:p-10 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm space-y-6">
                             <div className="prose max-w-none">
                                 <p className="text-neutral-700 leading-relaxed tracking-wide text-lg">
                                     {product.description}
                                 </p>
-                                <h3 className="font-[style] text-2xl font-medium mt-10 mb-5 tracking-tight text-neutral-900">What Makes It Special</h3>
+                                <h3 className="font-[style] text-2xl font-medium mt-10 mb-5 tracking-tight text-foreground">What Makes It Special</h3>
                                 <p className="text-neutral-600 leading-relaxed tracking-wide">
                                     {product.name} is part of our living catalog: details and inventory are maintained in our database, while photography is rendered from curated assets in the public gallery so the storefront stays fast and consistent.
                                 </p>
@@ -341,7 +342,7 @@ export default function ProductPage() {
                     </TabsContent>
 
                     <TabsContent value="scent" className="mt-6">
-                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm">
+                        <div className="p-4 sm:p-8 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm">
                             <div className="space-y-6">
                                 <div>
                                     <h3 className="font-semibold text-lg mb-2 tracking-wide">Top Notes</h3>
@@ -362,7 +363,7 @@ export default function ProductPage() {
                     </TabsContent>
 
                     <TabsContent value="reviews" className="mt-6">
-                        <div className="p-4 sm:p-8 border border-neutral-200 rounded-xl sm:rounded-2xl bg-white shadow-sm space-y-6 tracking-wide">
+                        <div className="p-4 sm:p-8 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm space-y-6 tracking-wide">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
                                     <div className="flex items-center gap-3 mb-2">
@@ -398,7 +399,7 @@ export default function ProductPage() {
                 {/* Related Products */}
                 <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>
                 {relatedProducts.length === 0 ? (
-                    <p className="text-neutral-500 text-sm py-4">More items in this category will appear here once they are available.</p>
+                    <p className="text-muted-foreground text-sm py-4">More items in this category will appear here once they are available.</p>
                 ) : (
                     <div className="overflow-hidden">
                         <Swiper

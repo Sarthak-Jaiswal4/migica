@@ -92,8 +92,8 @@ export default function CheckoutPage() {
         setFormData({ ...formData, [e.target.id]: e.target.value })
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault()
         if (items.length === 0) {
             setError("Your cart is empty.")
             return
@@ -129,7 +129,7 @@ export default function CheckoutPage() {
     /* ─── SUCCESS SCREEN ─── */
     if (success) {
         return (
-            <div className='min-h-screen w-full bg-[#F6F4F1] flex flex-col'>
+            <div className='min-h-screen w-full bg-background flex flex-col'>
                 <Headers />
                 <main className='flex-grow flex items-center justify-center px-4 pt-28 pb-16'>
                     {/* Inline keyframes for the animated success */}
@@ -207,7 +207,7 @@ export default function CheckoutPage() {
                     />
 
                     <div
-                        className='w-full max-w-lg rounded-[2rem] p-10 sm:p-14 text-center relative overflow-hidden z-10 bg-transparent lg:bg-white shadow-none lg:shadow-2xl lg:shadow-neutral-900/10'
+                        className='w-full max-w-lg rounded-[2rem] p-10 sm:p-14 text-center relative overflow-hidden z-10 bg-transparent lg:bg-card shadow-none lg:shadow-2xl lg:shadow-neutral-900/10'
                         style={{ animation: 'successCardIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards' }}
                     >
                         {/* Blush background inside card — desktop only (mobile uses full-page reveal) */}
@@ -298,7 +298,7 @@ export default function CheckoutPage() {
                             </div>
 
                             <h2
-                                className="text-3xl font-bold tracking-tight text-neutral-900"
+                                className="text-3xl font-bold tracking-tight text-foreground"
                                 style={{ animation: 'fadeUp 0.5s ease-out 1.4s both' }}
                             >
                                 Order Confirmed!
@@ -310,8 +310,8 @@ export default function CheckoutPage() {
                                 Your shipping details have been saved and a receipt has been sent to your email.
                             </p>
                             <Button
-                                onClick={() => router.push('/')}
-                                className='mt-8 h-12 px-10 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl font-semibold shadow-lg shadow-neutral-900/15 transition-all active:scale-[0.98]'
+                                onClick={() => router.push('/shop/all')}
+                                className='mt-8 h-12 px-10 bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] rounded-xl font-semibold shadow-lg shadow-brand/15 transition-all active:scale-[0.98]'
                                 style={{ animation: 'fadeUp 0.5s ease-out 1.8s both' }}
                             >
                                 Continue Shopping
@@ -325,33 +325,33 @@ export default function CheckoutPage() {
 
     /* ─── CHECKOUT FORM ─── */
     return (
-        <div className='min-h-screen w-full bg-[#F6F4F1] flex flex-col'>
+        <div className='min-h-screen w-full bg-background flex flex-col'>
             <Headers />
 
             <main className='flex-grow pt-28 pb-16 px-4'>
                 <div className='max-w-6xl mx-auto'>
                     {/* Breadcrumb */}
-                    <Link href='/' className='inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-900 transition-colors mb-8 group'>
+                    <Link href='/' className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 group'>
                         <ArrowLeft className='w-4 h-4 group-hover:-translate-x-1 transition-transform' />
                         Continue Shopping
                     </Link>
 
-                    <h1 className='text-4xl font-bold tracking-tight text-neutral-900 mb-2'>Checkout</h1>
-                    <p className='text-neutral-500 text-sm mb-10'>Complete your order by filling in the details below</p>
+                    <h1 className='text-4xl font-bold tracking-tight text-foreground mb-2'>Checkout</h1>
+                    <p className='text-muted-foreground text-sm mb-10'>Complete your order by filling in the details below</p>
 
                     <div className='flex flex-col lg:flex-row gap-8'>
                         {/* ─── LEFT: FORM ─── */}
                         <div className='flex-1'>
                             <form onSubmit={handleSubmit} className='space-y-8'>
                                 {/* Shipping Info */}
-                                <div className='bg-white rounded-2xl p-8 shadow-lg shadow-neutral-900/[0.04] border border-neutral-100'>
+                                <div className='bg-card rounded-2xl p-8 shadow-lg shadow-neutral-900/[0.04] border border-border'>
                                     <div className='flex items-center gap-3 mb-6'>
                                         <div className='p-2.5 bg-amber-50 border border-amber-100 rounded-xl'>
                                             <MapPin className='h-5 w-5 text-amber-600' />
                                         </div>
                                         <div>
-                                            <h2 className='text-lg font-bold text-neutral-900'>Shipping Address</h2>
-                                            <p className='text-xs text-neutral-400'>
+                                            <h2 className='text-lg font-bold text-foreground'>Shipping Address</h2>
+                                            <p className='text-xs text-muted-foreground'>
                                                 {hasSavedAddress ? 'Your saved address has been loaded — feel free to update it.' : 'Where should we deliver your order?'}
                                             </p>
                                         </div>
@@ -363,7 +363,7 @@ export default function CheckoutPage() {
                                             <Input
                                                 id='name'
                                                 placeholder='John Doe'
-                                                className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                                className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                                 value={formData.name}
                                                 onChange={handleChange}
                                                 required
@@ -374,7 +374,7 @@ export default function CheckoutPage() {
                                             <Input
                                                 id='address'
                                                 placeholder='123 Magic Street, Apt 4B'
-                                                className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                                className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                                 value={formData.address}
                                                 onChange={handleChange}
                                                 required
@@ -386,7 +386,7 @@ export default function CheckoutPage() {
                                                 <Input
                                                     id='city'
                                                     placeholder='Mumbai'
-                                                    className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                                    className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                                     value={formData.city}
                                                     onChange={handleChange}
                                                     required
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
                                                 <Input
                                                     id='zipCode'
                                                     placeholder='400001'
-                                                    className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                                    className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                                     value={formData.zipCode}
                                                     onChange={handleChange}
                                                     required
@@ -409,7 +409,7 @@ export default function CheckoutPage() {
                                             <Input
                                                 id='country'
                                                 placeholder='India'
-                                                className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                                className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                                 value={formData.country}
                                                 onChange={handleChange}
                                                 required
@@ -429,8 +429,9 @@ export default function CheckoutPage() {
                                 {/* Submit – visible on mobile, hidden on desktop (appears in sidebar) */}
                                 <div className='lg:hidden'>
                                     <Button
-                                        type='submit'
-                                        className='w-full h-14 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl transition-all duration-300 font-semibold text-base shadow-lg shadow-neutral-900/15 active:scale-[0.98] disabled:opacity-60'
+                                        type='button'
+                                        onClick={() => handleSubmit()}
+                                        className='w-full h-14 bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] rounded-xl transition-all duration-300 font-semibold text-base shadow-lg shadow-brand/15 active:scale-[0.98] disabled:opacity-60'
                                         disabled={loading || items.length === 0}
                                     >
                                         {loading ? (
@@ -445,15 +446,15 @@ export default function CheckoutPage() {
 
                         {/* ─── RIGHT: ORDER SUMMARY ─── */}
                         <div className='w-full lg:w-[400px] shrink-0'>
-                            <div className='bg-white rounded-2xl shadow-lg shadow-neutral-900/[0.04] border border-neutral-100 overflow-hidden lg:sticky lg:top-28'>
+                            <div className='bg-card rounded-2xl shadow-lg shadow-neutral-900/[0.04] border border-border overflow-hidden lg:sticky lg:top-28'>
                                 {/* Header */}
-                                <div className='p-6 border-b border-neutral-100 flex items-center gap-3'>
+                                <div className='p-6 border-b border-border flex items-center gap-3'>
                                     <div className='p-2.5 bg-amber-50 border border-amber-100 rounded-xl'>
                                         <Package className='h-5 w-5 text-amber-600' />
                                     </div>
                                     <div>
-                                        <h2 className='text-lg font-bold text-neutral-900'>Order Summary</h2>
-                                        <p className='text-xs text-neutral-400'>{items.length} {items.length === 1 ? 'item' : 'items'}</p>
+                                        <h2 className='text-lg font-bold text-foreground'>Order Summary</h2>
+                                        <p className='text-xs text-muted-foreground'>{items.length} {items.length === 1 ? 'item' : 'items'}</p>
                                     </div>
                                 </div>
 
@@ -461,7 +462,7 @@ export default function CheckoutPage() {
                                 <div className='p-6 space-y-4 max-h-72 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent'>
                                     {items.length > 0 ? items.map(item => (
                                         <div key={item.id} className='flex gap-4'>
-                                            <div className='relative h-16 w-16 rounded-xl overflow-hidden bg-[#F6F4F1] border border-neutral-100 shrink-0'>
+                                            <div className='relative h-16 w-16 rounded-xl overflow-hidden bg-background border border-border shrink-0'>
                                                 <Image
                                                     src={item.image}
                                                     alt={item.name}
@@ -473,13 +474,13 @@ export default function CheckoutPage() {
                                                 </span>
                                             </div>
                                             <div className='flex-1 min-w-0'>
-                                                <h4 className='text-sm font-semibold text-neutral-900 truncate'>{item.name}</h4>
-                                                <p className='text-[11px] text-neutral-400 uppercase tracking-wider'>{item.category}</p>
+                                                <h4 className='text-sm font-semibold text-foreground truncate'>{item.name}</h4>
+                                                <p className='text-[11px] text-muted-foreground uppercase tracking-wider'>{item.category}</p>
                                             </div>
-                                            <span className='text-sm font-semibold text-neutral-800 shrink-0'>₹{(item.price * item.quantity).toFixed(2)}</span>
+                                            <span className='text-sm font-semibold text-foreground shrink-0'>₹{(item.price * item.quantity).toFixed(2)}</span>
                                         </div>
                                     )) : (
-                                        <p className='text-sm text-neutral-400 text-center py-4'>Your cart is empty</p>
+                                        <p className='text-sm text-muted-foreground text-center py-4'>Your cart is empty</p>
                                     )}
                                 </div>
 
@@ -488,7 +489,7 @@ export default function CheckoutPage() {
                                     <div className='flex items-center gap-2'>
                                         <Input
                                             placeholder='Promo code (e.g. MAGICA10)'
-                                            className='h-10 bg-[#F6F4F1]/50 border-neutral-200 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-sm'
+                                            className='h-10 bg-background/50 border-border rounded-lg focus:ring-amber-500 focus:border-amber-500 text-sm'
                                             value={couponCode}
                                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                                             disabled={couponApplied}
@@ -496,8 +497,8 @@ export default function CheckoutPage() {
                                         <Button
                                             type='button'
                                             onClick={handleApplyCoupon}
+                                            className={`h-10 px-4 rounded-lg font-semibold transition-all ${couponApplied ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810]'}`}
                                             disabled={!couponCode || couponApplied || items.length === 0}
-                                            className={`h-10 px-4 rounded-lg font-semibold transition-all ${couponApplied ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-neutral-900 text-white hover:bg-neutral-800'}`}
                                         >
                                             {couponApplied ? 'Applied' : 'Apply'}
                                         </Button>
@@ -509,7 +510,7 @@ export default function CheckoutPage() {
                                 <div className='px-6 pb-6 pt-2'>
                                     <Separator className='bg-neutral-100 mb-4' />
                                     <div className='space-y-2 mb-4'>
-                                        <div className='flex justify-between text-sm text-neutral-500'>
+                                        <div className='flex justify-between text-sm text-muted-foreground'>
                                             <span>Subtotal</span>
                                             <span>₹{subtotal.toFixed(2)}</span>
                                         </div>
@@ -519,13 +520,13 @@ export default function CheckoutPage() {
                                                 <span>-₹{discountAmount.toFixed(2)}</span>
                                             </div>
                                         )}
-                                        <div className='flex justify-between text-sm text-neutral-500'>
+                                        <div className='flex justify-between text-sm text-muted-foreground'>
                                             <span>Shipping</span>
                                             <span>₹{shipping.toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <Separator className='bg-neutral-100 mb-4' />
-                                    <div className='flex justify-between text-lg font-bold text-neutral-900'>
+                                    <div className='flex justify-between text-lg font-bold text-foreground'>
                                         <span>Total</span>
                                         <span>₹{total.toFixed(2)}</span>
                                     </div>
@@ -533,8 +534,8 @@ export default function CheckoutPage() {
                                     {/* Desktop CTA */}
                                     <Button
                                         type='button'
-                                        onClick={handleSubmit as any}
-                                        className='hidden lg:flex w-full h-14 mt-6 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl transition-all duration-300 font-semibold text-base shadow-lg shadow-neutral-900/15 active:scale-[0.98] disabled:opacity-60 items-center justify-center'
+                                        onClick={() => handleSubmit()}
+                                        className='hidden lg:flex w-full h-14 mt-6 bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] rounded-xl transition-all duration-300 font-semibold text-base shadow-lg shadow-brand/15 active:scale-[0.98] disabled:opacity-60 items-center justify-center'
                                         disabled={loading || items.length === 0}
                                     >
                                         {loading ? (
@@ -545,7 +546,7 @@ export default function CheckoutPage() {
                                     </Button>
 
                                     {/* Trust badges */}
-                                    <div className='flex items-center justify-center gap-2 mt-5 text-neutral-400'>
+                                    <div className='flex items-center justify-center gap-2 mt-5 text-muted-foreground'>
                                         <Shield className='w-3.5 h-3.5' />
                                         <span className='text-[10px] uppercase tracking-widest font-bold'>Secure Checkout</span>
                                     </div>

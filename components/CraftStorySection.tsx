@@ -9,7 +9,7 @@ const CRAFT_IMAGE = "/10.jpeg";
 export function CraftStorySection() {
   return (
     <section
-      className="w-full border-y border-neutral-200/60 bg-[#F4EFE8] py-20"
+      className="w-full border-y border-border/60 bg-[#F4EFE8] py-20"
       aria-labelledby="craft-story-heading"
     >
       <div className="mx-auto grid max-w-[1600px] md:grid-cols-2 md:items-stretch">
@@ -26,8 +26,8 @@ export function CraftStorySection() {
         </div>
 
         <div className="flex flex-col justify-center px-6 py-14 sm:px-10 md:py-16 lg:px-16">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-500">How Magica comes together</p>
-          <h2 id="craft-story-heading" className="mt-3 font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">How Magica comes together</p>
+          <h2 id="craft-story-heading" className="mt-3 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Small batches, real people
           </h2>
           <div className="mt-8 space-y-5 text-base leading-relaxed text-neutral-700 sm:text-[17px]">

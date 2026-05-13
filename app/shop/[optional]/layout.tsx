@@ -13,8 +13,7 @@ export async function generateMetadata(
   
   const categoryName = slug === "all" ? "All Collections" : decodeURIComponent(slug);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const canonicalUrl = slug === "all" ? `${baseUrl}/shop/all` : `${baseUrl}/shop/${slug}`;
+  const canonicalUrl = slug === "all" ? `/shop/all` : `/shop/${slug}`;
 
   return {
     title: `${categoryName} | Shop | Silver Star`,

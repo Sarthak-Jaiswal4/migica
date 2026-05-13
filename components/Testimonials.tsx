@@ -90,10 +90,10 @@ export function Testimonials() {
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <header className="mx-auto mb-14 max-w-2xl text-center md:mb-20">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-500">Real voices</p>
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Real voices</p>
           <h2
             id="testimonials-heading"
-            className="font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.75rem] md:leading-[1.1]"
+            className="font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] md:leading-[1.1]"
           >
             What people actually bought — and what stuck
           </h2>
@@ -105,43 +105,43 @@ export function Testimonials() {
 
         <div className="grid auto-rows-auto gap-4 md:grid-cols-12 md:gap-5">
           {/* Featured quote — spans wide */}
-          <article className="group relative rounded-2xl border border-neutral-200/80 bg-[#FFFBF7] p-6 shadow-sm transition-shadow duration-300 hover:shadow-md md:col-span-7 md:p-8">
+          <article className="group relative rounded-2xl border border-border/80 bg-[#FFFBF7] p-6 shadow-sm transition-shadow duration-300 hover:shadow-md md:col-span-7 md:p-8">
             <Quote
               className="absolute right-6 top-6 h-10 w-10 text-amber-900/10 transition-colors group-hover:text-amber-900/[0.14]"
               strokeWidth={1}
               aria-hidden
             />
             <p className="text-[10px] font-semibold uppercase tracking-widest text-amber-900/70">Featured note</p>
-            <blockquote className="mt-3 font-[style] text-xl leading-snug text-neutral-900 sm:text-2xl">
-              <span className="text-neutral-800">&ldquo;{textStories[0].body}&rdquo;</span>
+            <blockquote className="mt-3 font-[style] text-xl leading-snug text-foreground sm:text-2xl">
+              <span className="text-foreground">&ldquo;{textStories[0].body}&rdquo;</span>
             </blockquote>
-            <footer className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-neutral-200/70 pt-5">
+            <footer className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-border/70 pt-5">
               <div>
-                <p className="text-sm font-semibold text-neutral-900">{textStories[0].firstName}</p>
+                <p className="text-sm font-semibold text-foreground">{textStories[0].firstName}</p>
                 <p className="mt-1 text-xs text-neutral-600">
                   Bought{" "}
-                  <cite className="font-medium not-italic text-neutral-800">{textStories[0].product}</cite>
+                  <cite className="font-medium not-italic text-foreground">{textStories[0].product}</cite>
                   {textStories[0].location ? (
-                    <span className="text-neutral-500"> · {textStories[0].location}</span>
+                    <span className="text-muted-foreground"> · {textStories[0].location}</span>
                   ) : null}
                 </p>
               </div>
               <div className="text-right">
                 <StarRow filled={5} of={5} />
-                <p className="mt-1 text-[11px] font-medium text-neutral-500">{textStories[0].ratingLine}</p>
+                <p className="mt-1 text-[11px] font-medium text-muted-foreground">{textStories[0].ratingLine}</p>
               </div>
             </footer>
           </article>
 
           {/* UGC-style */}
-          <article className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-sm md:col-span-5">
-            <div className="flex items-center gap-3 border-b border-neutral-100 px-4 py-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-rose-200 to-amber-100 text-xs font-bold text-neutral-800">
+          <article className="flex flex-col overflow-hidden rounded-2xl border border-border/90 bg-card shadow-sm md:col-span-5">
+            <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-rose-200 to-amber-100 text-xs font-bold text-foreground">
                 {ugcStory.firstName[0]}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-neutral-900">@{ugcStory.handle}</p>
-                <p className="text-[11px] text-neutral-500">
+                <p className="truncate text-sm font-semibold text-foreground">@{ugcStory.handle}</p>
+                <p className="text-[11px] text-muted-foreground">
                   Customer photo · <span className="text-neutral-700">Bought {ugcStory.product}</span>
                 </p>
               </div>
@@ -154,7 +154,7 @@ export function Testimonials() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" aria-hidden />
             </div>
             <p className="px-4 py-3 text-sm leading-relaxed text-neutral-700">{ugcStory.caption}</p>
-            <p className="border-t border-neutral-100 px-4 py-2.5 text-[11px] text-neutral-500">
+            <p className="border-t border-border px-4 py-2.5 text-[11px] text-muted-foreground">
               Screenshots / embeds from Instagram or WhatsApp status — swap with real posts when you have permission.
             </p>
           </article>
@@ -173,7 +173,7 @@ export function Testimonials() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/20 to-transparent" />
                 <button
                   type="button"
-                  className="group absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-neutral-900 shadow-xl ring-2 ring-white/40 transition hover:scale-105 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+                  className="group absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-card/95 text-foreground shadow-xl ring-2 ring-white/40 transition hover:scale-105 hover:bg-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
                   aria-label="Video testimonial placeholder — add your clip URL in Testimonials.tsx"
                 >
                   <Play className="ml-0.5 h-7 w-7 fill-current" aria-hidden />
@@ -200,14 +200,14 @@ export function Testimonials() {
           </article>
 
           {/* Two shorter quotes — different rating presentation */}
-          <article className="rounded-2xl border border-neutral-200/80 bg-white/90 p-6 shadow-sm md:col-span-6">
-            <blockquote className="text-base leading-relaxed text-neutral-800">&ldquo;{textStories[1].body}&rdquo;</blockquote>
-            <footer className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-neutral-100 pt-4">
+          <article className="rounded-2xl border border-border/80 bg-card/90 p-6 shadow-sm md:col-span-6">
+            <blockquote className="text-base leading-relaxed text-foreground">&ldquo;{textStories[1].body}&rdquo;</blockquote>
+            <footer className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
               <div>
-                <p className="text-sm font-semibold text-neutral-900">{textStories[1].firstName}</p>
+                <p className="text-sm font-semibold text-foreground">{textStories[1].firstName}</p>
                 <p className="mt-0.5 text-xs text-neutral-600">
-                  Bought <cite className="font-medium not-italic text-neutral-800">{textStories[1].product}</cite>
-                  <span className="text-neutral-500"> · {textStories[1].location}</span>
+                  Bought <cite className="font-medium not-italic text-foreground">{textStories[1].product}</cite>
+                  <span className="text-muted-foreground"> · {textStories[1].location}</span>
                 </p>
               </div>
               <p className="max-w-[140px] text-right text-[11px] font-medium leading-snug text-amber-900/80">
@@ -216,14 +216,14 @@ export function Testimonials() {
             </footer>
           </article>
 
-          <article className="rounded-2xl border border-neutral-200/80 bg-[#F9F5F0] p-6 shadow-sm md:col-span-6">
-            <blockquote className="text-base leading-relaxed text-neutral-800">&ldquo;{textStories[2].body}&rdquo;</blockquote>
-            <footer className="mt-5 flex flex-wrap items-end justify-between gap-3 border-t border-neutral-200/60 pt-4">
+          <article className="rounded-2xl border border-border/80 bg-[#F9F5F0] p-6 shadow-sm md:col-span-6">
+            <blockquote className="text-base leading-relaxed text-foreground">&ldquo;{textStories[2].body}&rdquo;</blockquote>
+            <footer className="mt-5 flex flex-wrap items-end justify-between gap-3 border-t border-border/60 pt-4">
               <div>
-                <p className="text-sm font-semibold text-neutral-900">{textStories[2].firstName}</p>
+                <p className="text-sm font-semibold text-foreground">{textStories[2].firstName}</p>
                 <p className="mt-0.5 text-xs text-neutral-600">
-                  Bought <cite className="font-medium not-italic text-neutral-800">{textStories[2].product}</cite>
-                  <span className="text-neutral-500"> · {textStories[2].location}</span>
+                  Bought <cite className="font-medium not-italic text-foreground">{textStories[2].product}</cite>
+                  <span className="text-muted-foreground"> · {textStories[2].location}</span>
                 </p>
               </div>
               <StarRow filled={5} of={5} />
@@ -231,7 +231,7 @@ export function Testimonials() {
           </article>
         </div>
 
-        <p className="mx-auto mt-12 max-w-xl text-center text-xs leading-relaxed text-neutral-500">
+        <p className="mx-auto mt-12 max-w-xl text-center text-xs leading-relaxed text-muted-foreground">
           <Link href="/shop/all" className="font-medium text-amber-900 underline-offset-2 hover:underline">
             Shop the collection
           </Link>

@@ -131,7 +131,7 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-[#F6F4F1] flex flex-col">
+    <div className="min-h-screen w-full relative bg-background flex flex-col">
       <Headers />
 
       <main className="flex-grow p-4 pt-24 max-w-5xl mx-auto w-full">
@@ -141,30 +141,30 @@ export default function AddProductPage() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/3 space-y-6">
-            <Card className="border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden">
+            <Card className="border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">Product Images</CardTitle>
-                <CardDescription className="font-semibold text-neutral-500">
+                <CardDescription className="font-semibold text-muted-foreground">
                   Upload images to Cloudinary. They will be auto-optimised for the storefront.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Main Image */}
                 <div
-                  className="aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-neutral-200 group cursor-pointer"
+                  className="aspect-square relative rounded-2xl bg-neutral-100 overflow-hidden border border-border group cursor-pointer"
                   onClick={() => mainImageInputRef.current?.click()}
                 >
                   {mainImage ? (
                     <>
                       <Image src={mainImage} alt="Main product image" fill className="object-cover" />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="sm" className="bg-white text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg">
+                        <Button size="sm" className="bg-card text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg">
                           Change Image
                         </Button>
                       </div>
                     </>
                   ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-neutral-400">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-muted-foreground">
                       {isUploading ? (
                         <Loader2 className="h-8 w-8 animate-spin" />
                       ) : (
@@ -187,7 +187,7 @@ export default function AddProductPage() {
                 {/* Gallery Images */}
                 <div className="grid grid-cols-3 gap-3">
                   {galleryImages.map((img, idx) => (
-                    <div key={idx} className="aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-neutral-200 group">
+                    <div key={idx} className="aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-border group">
                       <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
                       <button
                         onClick={() => removeGalleryImage(idx)}
@@ -198,7 +198,7 @@ export default function AddProductPage() {
                     </div>
                   ))}
                   <button
-                    className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-neutral-400 hover:border-amber-500 hover:text-amber-500 transition-all"
+                    className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-amber-500 hover:text-amber-500 transition-all"
                     onClick={() => galleryImageInputRef.current?.click()}
                     disabled={isUploading}
                   >
@@ -224,8 +224,8 @@ export default function AddProductPage() {
           </div>
 
           <div className="lg:w-2/3 space-y-6">
-            <Card className="border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden">
-              <CardHeader className="border-b border-neutral-100 pb-6">
+            <Card className="border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden">
+              <CardHeader className="border-b border-border pb-6">
                 <CardTitle className="text-2xl">New Product Details</CardTitle>
                 <CardDescription>Fill in the information below to add a product</CardDescription>
               </CardHeader>
@@ -241,7 +241,7 @@ export default function AddProductPage() {
                       placeholder="e.g. Enchanted Forest"
                       value={product.name}
                       onChange={handleInputChange}
-                      className="h-12 bg-white border-neutral-200 rounded-xl focus:ring-amber-500"
+                      className="h-12 bg-card border-border rounded-xl focus:ring-amber-500"
                     />
                   </div>
 
@@ -250,7 +250,7 @@ export default function AddProductPage() {
                       Category
                     </Label>
                     <Select value={product.category} onValueChange={handleCategoryChange}>
-                      <SelectTrigger id="category" className="h-12 bg-white border-neutral-200 rounded-xl">
+                      <SelectTrigger id="category" className="h-12 bg-card border-border rounded-xl">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -279,7 +279,7 @@ export default function AddProductPage() {
                       type="number"
                       value={product.price}
                       onChange={handleInputChange}
-                      className="h-12 bg-white border-neutral-200 rounded-xl"
+                      className="h-12 bg-card border-border rounded-xl"
                     />
                   </div>
                 </div>
@@ -294,7 +294,7 @@ export default function AddProductPage() {
                     placeholder="Tell the story of this product..."
                     value={product.description}
                     onChange={handleInputChange}
-                    className="min-h-[120px] bg-white border-neutral-200 rounded-2xl resize-none p-4"
+                    className="min-h-[120px] bg-card border-border rounded-2xl resize-none p-4"
                   />
                 </div>
 
@@ -309,7 +309,7 @@ export default function AddProductPage() {
                       type="number"
                       value={product.quantity}
                       onChange={handleInputChange}
-                      className="h-12 bg-white border-neutral-200 rounded-xl"
+                      className="h-12 bg-card border-border rounded-xl"
                     />
                   </div>
                   <div className="space-y-2">
@@ -319,7 +319,7 @@ export default function AddProductPage() {
                         type="button"
                         onClick={() => setProduct((prev) => ({ ...prev, inStock: !prev.inStock }))}
                         className={`px-6 py-2 rounded-full font-bold transition-all ${
-                          product.inStock ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" : "bg-neutral-200 text-neutral-500"
+                          product.inStock ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" : "bg-neutral-200 text-muted-foreground"
                         }`}
                       >
                         {product.inStock ? "In Stock" : "Out of Stock"}
@@ -328,10 +328,10 @@ export default function AddProductPage() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="bg-neutral-50 p-6 md:p-8 flex flex-col-reverse md:flex-row justify-end gap-4 border-t border-neutral-200">
+              <CardFooter className="bg-neutral-50 p-6 md:p-8 flex flex-col-reverse md:flex-row justify-end gap-4 border-t border-border">
                 <Button
                   variant="outline"
-                  className="rounded-xl h-10 md:h-12 w-full md:w-auto px-8 font-bold border-neutral-200"
+                  className="rounded-xl h-10 md:h-12 w-full md:w-auto px-8 font-bold border-border"
                   onClick={() => router.push("/allproduct")}
                 >
                   Cancel

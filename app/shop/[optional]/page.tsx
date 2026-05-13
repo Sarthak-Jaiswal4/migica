@@ -84,10 +84,10 @@ export default function ShopPage() {
         })
 
     return (
-        <div className="min-h-screen bg-[#F6F4F1]">
+        <div className="min-h-screen bg-background">
             <Headers />
             {/* Header */}
-            <div className="border-b bg-white/80 backdrop-blur-md z-40 pt-16">
+            <div className="border-b bg-card/80 backdrop-blur-md z-40 pt-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between">
@@ -111,16 +111,16 @@ export default function ShopPage() {
                         {/* Search and Sort */}
                         <div className="flex flex-col sm:flex-row gap-4">
                             <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                                 <Input
                                     placeholder="Search candles..."
-                                    className="pl-10 bg-white border-neutral-200 focus-visible:ring-neutral-400"
+                                    className="pl-10 bg-card border-border focus-visible:ring-neutral-400"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
                             <Select value={sortBy} onValueChange={setSortBy}>
-                                <SelectTrigger className="w-full sm:w-[200px] bg-white">
+                                <SelectTrigger className="w-full sm:w-[200px] bg-card">
                                     <SelectValue placeholder="Sort by" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -139,7 +139,7 @@ export default function ShopPage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Filters Sidebar */}
                     <aside className={`lg:w-64 space-y-6 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-                        <Card className="border-neutral-200 shadow-sm">
+                        <Card className="border-border shadow-sm">
                             <CardContent className="p-6 space-y-6">
                                 {/* Categories */}
                                 <div>
@@ -193,7 +193,7 @@ export default function ShopPage() {
                     {/* Product Grid */}
                     <div className="flex-1">
                         {isLoading ? (
-                            <div className="flex flex-col items-center justify-center py-32 text-neutral-500 gap-4">
+                            <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
                                 <Loader2 className="w-8 h-8 animate-spin" />
                                 <p className="text-lg">Loading amazing products...</p>
                             </div>

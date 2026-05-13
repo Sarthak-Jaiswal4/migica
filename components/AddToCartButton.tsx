@@ -22,6 +22,7 @@ type AddToCartButtonProps = {
   compact?: boolean;
   /** Set false when the button is not inside a clickable parent (e.g. wishlist row) */
   stopClickPropagation?: boolean;
+  large?: boolean;
   className?: string;
 };
 
@@ -29,6 +30,7 @@ export function AddToCartButton({
   product,
   compact = false,
   stopClickPropagation = true,
+  large = false,
   className,
 }: AddToCartButtonProps) {
   const [added, setAdded] = useState(false);
@@ -68,15 +70,17 @@ export function AddToCartButton({
   };
 
   return (
-    <div className={cn("relative flex h-9 w-full items-center md:mt-1", className)}>
+    <div className={cn("relative flex w-full items-center md:mt-1", large ? "h-12" : "h-9", className)}>
       <Button
         size="sm"
         disabled={!inStock}
         className={`${
           inStock
-            ? `bg-gray-900 text-white shadow-md hover:bg-amber-500 hover:scale-103 hover:text-white hover:cursor-pointer shadow-black/10 ${added ? "bg-emerald-500 text-white hover:bg-emerald-500 hover:scale-103 hover:text-white hover:cursor-pointer hover:shadow-emerald-500/10 hover:shadow-black/10" : ""}`
-            : "cursor-not-allowed bg-neutral-300 text-neutral-500"
-        } transition-all duration-300 px-4 sm:px-4 h-9 sm:h-9 tracking-tight w-full mx-auto text-sm rounded-full overflow-hidden ${
+            ? `bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] shadow-md hover:bg-[#E8D0C0] hover:text-[#2C1810] hover:scale-103 hover:cursor-pointer shadow-black/10 ${added ? "bg-emerald-500 text-white hover:bg-emerald-500 hover:scale-103 hover:text-white hover:cursor-pointer hover:shadow-emerald-500/10 hover:shadow-black/10" : ""}`
+            : "cursor-not-allowed bg-neutral-300 text-muted-foreground"
+        } transition-all duration-300 px-4 sm:px-4 tracking-tight w-full mx-auto rounded-xl overflow-hidden ${
+          large ? "h-12 sm:h-12 text-md font-normal" : "h-9 sm:h-9 text-sm"
+        } ${
           showControls ? "pointer-events-none absolute scale-90 opacity-0" : "scale-100 opacity-100"
         }`}
         onClick={handleAddToCart}

@@ -10,10 +10,10 @@ import { Footer } from '../../components/Footer'
 function HomeScreen() {
   return (
     <>
-      <div className='w-full h-full relative bg-[#F6F4F1]'>
+      <div className='w-full h-full relative bg-background'>
         <h1 className="sr-only">Handmade Candles, Jewellery & Gifts — Silver Star</h1>
         <Headers />
-        <div className='h-screen w-full bg-[#F6F4F1]'>
+        <div className='h-screen w-full bg-background'>
           <HomePageCarosol />
         </div>
         <CraftStorySection />

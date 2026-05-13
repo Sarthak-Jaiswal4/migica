@@ -50,13 +50,13 @@ export default function LoginPage() {
     }
 
     return (
-        <div className='min-h-screen w-full bg-[#F6F4F1] flex flex-col'>
+        <div className='min-h-screen w-full bg-background flex flex-col'>
             <Headers />
 
             <main className='flex-grow flex items-center justify-center px-4 pt-28 pb-16'>
                 <div
                     className='w-full max-w-5xl flex rounded-[2rem] overflow-hidden shadow-2xl shadow-neutral-900/10 relative'
-                    style={{ background: 'linear-gradient(to right, #EDE4DB 0%, #F2EAE2 20%, #F7F1EC 35%, #FBFAF9 50%, #ffffff 65%)' }}
+                    style={{ background: 'linear-gradient(to right, var(--muted) 0%, var(--card) 20%, var(--background) 65%)' }}
                 >
                     {/* Decorative glows — positioned on the outer wrapper */}
                     <div className='absolute top-0 left-0 w-72 h-72 bg-rose-300/20 blur-[120px] rounded-full -ml-10 -mt-20 pointer-events-none' />
@@ -68,10 +68,10 @@ export default function LoginPage() {
                     />
 
                     {/* Left decorative panel */}
-                    <div className='hidden lg:flex flex-col justify-between w-[45%] text-neutral-800 p-12 relative'>
+                    <div className='hidden lg:flex flex-col justify-between w-[45%] text-foreground p-12 relative'>
 
                         <div className='relative z-10'>
-                            <h2 className='mt-2 font-[style] text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl'>
+                            <h2 className='mt-2 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl'>
                                 Silver Star
                             </h2>
                             <p className='mt-4 text-sm leading-relaxed text-neutral tracking-wide text-neutral-600 sm:text-base'>Artisanal Candles & Luxury Goods</p>
@@ -79,34 +79,34 @@ export default function LoginPage() {
 
                         <div className='relative z-10 space-y-6'>
                             <div className='flex items-start gap-4'>
-                                <div className='p-2.5 bg-white/60 border border-rose-200/50 rounded-xl shrink-0 mt-0.5 shadow-sm'>
+                                <div className='p-2.5 bg-card/60 border border-rose-200/50 rounded-xl shrink-0 mt-0.5 shadow-sm'>
                                     <Sparkles className='h-5 w-5 text-amber-600' />
                                 </div>
                                 <div>
-                                    <h4 className='font-semibold text-sm text-neutral-800'>Hand-Crafted with Love</h4>
-                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Every product is meticulously crafted in small batches for the finest quality.</p>
+                                    <h4 className='font-semibold text-sm text-foreground'>Hand-Crafted with Love</h4>
+                                    <p className='text-muted-foreground text-xs mt-1 leading-relaxed'>Every product is meticulously crafted in small batches for the finest quality.</p>
                                 </div>
                             </div>
                             <div className='flex items-start gap-4'>
-                                <div className='p-2.5 bg-white/60 border border-rose-200/50 rounded-xl shrink-0 mt-0.5 shadow-sm'>
+                                <div className='p-2.5 bg-card/60 border border-rose-200/50 rounded-xl shrink-0 mt-0.5 shadow-sm'>
                                     <Sparkles className='h-5 w-5 text-amber-600' />
                                 </div>
                                 <div>
-                                    <h4 className='font-semibold text-sm text-neutral-800'>Exclusive Collections</h4>
-                                    <p className='text-neutral-500 text-xs mt-1 leading-relaxed'>Access members-only launches, deals & early drops when you sign in.</p>
+                                    <h4 className='font-semibold text-sm text-foreground'>Exclusive Collections</h4>
+                                    <p className='text-muted-foreground text-xs mt-1 leading-relaxed'>Access members-only launches, deals & early drops when you sign in.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <p className='text-neutral-400 text-[11px] relative z-10'>© 2026 Silver Star Inc.</p>
+                        <p className='text-muted-foreground text-[11px] relative z-10'>© 2026 Silver Star Inc.</p>
                     </div>
 
                     {/* Right form panel */}
                     <div className='flex-1 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative'>
                         <div className='max-w-sm mx-auto w-full'>
                             <div className='mb-8'>
-                                <h1 className='text-3xl font-bold tracking-tight text-neutral-900'>Welcome Back</h1>
-                                <p className='text-neutral-500 text-sm mt-2'>Enter your credentials to access your account</p>
+                                <h1 className='text-3xl font-bold tracking-tight text-foreground'>Welcome Back</h1>
+                                <p className='text-muted-foreground text-sm mt-2'>Enter your credentials to access your account</p>
                             </div>
 
                             <form onSubmit={handleSubmit} className='space-y-5'>
@@ -116,7 +116,7 @@ export default function LoginPage() {
                                         id='email'
                                         placeholder='name@example.com'
                                         type='email'
-                                        className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
+                                        className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 transition-colors'
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -134,7 +134,7 @@ export default function LoginPage() {
                                             id='password'
                                             type={showPassword ? 'text' : 'password'}
                                             placeholder='••••••••'
-                                            className='h-12 bg-[#F6F4F1]/50 border-neutral-200 rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 pr-12 transition-colors'
+                                            className='h-12 bg-background/50 border-border rounded-xl focus:ring-amber-500 focus:border-amber-500 focus-visible:ring-amber-500 pr-12 transition-colors'
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             required
@@ -142,7 +142,7 @@ export default function LoginPage() {
                                         <button
                                             type='button'
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className='absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors focus:outline-none'
+                                            className='absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-neutral-600 transition-colors focus:outline-none'
                                         >
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
@@ -158,7 +158,7 @@ export default function LoginPage() {
 
                                 <Button
                                     type='submit'
-                                    className='w-full h-12 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl transition-all duration-300 font-semibold shadow-lg shadow-neutral-900/15 active:scale-[0.98] disabled:opacity-60'
+                                    className='w-full h-12 bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] rounded-xl transition-all duration-300 font-semibold shadow-lg shadow-brand/15 active:scale-[0.98] disabled:opacity-60'
                                     disabled={loading}
                                 >
                                     {loading ? (
@@ -172,12 +172,12 @@ export default function LoginPage() {
                             <div className='mt-8 text-center'>
                                 <div className='relative flex items-center gap-4 mb-6'>
                                     <div className='flex-1 h-px bg-neutral-200' />
-                                    <span className='text-xs text-neutral-400 font-medium uppercase tracking-widest'>New here?</span>
+                                    <span className='text-xs text-muted-foreground font-medium uppercase tracking-widest'>New here?</span>
                                     <div className='flex-1 h-px bg-neutral-200' />
                                 </div>
                                 <Link
                                     href='/register'
-                                    className='inline-flex items-center justify-center w-full h-12 border-2 border-neutral-200 text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 rounded-xl font-semibold transition-all duration-300 text-sm'
+                                    className='inline-flex items-center justify-center w-full h-12 border-2 border-border text-neutral-700 hover:border-neutral-900 hover:text-foreground rounded-xl font-semibold transition-all duration-300 text-sm'
                                 >
                                     Create an Account
                                 </Link>

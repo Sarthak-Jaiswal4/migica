@@ -19,16 +19,16 @@ export default function WishlistPage() {
     .slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#F6F4F1]">
+    <div className="min-h-screen bg-background">
       <Headers />
 
       <main className="mx-auto max-w-5xl px-4 pb-16 pt-32 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-[style] text-3xl font-bold tracking-normal text-neutral-900 sm:text-4xl">
+            <h1 className="font-[style] text-3xl font-bold tracking-normal text-foreground sm:text-4xl">
               Your wishlist
             </h1>
-            <p className="mt-1 text-sm font-medium text-neutral-500">
+            <p className="mt-1 text-sm font-medium text-muted-foreground">
               Saved on this device — sign up later to sync everywhere.
             </p>
           </div>
@@ -38,16 +38,16 @@ export default function WishlistPage() {
         </div>
 
         {wishlist.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-white/60 py-20 text-center">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-card/60 py-20 text-center">
             <div className="mb-4 rounded-full bg-rose-50 p-4">
               <Heart className="h-10 w-10 text-rose-400" strokeWidth={1.5} />
             </div>
-            <h2 className="text-lg font-semibold tracking-tight text-neutral-900">No saved items yet</h2>
-            <p className="mt-2 max-w-sm text-sm font-medium text-neutral-500 px-6 mx-auto">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">No saved items yet</h2>
+            <p className="mt-2 max-w-sm text-sm font-medium text-muted-foreground px-6 mx-auto">
               Tap the heart on any product to build a list of things you love.
             </p>
-            <Button asChild className="mt-6 rounded-full bg-neutral-900 px-8 w-fit mx-auto hover:bg-neutral-700 transition-all duration-300">
-              <Link href="/shop/all" className="text-white">Browse the shop</Link>
+            <Button asChild className="mt-6 rounded-full bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] px-8 w-fit mx-auto transition-all duration-300">
+              <Link href="/shop/all">Explore Collection</Link>
             </Button>
           </div>
         ) : (
@@ -55,7 +55,7 @@ export default function WishlistPage() {
             {wishlist.map((item) => (
               <li
                 key={item.id}
-                className="flex gap-4 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                className="flex gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
               >
                 <Link
                   href={`/product/${item.id}`}
@@ -64,13 +64,13 @@ export default function WishlistPage() {
                   <Image src={item.image} alt={item.name} fill className="object-cover" sizes="112px" />
                 </Link>
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <Link href={`/product/${item.id}`} className="font-semibold pb-1 text-neutral-900 hover:text-amber-700">
+                  <Link href={`/product/${item.id}`} className="font-semibold pb-1 text-foreground hover:text-amber-700">
                     {item.name}
                   </Link>
-                  <Badge variant="outline" className="mb-4 w-fit px-3 py-1 text-neutral-600 bg-white/50">
+                  <Badge variant="outline" className="mb-4 w-fit px-3 py-1 text-neutral-600 bg-card/50">
                     {item.category}
                   </Badge>
-                  <p className="mt-auto pl-1 text-lg font-medium tracking-tight text-neutral-900">₹{item.price}</p>
+                  <p className="mt-auto pl-1 text-lg font-medium tracking-tight text-foreground">₹{item.price}</p>
                   <div className="mt-3 flex flex-wrap items-end gap-3">
                     <div className="min-w-0 flex-1 basis-[min(100%,220px)]">
                       <AddToCartButton
@@ -89,7 +89,7 @@ export default function WishlistPage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="shrink-0 text-neutral-500 hover:text-red-600"
+                      className="shrink-0 text-muted-foreground hover:text-red-600"
                       onClick={() => removeFromWishlist(item.id)}
                       aria-label={`Remove ${item.name} from wishlist`}
                     >
@@ -103,8 +103,8 @@ export default function WishlistPage() {
         )}
 
         {recentNotInWishlist.length > 0 && (
-          <section className="mt-14 border-t border-neutral-200/80 pt-10">
-            <h2 className="mb-4 text-lg font-semibold text-neutral-900">Recently viewed</h2>
+          <section className="mt-14 border-t border-border/80 pt-10">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">Recently viewed</h2>
             <ul className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
               {recentNotInWishlist.map((r) => (
                 <li key={r.id} className="w-28 shrink-0">
@@ -112,7 +112,7 @@ export default function WishlistPage() {
                     <div className="relative mb-2 aspect-square overflow-hidden rounded-lg bg-neutral-100">
                       <Image src={r.image} alt={r.name} fill className="object-cover" sizes="112px" />
                     </div>
-                    <p className="line-clamp-2 text-xs font-medium text-neutral-800">{r.name}</p>
+                    <p className="line-clamp-2 text-xs font-medium text-foreground">{r.name}</p>
                   </Link>
                 </li>
               ))}

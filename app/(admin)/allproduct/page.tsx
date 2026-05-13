@@ -36,19 +36,19 @@ export default function AllProductsPage() {
     }, [])
 
     return (
-        <div className='min-h-screen w-full relative bg-[#F6F4F1] flex flex-col'>
+        <div className='min-h-screen w-full relative bg-background flex flex-col'>
             <Headers />
 
             <main className='flex-grow p-4 pt-24 max-w-7xl mx-auto w-full'>
                 <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8'>
                     <div className='flex gap-2 md:gap-3 flex-col'>
-                        <h1 className='text-2xl md:text-3xl font-bold tracking-normal text-neutral-900'>Product Management</h1>
-                        <p className='text-sm md:text-base text-neutral-500 font-semibold'>View and manage your entire product catalog</p>
+                        <h1 className='text-2xl md:text-3xl font-bold tracking-normal text-foreground'>Product Management</h1>
+                        <p className='text-sm md:text-base text-muted-foreground font-semibold'>View and manage your entire product catalog</p>
                     </div>
                     <div className='flex items-center gap-3 w-full md:w-auto flex-col md:flex-row'>
                         <Button
                             variant="outline"
-                            className='rounded-xl px-4 md:px-6 h-10 md:h-12 text-sm md:text-base font-bold transition-all flex gap-2 w-full md:w-auto border-neutral-200'
+                            className='rounded-xl px-4 md:px-6 h-10 md:h-12 text-sm md:text-base font-bold transition-all flex gap-2 w-full md:w-auto border-border'
                             onClick={() => router.push('/orders')}
                         >
                             <Package size={20} /> Manage Orders
@@ -62,8 +62,8 @@ export default function AllProductsPage() {
                     </div>
                 </div>
 
-                <Card className='border-none shadow-xl bg-white/80 backdrop-blur-md rounded-3xl overflow-hidden'>
-                    <CardHeader className='border-b border-neutral-100 pb-6'>
+                <Card className='border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden'>
+                    <CardHeader className='border-b border-border pb-6'>
                         <CardTitle className='text-lg'>All Products ({products.length})</CardTitle>
                         <CardDescription>Click on any product to edit its details</CardDescription>
                     </CardHeader>
@@ -71,7 +71,7 @@ export default function AllProductsPage() {
                         <div className='overflow-x-auto'>
                             <table className='w-full text-left border-collapse'>
                                 <thead>
-                                    <tr className='bg-neutral-50/50 text-neutral-500 text-xs font-bold uppercase tracking-wider'>
+                                    <tr className='bg-neutral-50/50 text-muted-foreground text-xs font-bold uppercase tracking-wider'>
                                         <th className='px-6 py-4'>Product</th>
                                         <th className='px-6 py-4'>Category</th>
                                         <th className='px-6 py-4'>Price</th>
@@ -83,7 +83,7 @@ export default function AllProductsPage() {
                                 <tbody className='divide-y divide-neutral-100'>
                                     {isLoading ? (
                                         <tr>
-                                            <td colSpan={6} className='px-6 py-12 text-center text-neutral-500'>
+                                            <td colSpan={6} className='px-6 py-12 text-center text-muted-foreground'>
                                                 <div className='flex justify-center flex-col items-center gap-2'>
                                                     <Loader2 className='animate-spin' />
                                                     <p>Loading products...</p>
@@ -92,7 +92,7 @@ export default function AllProductsPage() {
                                         </tr>
                                     ) : products.length === 0 ? (
                                         <tr>
-                                            <td colSpan={6} className='px-6 py-12 text-center text-neutral-500'>
+                                            <td colSpan={6} className='px-6 py-12 text-center text-muted-foreground'>
                                                 No products found.
                                             </td>
                                         </tr>
@@ -105,7 +105,7 @@ export default function AllProductsPage() {
                                             >
                                                 <td className='px-6 py-4'>
                                                     <div className='flex items-center gap-4'>
-                                                        <div className='h-12 w-12 rounded-lg bg-neutral-100 overflow-hidden relative border border-neutral-200'>
+                                                        <div className='h-12 w-12 rounded-lg bg-neutral-100 overflow-hidden relative border border-border'>
                                                             <Image
                                                                 src={product.image || ""}
                                                                 alt={product.name}
@@ -114,17 +114,17 @@ export default function AllProductsPage() {
                                                                 className='object-cover'
                                                             />
                                                         </div>
-                                                        <span className='font-bold text-neutral-900 group-hover:text-amber-600 transition-colors'>
+                                                        <span className='font-bold text-foreground group-hover:text-amber-600 transition-colors'>
                                                             {product.name}
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td className='px-6 py-4'>
-                                                    <Badge variant='outline' className='rounded-full px-3 bg-neutral-100/50 text-neutral-600 border-neutral-200'>
+                                                    <Badge variant='outline' className='rounded-full px-3 bg-neutral-100/50 text-neutral-600 border-border'>
                                                         {product.category}
                                                     </Badge>
                                                 </td>
-                                                <td className='px-6 py-4 font-normal text-neutral-900'>
+                                                <td className='px-6 py-4 font-normal text-foreground'>
                                                     ₹{product.price}
                                                 </td>
                                                 <td className='px-6 py-4 text-neutral-600'>
