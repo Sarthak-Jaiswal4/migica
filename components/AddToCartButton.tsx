@@ -86,17 +86,10 @@ export function AddToCartButton({
             className="flex flex-col transition-transform duration-300 ease-in-out"
             style={{ transform: added ? "translateY(-50%)" : "translateY(0)" }}
           >
-            <span className="flex h-6 items-center justify-center whitespace-nowrap">
-              {inStock ? (
-                <>
-                  <span className="hidden sm:inline">Add to cart</span>
-                  <span className="sm:hidden">Add to cart</span>
-                </>
-              ) : (
-                "Out of stock"
-              )}
+            <span aria-hidden={added} className="flex h-6 items-center justify-center whitespace-nowrap">
+              {inStock ? "Add to cart" : "Out of stock"}
             </span>
-            <span className="flex h-6 items-center justify-center whitespace-nowrap">Added ✓</span>
+            <span aria-hidden={!added} className="flex h-6 items-center justify-center whitespace-nowrap">Added ✓</span>
           </span>
         </span>
       </Button>

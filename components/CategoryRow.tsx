@@ -7,11 +7,22 @@ import { CategoryCarousel } from "./CategoryCarousel";
 export function CategoryRow({ name, products }: { name: string; products: Product[] }) {
   const inlineQuote = getInlineQuoteForCategory(name);
 
+  const getDescriptiveHeading = (cat: string) => {
+    switch (cat.toLowerCase()) {
+      case "candles": return "Handmade Soy Candles";
+      case "jewelry": return "Handcrafted Artisanal Jewelry";
+      case "scarves": return "Premium Woven Scarves";
+      case "gift": return "Thoughtful Curated Gifts";
+      case "t-shirt": return "Soft Cotton Graphic Tees";
+      default: return cat;
+    }
+  };
+
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-gray-200 rounded-lg pt-8 pb-4">
       <div className="mb-8 flex flex-row md:items-end justify-between gap-4">
         <div>
-          <h3 className="text-3xl md:text-4xl tracking-normal font-light text-neutral-900 font-[style]">{name}</h3>
+          <h2 className="text-3xl md:text-4xl tracking-normal font-light text-neutral-900 font-[style]">{getDescriptiveHeading(name)}</h2>
           <p className="text-sm font-medium text-neutral-500 mt-1">{products.length} items</p>
         </div>
         <Button

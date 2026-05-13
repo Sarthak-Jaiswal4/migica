@@ -79,19 +79,19 @@ export function Headers() {
                 {/* Desktop Header */}
                 <div className={`hidden md:flex items-center justify-between w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-8 ${desktopHeaderBg}`}>
                     <div className="flex items-center gap-5">
-                        <h1 className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500" onClick={() => router.push("/")}>Home</h1>
+                        <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500" onClick={() => router.push("/")}>Home</span>
                         <HoverCard openDelay={20} closeDelay={200}>
                             <HoverCardTrigger asChild>
-                                <h1 className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500">Categories</h1>
+                                <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500 block">Categories</span>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-full h-full mt-2" align="center">
                                 <CategoriesDropDown />
                             </HoverCardContent>
                         </HoverCard>
-                        <h1 className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500">Collections</h1>
+                        <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500">Collections</span>
                     </div>
                     <div className="text-3xl font-semibold absolute tracking-tight left-1/2 -translate-x-1/2 cursor-pointer font-[style]" onClick={() => router.push("/")}>
-                        <h1>Silver Star</h1>
+                        <span>Silver Star</span>
                     </div>
                     <div className="flex items-center gap-3">
                         {!isLoggedIn && (
@@ -162,7 +162,7 @@ export function Headers() {
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-3 px-6">
                         <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
-                            <h1>magica</h1>
+                            <span>magica</span>
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -336,7 +336,7 @@ function CategoriesDropDown() {
             {Categories.map((category, index) => (
                 <div key={index} className="flex flex-col px-2" onClick={() => router.push(`/shop/${category.name}`)}>
                     <Image src={category.img} alt={category.name} width={160} height={144} className="w-40 h-36 rounded-lg bg-orange-500 object-cover" />
-                    <h1 className="text-lg font-medium pt-2 w-[60px]">{category.name}</h1>
+                    <span className="text-lg font-medium pt-2 w-[60px] block leading-tight">{category.name}</span>
                     <h4 className="text-sm text-gray-500 w-[120px]">{category.description}</h4>
                 </div>
             ))}

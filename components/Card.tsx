@@ -46,12 +46,9 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
 
                 {/* Price and Action */}
                 <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-neutral-200">
-                    <div>
-                        <p className="hidden sm:block md:text-[12px] font-light tracking-wide text-neutral-500 mb-0.5">Price</p>
-                        <div className="flex gap-2 items-center">
-                            <span className="text-lg sm:text-lg font-normal sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
-                            <span className="text-md text-neutral-400 line-through decoration-2">₹{699}</span>
-                        </div>
+                    <div className="flex gap-2 items-center pb-2">
+                        <span className="text-md text-neutral-400 line-through decoration-2">₹{699}</span>
+                        <span className="text-lg sm:text-lg font-normal sm:font-normal tracking-tight text-neutral-900">₹{product.price}</span>
                     </div>
                     <AddToCartButton
                         product={{

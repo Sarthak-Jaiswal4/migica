@@ -11,12 +11,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  metadataBase: new URL('https://www.silverstar.live'),
+  alternates: {
+    canonical: '/',
+  },
   title: {
-    default: "Silver Star | Artisanal Candles & Luxury Goods",
+    default: "Handmade Candles, Jewellery & Gifts — Silver Star",
     template: "%s | Silver Star",
   },
-  description: "Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.",
+  description: "Shop handcrafted soy candles, jewellery, scarves and gifts. Small-batch, thoughtfully made and delivered across India.",
   keywords: ["candles", "artisanal", "luxury goods", "scarves", "jewelry", "Silver Star", "magica"],
   authors: [{ name: "Silver Star" }],
   creator: "Silver Star",
@@ -30,8 +33,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: "/",
-    title: "Silver Star | Artisanal Candles & Luxury Goods",
-    description: "Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.",
+    title: "Handmade Candles, Jewellery & Gifts — Silver Star",
+    description: "Shop handcrafted soy candles, jewellery, scarves and gifts. Small-batch, thoughtfully made and delivered across India.",
     siteName: "Silver Star",
     images: [
       {
@@ -44,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Silver Star | Artisanal Candles & Luxury Goods",
-    description: "Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.",
+    title: "Handmade Candles, Jewellery & Gifts — Silver Star",
+    description: "Shop handcrafted soy candles, jewellery, scarves and gifts. Small-batch, thoughtfully made and delivered across India.",
     images: ["/10.jpeg"],
   },
   robots: {
@@ -98,7 +101,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className="antialiased"
-        style={{ fontFamily: "'Switzer', sans-serif, 'style" }}
+        style={{ fontFamily: "sans-serif, 'style" }}
       >
         <script
           type="application/ld+json"
