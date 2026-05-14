@@ -1,73 +1,130 @@
-"use client"
-
-import { useEffect } from "react"
-import { Star, Heart, Check, Truck, Shield, RotateCcw } from "lucide-react"
+import { Star, Check, Truck, Shield, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Headers } from "@/components/Headers"
-import { useRouter, useParams } from "next/navigation"
 import { AppImage as Image } from "@/components/AppImage"
-import { CardComponent } from "@/components/Card"
 import { Footer } from "@/components/Footer"
-import { ProductPageSkeleton } from "./ProductPageSkeleton"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { FreeMode, Mousewheel, Pagination } from "swiper/modules"
-import "swiper/css"
-import "swiper/css/pagination"
-import { useUserStore, useProductStore } from "@/store/store"
-import type { ProductDetail } from "@/store/store"
 import { AddToCartButton } from "@/components/AddToCartButton"
+import { notFound } from "next/navigation"
+import connectDB from "@/lib/mongodb"
+import ProductModel from "@/models/Product"
+import mongoose from "mongoose"
+import { WishlistButton, VisitRecorder } from "./ProductInteractions"
+import { ProductImageCarouselMobile } from "./ProductImageCarousel"
+import { ProductRelatedSwiper } from "./ProductRelatedSwiper"
 
-export default function ProductPage() {
-    const params = useParams()
-    const router = useRouter()
-    const { toggleWishlist, isInWishlist, recordVisit } = useUserStore()
-    const fetchProductPageData = useProductStore((state) => state.fetchProductPageData)
-    const productById = useProductStore((state) => state.productById)
-    const relatedByProductId = useProductStore((state) => state.relatedByProductId)
-    const productsPoolById = useProductStore((state) => state.productsPoolById)
-    const loadingById = useProductStore((state) => state.loadingById)
+// ─── server-side data helpers ────────────────────────────────────────────────
 
-    const id = Array.isArray(params.productID) ? params.productID[0] : params.productID;
-    const product: ProductDetail | null = id ? productById[id] : null;
-    const relatedProducts = id ? (relatedByProductId[id] ?? []).map(rId => productsPoolById[rId]).filter(Boolean) : [];
-    const isLoading = id ? loadingById[id] ?? !product : false;
+type RawProduct = {
+    _id: mongoose.Types.ObjectId | string;
+    name: string;
+    slug?: string;
+    category: string;
+    price: number;
+    originalPrice?: number;
+    description?: string;
+    image: string;
+    images?: string[];
+    rating: number;
+    reviews: number;
+    inStock: boolean;
+    quantity: number;
+    features?: string[];
+    scent?: { top: string; middle: string; base: string };
+};
 
-    useEffect(() => {
-        if (!id) return
-        fetchProductPageData(id)
-    }, [id, fetchProductPageData])
+type ProductDetail = {
+    id: string;
+    name: string;
+    slug?: string;
+    category: string;
+    price: number;
+    originalPrice?: number;
+    description?: string;
+    image: string;
+    images: { id: string; url: string; alt: string }[];
+    rating: number;
+    reviews: number;
+    inStock: boolean;
+    quantity: number;
+    features: string[];
+    scent: { top: string; middle: string; base: string };
+};
 
-    useEffect(() => {
-        if (!product) return
-        recordVisit({
-            id: product.id,
-            name: product.name,
-            image: product.image,
-        })
-    }, [product?.id, product?.name, product?.image, recordVisit])
+function normalize(p: RawProduct): ProductDetail {
+    const id = String(p._id);
+    const rawUrls = (Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image]).filter(Boolean) as string[];
+    const urls = Array.from(new Set(rawUrls));
+    const features =
+        Array.isArray(p.features) && p.features.length > 0
+            ? p.features
+            : ["Premium materials", "Small-batch craftsmanship", "Thoughtful packaging", "Designed for everyday ritual"];
 
-    if (isLoading) {
-        return <ProductPageSkeleton />
-    }
+    return {
+        ...p,
+        id,
+        images: urls.map((url, i) => ({ id: `img-${i}`, url, alt: `${p.name} — ${i + 1}` })),
+        features,
+        scent: p.scent?.top ? p.scent : { top: "Opening notes", middle: "Heart notes", base: "Base notes" },
+    };
+}
 
-    if (!product) {
-        return (
-            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-                <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-                <Button onClick={() => router.push('/shop/all')}>Return to Shop</Button>
-            </div>
-        )
-    }
+async function getProduct(id: string): Promise<ProductDetail | null> {
+    await connectDB();
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+    const raw = await ProductModel.findOne(query).lean() as RawProduct | null;
+    return raw ? normalize(raw) : null;
+}
 
-    const wishlisted = isInWishlist(product.id)
+type FlatProduct = Omit<RawProduct, "_id"> & { id: string };
+
+async function getRelated(product: ProductDetail): Promise<FlatProduct[]> {
+    const raws = await ProductModel.find({
+        category: product.category,
+        _id: { $ne: product.id },
+    })
+        .sort({ rating: -1, reviews: -1 })
+        .limit(12)
+        .lean() as RawProduct[];
+
+    return raws.map((r) => ({ ...r, _id: undefined, id: String(r._id) }));
+}
+
+// ─── page ────────────────────────────────────────────────────────────────────
+
+type PageProps = {
+    params: Promise<{ productID: string[] }> | { productID: string[] };
+};
+
+export default async function ProductPage(props: PageProps) {
+    const params = await props.params;
+    const id = params.productID?.[0];
+
+    if (!id) notFound();
+
+    const product = await getProduct(id);
+    if (!product) notFound();
+
+    const relatedProductsRaw = await getRelated(product);
+
+    const productBasic = {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        image: product.image,
+        inStock: product.inStock,
+    };
 
     return (
         <div className="min-h-screen bg-background">
+            {/* Record this visit client-side (no visible UI) */}
+            <VisitRecorder product={{ id: product.id, name: product.name, image: product.image }} />
+
             <Headers />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20 overflow-x-clip">
@@ -95,65 +152,15 @@ export default function ProductPage() {
                 <div className="flex flex-col lg:flex-row gap-12 mb-16 lg:items-start">
                     {/* Images Column */}
                     <div className="w-full lg:w-[55%]">
-                        {/* Mobile: Horizontal Swiper */}
-                        <div className="lg:hidden">
-                            <Swiper
-                                modules={[Pagination]}
-                                pagination={{ clickable: true }}
-                                spaceBetween={20}
-                                slidesPerView={1}
-                                className="w-full rounded-sm overflow-hidden [&_.swiper-pagination-bullet-active]:!bg-neutral-900"
-                            >
-                                {product.images.slice(0, 2).map((image: { id: string; url: string; alt: string }, index: number) => (
-                                    <SwiperSlide key={image.id}>
-                                        <div className="w-full">
-                                            <Image
-                                                src={image.url}
-                                                alt={image.alt}
-                                                width={1200}
-                                                height={1600}
-                                                className="w-full h-auto object-contain"
-                                                sizes="100vw"
-                                                priority={index === 0}
-                                            />
-                                            {/* {index === 0 && product.originalPrice && (
-                                                <Badge className="absolute top-4 left-4 bg-red-500 text-white">
-                                                    Save ${(product.originalPrice - product.price).toFixed(2)}
-                                                </Badge>
-                                            )} */}
-                                            {index === 0 && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    className="absolute top-4 right-4 bg-card/90 hover:bg-card"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        toggleWishlist({
-                                                            id: product.id,
-                                                            name: product.name,
-                                                            category: product.category,
-                                                            price: product.price,
-                                                            image: product.image,
-                                                            inStock: product.inStock,
-                                                        })
-                                                    }}
-                                                    aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                                                >
-                                                    <Heart className={`w-5 h-5 ${wishlisted ? "fill-rose-600 text-rose-600" : ""}`} />
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                        </div>
+                        {/* Mobile: Swiper carousel (client) */}
+                        <ProductImageCarouselMobile images={product.images} product={productBasic} />
 
-                        {/* Desktop: Stacked Vertical Images (Scrolling) */}
+                        {/* Desktop: Stacked Vertical Images */}
                         <div className="hidden lg:flex flex-col gap-6">
-                            {product.images.slice(0, 2).map((image: { id: string; url: string; alt: string }, index: number) => (
+                            {product.images.slice(0, 2).map((image, index) => (
                                 <div
                                     key={image.id}
-                                    className="w-full rounded-2xl overflow-hidden shadow-sm border border-border"
+                                    className="w-full rounded-2xl overflow-hidden shadow-sm border border-border relative"
                                 >
                                     <Image
                                         src={image.url}
@@ -164,43 +171,22 @@ export default function ProductPage() {
                                         sizes="55vw"
                                         priority={index === 0}
                                     />
-                                    {/* {index === 0 && product.originalPrice && (
-                                        <Badge className="absolute top-6 left-6 bg-red-500 text-white px-3 py-1 text-sm font-bold shadow-lg">
-                                            Save ${(product.originalPrice - product.price).toFixed(2)}
-                                        </Badge>
-                                    )} */}
-                                    {index === 0 && (
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="absolute top-6 right-6 bg-card/95 hover:bg-card shadow-md border-none rounded-full h-12 w-12"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                toggleWishlist({
-                                                    id: product.id,
-                                                    name: product.name,
-                                                    category: product.category,
-                                                    price: product.price,
-                                                    image: product.image,
-                                                    inStock: product.inStock,
-                                                })
-                                            }}
-                                            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                                        >
-                                            <Heart className={`w-6 h-6 ${wishlisted ? "fill-rose-600 text-rose-600 border-none" : ""}`} />
-                                        </Button>
-                                    )}
+                                    {index === 0 && <WishlistButton product={productBasic} />}
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Product Details (Now on the Left — Pinned/Sticky) */}
-                        <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-20">
-                            <div className="space-y-6">
+                    {/* Product Details — Sticky */}
+                    <div className="w-full lg:w-[45%] lg:flex-shrink-0 lg:sticky lg:top-20">
+                        <div className="space-y-6">
                             <div>
-                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-card/50 tracking-[0.2em] uppercase text-[10px] font-bold">{product.category}</Badge>
-                                <h1 className="font-[style] text-4xl md:text-5xl font-semibold text-foreground mb-3 tracking-tight leading-tight">{product.name}</h1>
+                                <Badge variant="outline" className="mb-4 px-3 py-1 border-neutral-300 text-neutral-600 bg-card/50 tracking-[0.2em] uppercase text-[10px] font-bold">
+                                    {product.category}
+                                </Badge>
+                                <h1 className="font-[style] text-4xl md:text-5xl font-semibold text-foreground mb-3 tracking-tight leading-tight">
+                                    {product.name}
+                                </h1>
 
                                 {/* Rating */}
                                 <div className="flex items-center gap-3 mb-5">
@@ -222,9 +208,9 @@ export default function ProductPage() {
                                 {/* Price */}
                                 <div className="flex items-center gap-4 mb-6">
                                     <span className="text-3xl font-normal tracking-tight text-foreground">₹{product.price}</span>
-                                    {product.originalPrice && (
+                                    {product.originalPrice ? (
                                         <span className="text-xl text-muted-foreground line-through decoration-red-400/50 decoration-2">₹{product.originalPrice}</span>
-                                    )}
+                                    ) : null}
                                 </div>
 
                                 <div className="border-l border-neutral-900/20 pl-4 sm:pl-5 mb-4">
@@ -237,14 +223,7 @@ export default function ProductPage() {
                             {/* Quantity & Add to Cart */}
                             <div className="space-y-6">
                                 <AddToCartButton
-                                    product={{
-                                        id: product.id,
-                                        name: product.name,
-                                        category: product.category,
-                                        price: product.price,
-                                        image: product.image,
-                                        inStock: product.inStock,
-                                    }}
+                                    product={productBasic}
                                     large={true}
                                     stopClickPropagation={false}
                                     className="max-w-md"
@@ -266,7 +245,7 @@ export default function ProductPage() {
                             <div className="space-y-4">
                                 <h3 className="font-[style] text-2xl font-medium text-foreground tracking-tight">Premium Features</h3>
                                 <div className="grid grid-cols-1 gap-3">
-                                    {product.features.map((feature: string, index: number) => (
+                                    {product.features.map((feature, index) => (
                                         <div key={index} className="flex items-center gap-3 group">
                                             <div className="h-8 w-8 shrink-0 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-900 group-hover:text-white transition-all duration-300">
                                                 <Check className="w-4 h-4" strokeWidth={2.5} />
@@ -398,34 +377,7 @@ export default function ProductPage() {
 
                 {/* Related Products */}
                 <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>
-                {relatedProducts.length === 0 ? (
-                    <p className="text-muted-foreground text-sm py-4">More items in this category will appear here once they are available.</p>
-                ) : (
-                    <div className="overflow-hidden">
-                        <Swiper
-                            modules={[FreeMode, Mousewheel]}
-                            slidesPerView="auto"
-                            spaceBetween={16}
-                            freeMode={{
-                                enabled: true,
-                                momentum: true,
-                                momentumRatio: 0.8,
-                                sticky: false,
-                            }}
-                            mousewheel={{
-                                forceToAxis: true,
-                            }}
-                            grabCursor={true}
-                            className="!overflow-visible"
-                        >
-                            {relatedProducts.map((relatedProduct) => (
-                                <SwiperSlide key={relatedProduct.id} style={{ width: "260px" }} className="sm:!w-[300px]">
-                                    <CardComponent product={relatedProduct} />
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
-                    </div>
-                )}
+                <ProductRelatedSwiper products={relatedProductsRaw} />
             </div>
             <Footer />
         </div>
