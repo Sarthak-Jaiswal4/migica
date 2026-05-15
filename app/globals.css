@@ -247,7 +247,7 @@ body {
 }
 
 /* Discount email popup (used by Tailwind arbitrary animation utilities) */
-@keyframes magica-discount-overlay-in {
+@keyframes silver_star-discount-overlay-in {
   from {
     opacity: 0;
   }
@@ -256,7 +256,7 @@ body {
   }
 }
 
-@keyframes magica-discount-card-in {
+@keyframes silver_star-discount-card-in {
   from {
     opacity: 0;
     transform: translateY(20px) scale(0.97);
@@ -267,7 +267,7 @@ body {
   }
 }
 
-@keyframes magica-discount-success-in {
+@keyframes silver_star-discount-success-in {
   from {
     opacity: 0;
     transform: scale(0.92);
@@ -278,7 +278,7 @@ body {
   }
 }
 
-@keyframes magica-discount-check {
+@keyframes silver_star-discount-check {
   from {
     stroke-dashoffset: 40;
   }
@@ -287,7 +287,7 @@ body {
   }
 }
 
-@keyframes magica-discount-shimmer {
+@keyframes silver_star-discount-shimmer {
   0% {
     background-position: -200% center;
   }

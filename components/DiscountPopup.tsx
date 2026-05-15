@@ -20,7 +20,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 const TIMER_DURATION_S = 900;
-const DISCOUNT_CODE = "MAGICA10";
+const DISCOUNT_CODE = "SILVERSTAR10";
 
 export interface DiscountPopupProps {
   open: boolean;
@@ -151,7 +151,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
       className={cn(
         dmSans.className,
         "fixed inset-0 z-[9999] flex items-center justify-center p-4",
-        "bg-black/[0.52] animate-[magica-discount-overlay-in_0.25s_ease_forwards]"
+        "bg-black/[0.52] animate-[silver_star-discount-overlay-in_0.25s_ease_forwards]"
       )}
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();
@@ -160,7 +160,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
       <div
         className={cn(
           "relative w-full max-w-[430px] overflow-hidden rounded-[20px] border border-[#EDD9C8] bg-[#FFFBF7]",
-          "animate-[magica-discount-card-in_0.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+          "animate-[silver_star-discount-card-in_0.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
         )}
       >
         <button
@@ -195,7 +195,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
                 </svg>
               </div>
               <p className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-[#B07050]">
-                Welcome to Magica
+                Welcome to Silver Star
               </p>
               <h2
                 className={cn(
@@ -293,11 +293,11 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
         )}
 
         {phase === "success" && (
-          <div className="animate-[magica-discount-success-in_0.35s_cubic-bezier(0.16,1,0.3,1)_forwards] px-7 pb-9 pt-8 text-center">
+          <div className="animate-[silver_star-discount-success-in_0.35s_cubic-bezier(0.16,1,0.3,1)_forwards] px-7 pb-9 pt-8 text-center">
             <div className="mx-auto mb-[18px] flex h-14 w-14 items-center justify-center rounded-full border border-[#C0DD97] bg-[#EAF3DE]">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <polyline
-                  className="animate-[magica-discount-check_0.4s_ease_0.2s_forwards]"
+                  className="animate-[silver_star-discount-check_0.4s_ease_0.2s_forwards]"
                   points="20 6 9 17 4 12"
                   stroke="#3B6D11"
                   strokeWidth="2.2"
@@ -323,7 +323,7 @@ export function DiscountPopup({ open, onClose, onEmailSubmit }: DiscountPopupPro
                 Your discount code
               </p>
               <p
-                className="m-0 bg-clip-text text-[26px] font-medium tracking-[0.12em] text-transparent animate-[magica-discount-shimmer_3s_linear_infinite]"
+                className="m-0 bg-clip-text text-[26px] font-medium tracking-[0.12em] text-transparent animate-[silver_star-discount-shimmer_3s_linear_infinite]"
                 style={{
                   backgroundImage:
                     "linear-gradient(90deg, #3A1E10 0%, #8B3A1A 40%, #3A1E10 60%, #8B3A1A 100%)",

@@ -75,7 +75,7 @@ export function Footer() {
                 </div>
 
                 <div className="mt-16 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 text-xs text-muted-foreground">
-                    <p>© 2026 magica Inc. All rights reserved.</p>
+                    <p>© 2026 Silver Star Inc. All rights reserved.</p>
                     <div className="flex gap-8">
                         <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>

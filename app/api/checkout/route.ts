@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         }
     }
     let discount = 0;
-    if (couponCode === "MAGICA10") discount = total * 0.10;
+    if (couponCode === "SILVERSTAR10") discount = total * 0.10;
     else if (couponCode === "WELCOME20") discount = total * 0.20;
     
     // Add shipping cost logic to backend to be accurate

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DiscountPopup } from "@/components/DiscountPopup";
 
 const POPUP_DELAY_MS = 10_000;
-const SESSION_KEY = "magica_discount_popup_seen";
+const SESSION_KEY = "silver_star_discount_popup_seen";
 
 export function AppInitializer() {
   const [showDiscount, setShowDiscount] = useState(false);

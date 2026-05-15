@@ -3,8 +3,8 @@ import { HomePageCarouselClient, HeroSlide } from "./HomePageCarouselClient";
 const slides: HeroSlide[] = [
   {
     imageSrc: "/9.1.png",
-    imageAlt: "Soft candlelight and shadows in a quiet room",
-    eyebrow: "Magica",
+    imageAlt: "Soft candlelight and shadows in a quiet room", 
+    eyebrow: "Silver Star",
     headline: "For the evenings you don't want to end.",
     body: "Hand-poured light, metal and cloth we actually live with — nothing loud, everything meant to stay in the room after you leave.",
     primaryHref: "/shop/all",

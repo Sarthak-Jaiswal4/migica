@@ -59,7 +59,7 @@ const seedProducts = [
   { name: "Silver Star Tee", category: "T-Shirt", price: 2199, description: "Relaxed fit with embroidered star.", rating: 4.8, reviews: 56, inStock: true, quantity: 25 },
   { name: "Emerald Eye Tee", category: "T-Shirt", price: 2699, description: "Limited emerald graphic on heavyweight cotton.", rating: 4.9, reviews: 28, inStock: true, quantity: 10 },
   { name: "Pearl Essence Tee", category: "T-Shirt", price: 2399, description: "Pearl-toned mineral dye finish.", rating: 4.7, reviews: 45, inStock: true, quantity: 20 },
-  { name: "Magica Logo Tee", category: "T-Shirt", price: 1999, description: "Unisex staple with tonal chest mark.", rating: 4.65, reviews: 102, inStock: true, quantity: 48 },
+  { name: "Silver Star Logo Tee", category: "T-Shirt", price: 1999, description: "Unisex staple with tonal chest mark.", rating: 4.65, reviews: 102, inStock: true, quantity: 48 },
   { name: "Artist Series Tee", category: "T-Shirt", price: 2899, description: "Small-batch print collaboration.", rating: 4.8, reviews: 37, inStock: true, quantity: 19 },
 ];
 

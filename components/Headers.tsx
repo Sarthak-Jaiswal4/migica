@@ -189,7 +189,7 @@ export function Headers() {
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-3 px-6">
                         <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
-                            <span>magica</span>
+                            <span>Silver Star</span>
                         </div>
 
                         <div className="flex items-center gap-4">

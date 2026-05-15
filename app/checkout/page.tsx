@@ -73,7 +73,7 @@ export default function CheckoutPage() {
     const total = Math.max(0, subtotal - discountAmount + shipping)
 
     const handleApplyCoupon = () => {
-        if (couponCode === "MAGICA10") {
+        if (couponCode === "SILVERSTAR10") {
             setDiscountAmount(subtotal * 0.10)
             setCouponApplied(true)
             setCouponError("")
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
                                 <div className='px-6 pt-2 pb-4'>
                                     <div className='flex items-center gap-2'>
                                         <Input
-                                            placeholder='Promo code (e.g. MAGICA10)'
+                                            placeholder='Promo code (e.g. SILVERSTAR10)'
                                             className='h-10 bg-background/50 border-border rounded-lg focus:ring-amber-500 focus:border-amber-500 text-sm'
                                             value={couponCode}
                                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}

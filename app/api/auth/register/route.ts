@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         await resend.emails.send({
           from: "login@silverstar.live",
           to: email,
-          subject: "Welcome to Magica!",
+          subject: "Welcome to Silver Star!",
           html: `<h1>Welcome ${name || ""}!</h1><p>Your account has been successfully created.</p>`,
         });
       } catch (err) {

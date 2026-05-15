@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       cloudinary.uploader
         .upload_stream(
           {
-            folder: "magica/products",
+            folder: "silver_star/products",
             resource_type: "image",
           },
           (error, result) => {

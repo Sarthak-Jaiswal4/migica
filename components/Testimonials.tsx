@@ -57,7 +57,7 @@ const ugcStory: UgcStory = {
   handle: "kiran_s",
   firstName: "Kiran",
   product: "Cedar & smoke votive set",
-  caption: "unfiltered shelf pic — the votives are tiny but the throw is ridiculous 😅 #magica",
+  caption: "unfiltered shelf pic — the votives are tiny but the throw is ridiculous 😅 #silver_star",
   imageSrc: "/4.1.png",
   imageAlt: "Customer photo of candle votives on a wooden shelf",
 };

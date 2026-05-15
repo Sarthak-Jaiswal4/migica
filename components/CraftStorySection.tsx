@@ -26,7 +26,7 @@ export function CraftStorySection() {
         </div>
 
         <div className="flex flex-col justify-center px-6 py-14 sm:px-10 md:py-16 lg:px-16">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">How Magica comes together</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">How Silver Star comes together</p>
           <h2 id="craft-story-heading" className="mt-3 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Small batches, real people
           </h2>

@@ -35,8 +35,8 @@ export type UserInfo = {
 
 const MAX_RECENTLY_VISITED = 15;
 
-const LEGACY_CART_KEY = "magica-cart-store";
-const USER_STORE_KEY = "magica-user-store";
+const LEGACY_CART_KEY = "silver_star-cart-store";
+const USER_STORE_KEY = "silver_star-user-store";
 
 function readLegacyCartItems(): CartProduct[] | null {
   if (typeof window === "undefined") return null;
