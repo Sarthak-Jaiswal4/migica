@@ -5,7 +5,7 @@ import { CardComponent } from "./Card"
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 
-export function BestSelling() {
+export function BestSelling({ embedded = false }: { embedded?: boolean }) {
     const router = useRouter()
     const [products, setProducts] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -34,7 +34,7 @@ export function BestSelling() {
     }, [])
 
     return (
-        <div className="py-20 w-full flex flex-col items-center bg-background">
+        <div className={`w-full flex flex-col items-center bg-background ${embedded ? "py-12 md:py-16" : "py-20"}`}>
             <div className="mx-auto max-w-2xl text-center mb-12 px-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Customer Favorites</p>
                 <h2 className="mt-2 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">

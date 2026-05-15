@@ -17,11 +17,8 @@ function HomeScreen() {
           <HomePageCarosol />
         </div>
         <CraftStorySection />
-        <CategoriesShop />
+        <CategoriesShop midPageSlot={<BestSelling embedded />} />
         <CompleteTheSetSection />
-        <div className='min-h-screen w-full'>
-          <BestSelling />
-        </div>
         <Testimonials />
         <Footer />
       </div>
