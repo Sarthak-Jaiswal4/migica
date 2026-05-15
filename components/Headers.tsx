@@ -2,7 +2,7 @@
 import { AppImage as Image } from "@/components/AppImage";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import gsap from "gsap";
-import { Heart, LogOut, Search, ShoppingCart, User, UserCheck, Package } from "lucide-react";
+import { Heart, LogOut, ShoppingCart, User, UserCheck, Package, LayoutGrid, Settings2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "./ui/sheet";
@@ -32,11 +32,18 @@ export function Headers() {
     const cartItemCount = useUserStore((state) => state.totalItems());
     const wishlistCount = useUserStore((state) => state.wishlistCount());
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
     useEffect(() => {
         fetch('/api/auth/me')
-            .then(res => { if (res.ok) setIsLoggedIn(true) })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data?.user) {
+                    setIsLoggedIn(true);
+                    setIsAdmin(data.user.isAdmin === true);
+                }
+            })
             .catch(() => { })
     }, []);
 
@@ -77,23 +84,43 @@ export function Headers() {
         <>
             <header className="relative z-50">
                 {/* Desktop Header */}
-                <div className={`hidden md:flex items-center justify-between w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-8 ${desktopHeaderBg}`}>
-                    <div className="flex items-center gap-5">
-                        <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500" onClick={() => router.push("/")}>Home</span>
+                <div className={`hidden md:grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-4 lg:px-6 min-[1200px]:px-8 ${desktopHeaderBg}`}>
+                    <div className="flex items-center gap-2 lg:gap-3 min-[1200px]:gap-5 min-w-0 overflow-hidden">
+                        <span className="shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm min-[1200px]:text-base" onClick={() => router.push("/")}>Home</span>
                         <HoverCard openDelay={20} closeDelay={200}>
                             <HoverCardTrigger asChild>
-                                <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500 block">Categories</span>
+                                <span className="shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 block text-sm min-[1200px]:text-base">Categories</span>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-full h-full mt-2" align="center">
                                 <CategoriesDropDown />
                             </HoverCardContent>
                         </HoverCard>
-                        <span className="p-2 rounded-md hover:cursor-pointer hover:text-orange-500">Collections</span>
+                        <span className="hidden shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm min-[1200px]:inline-block min-[1200px]:text-base">Collections</span>
+                        {isAdmin && (
+                            <>
+                                <span
+                                    className="flex shrink-0 items-center gap-1.5 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm font-medium"
+                                    onClick={() => router.push("/allproduct")}
+                                    title="All Products"
+                                >
+                                    <LayoutGrid size={15} />
+                                    <span className="hidden min-[1200px]:inline">All Products</span>
+                                </span>
+                                <span
+                                    className="flex shrink-0 items-center gap-1.5 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm font-medium"
+                                    onClick={() => router.push("/orders")}
+                                    title="Manage Orders"
+                                >
+                                    <Settings2 size={15} />
+                                    <span className="hidden min-[1200px]:inline">Manage Orders</span>
+                                </span>
+                            </>
+                        )}
                     </div>
-                    <div className="text-3xl font-semibold absolute tracking-tight left-1/2 -translate-x-1/2 cursor-pointer font-[style]" onClick={() => router.push("/")}>
+                    <div className="text-2xl min-[1200px]:text-3xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-center px-2 whitespace-nowrap" onClick={() => router.push("/")}>
                         <span>Silver Star</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0">
                         {!isLoggedIn && (
                             <User onClick={() => router.push("/login")} className="hover:cursor-pointer" strokeWidth={1.75} />
                         )}
@@ -106,20 +133,20 @@ export function Headers() {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-56 rounded-2xl p-2 bg-card/95 backdrop-blur-md shadow-xl border-border" align="end" alignOffset={-10} sideOffset={8}>
                                     <div className="flex flex-col gap-1">
-                                        <button 
+                                        <button
                                             className="flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
                                             onClick={() => router.push('/profile')}
                                         >
                                             <User size={16} className="text-muted-foreground" /> My Profile
                                         </button>
-                                        <button 
+                                        <button
                                             className="flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
                                             onClick={() => router.push('/my-orders')}
                                         >
                                             <Package size={16} className="text-muted-foreground" /> Order History
                                         </button>
                                         <div className="h-[1px] bg-neutral-100 my-1 w-full" />
-                                        <button 
+                                        <button
                                             className="flex items-center gap-3 w-full p-2.5 rounded-xl hover:bg-red-50 text-sm font-medium text-red-600 transition-colors"
                                             onClick={() => setShowLogoutDialog(true)}
                                         >
@@ -207,7 +234,7 @@ export function Headers() {
                         className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
                     >
                         <div className="flex flex-col gap-8 px-6 pb-12 pt-6 text-4xl tracking-tight font-semibold">
-                            {["Home", "Shop", "Wishlist", "Categories", "Collections", ...(isLoggedIn ? ["Account", "Logout"] : ["Login"])].map((item, i) => {
+                            {["Home", "Shop", "Wishlist", "Categories", "Collections", ...(isAdmin ? ["All Products", "Manage Products"] : []), ...(isLoggedIn ? ["Account", "Logout"] : ["Login"])].map((item, i) => {
                                 if (item === "Account") {
                                     return (
                                         <div key={item} ref={(el) => { mobileMenuItemsRef.current[i] = el; }} className="will-change-transform">
@@ -255,6 +282,8 @@ export function Headers() {
                                             else if (item === "Shop") router.push("/shop/all");
                                             else if (item === "Wishlist") router.push("/wishlist");
                                             else if (item === "Login") router.push("/login");
+                                            else if (item === "All Products") router.push("/allproduct");
+                                            else if (item === "Manage Orders") router.push("/orders");
                                             else if (item === "Logout") {
                                                 setShowLogoutDialog(true);
                                             }
@@ -283,6 +312,7 @@ export function Headers() {
                             onClick={async () => {
                                 await fetch('/api/auth/logout', { method: 'POST' });
                                 setIsLoggedIn(false);
+                                setIsAdmin(false);
                                 setShowLogoutDialog(false);
                                 router.push('/');
                             }}

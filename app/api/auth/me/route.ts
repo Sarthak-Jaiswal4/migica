@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; isAdmin?: boolean };
 
     await connectDB();
 
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
         city: user.city || "",
         zipCode: user.zipCode || "",
         country: user.country || "",
+        isAdmin: decoded.isAdmin ?? false,
       },
     });
   } catch (error: any) {
