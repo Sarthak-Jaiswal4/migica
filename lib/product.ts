@@ -5,6 +5,8 @@ export type Product = {
   slug?: string;
   name: string;
   category: string;
+  subcategory?: string;
+  tags?: string[];
   price: number;
   originalPrice?: number;
   description?: string;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "./ui/card"
 import { AppImage as Image } from "@/components/AppImage"
@@ -5,7 +7,19 @@ import { AddToCartButton } from "@/components/AddToCartButton"
 import { WishlistButton } from "@/components/WishlistButton"
 import Link from "next/link"
 
+function getHoverImage(product: {
+    image?: string;
+    hoverImage?: string;
+    images?: string[];
+}) {
+    if (product.hoverImage) return product.hoverImage;
+    const images = product.images ?? [];
+    return images.find((url) => url && url !== product.image) ?? images[1] ?? "";
+}
+
 export const CardComponent = ({ product, compact = false }: { product: any; compact?: boolean }) => {
+    const hoverImage = getHoverImage(product);
+
     return (
         <Link href={`/product/${product.slug || product.id}`} className="block h-full w-full outline-none">
             <Card
@@ -18,7 +32,7 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                             <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
                         </div>
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={product?.hoverImage || ""} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
+                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
                         </div>
                     </div>
                     {!product.inStock && (

@@ -102,6 +102,7 @@ export default function RootLayout({
       <body
         className="antialiased"
         style={{ fontFamily: "sans-serif, 'style" }}
+        suppressHydrationWarning
       >
         <script
           type="application/ld+json"

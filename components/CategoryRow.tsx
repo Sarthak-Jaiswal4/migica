@@ -2,11 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/product";
 import { getInlineQuoteForCategory } from "@/lib/categoryInlineQuotes";
+import { getCategoryLabel } from "@/lib/categories";
 import { getCategoryLayout } from "@/lib/categoryLayouts";
 import { CategoryCarousel } from "./CategoryCarousel";
 import { CategoryEditorialImage } from "./CategoryEditorialImage";
 
 export function CategoryRow({ name, products }: { name: string; products: Product[] }) {
+  const displayName = getCategoryLabel(name);
   const inlineQuote = getInlineQuoteForCategory(name);
   const layout = getCategoryLayout(name);
 
@@ -31,7 +33,7 @@ export function CategoryRow({ name, products }: { name: string; products: Produc
     <div className="mb-6 flex flex-row justify-between gap-4 md:mb-8 md:items-end">
       <div>
         <h2 className="font-[style] text-3xl font-light tracking-normal text-foreground md:text-4xl">
-          {getDescriptiveHeading(name)}
+          {getDescriptiveHeading(displayName)}
         </h2>
         <p className="mt-1 text-sm font-medium text-muted-foreground">{products.length} items</p>
       </div>
@@ -40,7 +42,7 @@ export function CategoryRow({ name, products }: { name: string; products: Produc
         className="group h-10 self-start rounded-full border-neutral-300 px-6 text-sm font-semibold transition-all hover:cursor-pointer hover:bg-neutral-100 hover:text-foreground active:scale-95 md:self-auto"
         asChild
       >
-        <Link href={`/shop/${encodeURIComponent(name)}`}>
+        <Link href={`/shop/${encodeURIComponent(name.toLowerCase())}`}>
           <span className="relative flex h-5 items-center justify-center overflow-hidden">
             <span className="flex items-center pr-5 transition-transform duration-300 ease-in-out group-hover:translate-x-5">
               <span className="absolute -left-5 flex w-5 items-center justify-center">→</span>

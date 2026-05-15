@@ -1,8 +1,7 @@
 import { Star, Check, Truck, Shield, RotateCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ProductTabs } from "./ProductTabs"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Headers } from "@/components/Headers"
 import { AppImage as Image } from "@/components/AppImage"
@@ -10,6 +9,8 @@ import { Footer } from "@/components/Footer"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import { notFound } from "next/navigation"
 import connectDB from "@/lib/mongodb"
+import { serializeProducts } from "@/lib/productSerializer"
+import type { Product } from "@/lib/product"
 import ProductModel from "@/models/Product"
 import mongoose from "mongoose"
 import { WishlistButton, VisitRecorder } from "./ProductInteractions"
@@ -64,9 +65,19 @@ function normalize(p: RawProduct): ProductDetail {
             : ["Premium materials", "Small-batch craftsmanship", "Thoughtful packaging", "Designed for everyday ritual"];
 
     return {
-        ...p,
         id,
+        name: p.name,
+        slug: p.slug,
+        category: p.category,
+        price: p.price,
+        originalPrice: p.originalPrice,
+        description: p.description,
+        image: p.image,
         images: urls.map((url, i) => ({ id: `img-${i}`, url, alt: `${p.name} — ${i + 1}` })),
+        rating: p.rating,
+        reviews: p.reviews,
+        inStock: p.inStock,
+        quantity: p.quantity,
         features,
         scent: p.scent?.top ? p.scent : { top: "Opening notes", middle: "Heart notes", base: "Base notes" },
     };
@@ -80,18 +91,20 @@ async function getProduct(id: string): Promise<ProductDetail | null> {
     return raw ? normalize(raw) : null;
 }
 
-type FlatProduct = Omit<RawProduct, "_id"> & { id: string };
+async function getRelated(product: ProductDetail): Promise<Product[]> {
+    const idFilter = mongoose.Types.ObjectId.isValid(product.id)
+        ? new mongoose.Types.ObjectId(product.id)
+        : product.id;
 
-async function getRelated(product: ProductDetail): Promise<FlatProduct[]> {
     const raws = await ProductModel.find({
         category: product.category,
-        _id: { $ne: product.id },
+        _id: { $ne: idFilter },
     })
         .sort({ rating: -1, reviews: -1 })
         .limit(12)
         .lean() as RawProduct[];
 
-    return raws.map((r) => ({ ...r, _id: undefined, id: String(r._id) }));
+    return serializeProducts(raws);
 }
 
 // ─── page ────────────────────────────────────────────────────────────────────
@@ -280,100 +293,15 @@ export default async function ProductPage(props: PageProps) {
                     </div>
                 </div>
 
-                {/* Tabs Section */}
-                <Tabs defaultValue="description" className="mb-16">
-                    <TabsList className="flex h-auto min-h-11 w-full flex-nowrap items-center justify-start gap-1 rounded-xl border border-border bg-neutral-100/80 p-1 backdrop-blur-sm sm:min-h-12 sm:gap-2 sm:rounded-2xl sm:p-1.5 overflow-y-hidden overflow-x-auto lg:overflow-x-visible [scrollbar-width:thin]">
-                        <TabsTrigger
-                            value="description"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
-                        >
-                            Description
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="scent"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
-                        >
-                            Scent Profile
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="reviews"
-                            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
-                        >
-                            Reviews ({product.reviews})
-                        </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="description" className="mt-6">
-                        <div className="p-6 sm:p-10 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm space-y-6">
-                            <div className="prose max-w-none">
-                                <p className="text-neutral-700 leading-relaxed tracking-wide text-lg">
-                                    {product.description}
-                                </p>
-                                <h3 className="font-[style] text-2xl font-medium mt-10 mb-5 tracking-tight text-foreground">What Makes It Special</h3>
-                                <p className="text-neutral-600 leading-relaxed tracking-wide">
-                                    {product.name} is part of our living catalog: details and inventory are maintained in our database, while photography is rendered from curated assets in the public gallery so the storefront stays fast and consistent.
-                                </p>
-                                <p className="text-neutral-600 leading-relaxed tracking-wide mt-4">
-                                    Read the scent profile and features tabs for specifics. If something feels unclear, reach out before you buy—we are happy to help you pick the right piece.
-                                </p>
-                            </div>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="scent" className="mt-6">
-                        <div className="p-4 sm:p-8 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm">
-                            <div className="space-y-6">
-                                <div>
-                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Top Notes</h3>
-                                    <p className="text-neutral-700">{product.scent.top}</p>
-                                </div>
-                                <Separator />
-                                <div>
-                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Middle Notes</h3>
-                                    <p className="text-neutral-700">{product.scent.middle}</p>
-                                </div>
-                                <Separator />
-                                <div>
-                                    <h3 className="font-semibold text-lg mb-2 tracking-wide">Base Notes</h3>
-                                    <p className="text-neutral-700">{product.scent.base}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="reviews" className="mt-6">
-                        <div className="p-4 sm:p-8 border border-border rounded-xl sm:rounded-2xl bg-card shadow-sm space-y-6 tracking-wide">
-                            <div className="flex items-center justify-between mb-6">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-5xl font-bold">{product.rating}</span>
-                                        <div>
-                                            <div className="flex items-center gap-1">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`w-5 h-5 ${i < Math.floor(product.rating)
-                                                            ? 'fill-yellow-400 text-yellow-400'
-                                                            : 'text-neutral-300'
-                                                            }`}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <p className="text-sm text-neutral-600">{product.reviews} reviews</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Button variant="outline">Write a Review</Button>
-                            </div>
-
-                            <div className="space-y-6">
-                                <p className="text-neutral-600 text-center py-8">
-                                    No written reviews yet. Aggregate rating reflects catalog metadata from the database.
-                                </p>
-                            </div>
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                <ProductTabs
+                    product={{
+                        name: product.name,
+                        description: product.description,
+                        rating: product.rating,
+                        reviews: product.reviews,
+                        scent: product.scent,
+                    }}
+                />
 
                 {/* Related Products */}
                 <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>

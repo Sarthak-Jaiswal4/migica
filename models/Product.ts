@@ -4,6 +4,8 @@ export interface IProduct extends Document {
   name: string;
   slug: string;
   category: string;
+  subcategory?: string;
+  tags?: string[];
   price: number;
   description: string;
   originalPrice?: number;
@@ -36,6 +38,15 @@ const ProductSchema = new Schema<IProduct>(
       type: String,
       required: [true, "Category is required"],
       trim: true,
+    },
+    subcategory: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
     price: {
       type: Number,
@@ -88,6 +99,7 @@ const ProductSchema = new Schema<IProduct>(
   { timestamps: true }
 );
 
-const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
+const Product: Model<IProduct> =
+  mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
 
 export default Product;

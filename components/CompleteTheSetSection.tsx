@@ -14,21 +14,21 @@ const pillars: BundlePillar[] = [
   {
     title: "Candles",
     blurb: "Warm light and scent that anchors the unwrapping moment.",
-    href: "/shop/Candles",
+    href: "/shop/candles",
     imageSrc: "/2.1.png",
     imageAlt: "Hand-poured candle in glass",
   },
   {
     title: "Scarves",
     blurb: "Soft drape — something to keep on the sofa or wear out the same week.",
-    href: "/shop/Scarves",
+    href: "/shop/scarves",
     imageSrc: "/4.1.png",
     imageAlt: "Folded scarf texture",
   },
   {
     title: "Jewelry",
     blurb: "A small shine that feels personal, not loud.",
-    href: "/shop/Jewelry",
+    href: "/shop/jewellery",
     imageSrc: "/6.1.png",
     imageAlt: "Jewellery detail",
   },
@@ -77,8 +77,8 @@ export function CompleteTheSetSection() {
         <p className="mx-auto mt-10 max-w-lg text-center text-xs leading-relaxed text-muted-foreground">
           Seasonal tip: pair all three for birthdays and Diwali — we see fewer returns when the box tells a little story.
           Explore curated picks in{" "}
-          <Link href="/shop/Gift" className="font-medium text-foreground underline-offset-2 hover:underline">
-            Gift
+          <Link href="/shop/gifts" className="font-medium text-foreground underline-offset-2 hover:underline">
+            Gifts
           </Link>
           .
         </p>

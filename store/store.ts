@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { matchesShopFilter, normalizeCategorySlug } from "@/lib/categories";
 import type { Product } from "@/lib/product";
 
 export type { CartProduct, WishlistEntry, RecentlyVisitedEntry, UserInfo } from "./userStore";
@@ -20,6 +21,9 @@ interface ProductStore {
   loadingById: Record<string, boolean>;
   errorById: Record<string, string | null>;
   fetchProductPageData: (id: string) => Promise<void>;
+  hydrateProductsPool: (products: Product[]) => void;
+  getByCategory: (category: string) => Product[];
+  getBySubcategory: (category: string, subcategory: string) => Product[];
 }
 
 const PRODUCT_CACHE_TTL_MS = 1000 * 60 * 15;
@@ -65,6 +69,29 @@ export const useProductStore = create<ProductStore>()(
       relatedByProductId: {},
       loadingById: {},
       errorById: {},
+
+      hydrateProductsPool: (products: Product[]) => {
+        set((current) => {
+          const next = { ...current.productsPoolById };
+          for (const product of products) {
+            next[product.id] = product;
+          }
+          return { productsPoolById: next };
+        });
+      },
+
+      getByCategory: (category: string) => {
+        const slug = normalizeCategorySlug(category);
+        return Object.values(get().productsPoolById).filter(
+          (p) => normalizeCategorySlug(p.category) === slug
+        );
+      },
+
+      getBySubcategory: (category: string, subcategory: string) => {
+        return Object.values(get().productsPoolById).filter((p) =>
+          matchesShopFilter(p, category, subcategory)
+        );
+      },
 
       fetchProductPageData: async (id: string) => {
         if (!id) return;

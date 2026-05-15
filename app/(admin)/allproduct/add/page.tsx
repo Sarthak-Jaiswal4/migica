@@ -9,13 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, Save, Upload, X, Loader2, Plus } from "lucide-react";
 import { AppImage as Image } from "@/components/AppImage";
+import { ProductTaxonomyFields } from "@/components/admin/ProductTaxonomyFields";
 
 type NewProductPayload = {
   name: string;
   category: string;
+  subcategory: string;
+  tags: string[];
   price: number;
   rating: number;
   reviews: number;
@@ -45,7 +47,9 @@ export default function AddProductPage() {
 
   const [product, setProduct] = useState<NewProductPayload>({
     name: "",
-    category: "Candles",
+    category: "candles",
+    subcategory: "",
+    tags: [],
     price: 0,
     rating: 0,
     reviews: 0,
@@ -60,10 +64,6 @@ export default function AddProductPage() {
       ...prev,
       [name]: name === "price" || name === "quantity" || name === "rating" || name === "reviews" ? Number(value) : value,
     }));
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setProduct((prev) => ({ ...prev, category: value }));
   };
 
   async function handleMainImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -245,29 +245,18 @@ export default function AddProductPage() {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="category" className="font-bold ml-1">
-                      Category
-                    </Label>
-                    <Select value={product.category} onValueChange={handleCategoryChange}>
-                      <SelectTrigger id="category" className="h-12 bg-card border-border rounded-xl">
-                        <SelectValue placeholder="Select Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Candles">Candles</SelectItem>
-                        <SelectItem value="Aromatherapy">Aromatherapy</SelectItem>
-                        <SelectItem value="Fresh">Fresh</SelectItem>
-                        <SelectItem value="Floral">Floral</SelectItem>
-                        <SelectItem value="Woodsy">Woodsy</SelectItem>
-                        <SelectItem value="Luxury">Luxury</SelectItem>
-                        <SelectItem value="Seasonal">Seasonal</SelectItem>
-                        <SelectItem value="Scarves">Scarves</SelectItem>
-                        <SelectItem value="Jewelry">Jewelry</SelectItem>
-                        <SelectItem value="Gift">Gift</SelectItem>
-                        <SelectItem value="T-Shirt">T-Shirt</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ProductTaxonomyFields
+                    category={product.category}
+                    subcategory={product.subcategory}
+                    tags={product.tags}
+                    onCategoryChange={(category) =>
+                      setProduct((prev) => ({ ...prev, category }))
+                    }
+                    onSubcategoryChange={(subcategory) =>
+                      setProduct((prev) => ({ ...prev, subcategory }))
+                    }
+                    onTagsChange={(tags) => setProduct((prev) => ({ ...prev, tags }))}
+                  />
 
                   <div className="space-y-2">
                     <Label htmlFor="price" className="font-bold ml-1">

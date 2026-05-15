@@ -16,7 +16,7 @@ const slides: HeroSlide[] = [
     eyebrow: "Jewellery & ritual",
     headline: "The kind of shine you forget you're wearing.",
     body: "Pieces that catch light at dinner, not under fluorescent aisles. Candles that reward slowing down — emotional buys deserve a feeling first, a cart second.",
-    primaryHref: "/shop/Jewelry",
+    primaryHref: "/shop/jewellery",
     primaryLabel: "See the edit",
   },
 ];

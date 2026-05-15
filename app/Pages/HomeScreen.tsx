@@ -1,6 +1,6 @@
 import { HomePageCarosol } from '../../components/HomePageCarosol'
 import { Headers } from '../../components/Headers'
-import { BestSelling } from '../../components/BestSelling'
+import { MidPageBestSellers } from '../../components/MidPageBestSellers'
 import { CraftStorySection } from '../../components/CraftStorySection'
 import { CategoriesShop } from '../../components/CategoriesShop'
 import { CompleteTheSetSection } from '../../components/CompleteTheSetSection'
@@ -17,7 +17,7 @@ function HomeScreen() {
           <HomePageCarosol />
         </div>
         <CraftStorySection />
-        <CategoriesShop midPageSlot={<BestSelling embedded />} />
+        <CategoriesShop midPageSlot={<MidPageBestSellers />} />
         <CompleteTheSetSection />
         <Testimonials />
         <Footer />

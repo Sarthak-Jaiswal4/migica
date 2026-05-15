@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { CartSheet } from "./SideCart";
 import { useUserStore } from "@/store/store";
 import { WishlistSignupNudge } from "@/components/WishlistSignupNudge";
+import { CategoryNavDropdown } from "@/components/CategoryNavDropdown";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -92,7 +93,7 @@ export function Headers() {
                                 <span className="shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 block text-sm min-[1200px]:text-base">Categories</span>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-full h-full mt-2" align="center">
-                                <CategoriesDropDown />
+                                <CategoryNavDropdown />
                             </HoverCardContent>
                         </HoverCard>
                         <span className="hidden shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm min-[1200px]:inline-block min-[1200px]:text-base">Collections</span>
@@ -326,50 +327,5 @@ export function Headers() {
 
             <WishlistSignupNudge />
         </>
-    )
-}
-
-const Categories = [
-    {
-        img: "/1.jpeg",
-        name: "Scarves",
-        description: "Elegant scarves crafted from the finest materials for style and comfort."
-    },
-    {
-        img: "/2.jpeg",
-        name: "Candles",
-        description: "Artisanal scented candles to bring warmth and fragrance to your home."
-    },
-    {
-        img: "/3.jpeg",
-        name: "Jewelry",
-        description: "Timeless jewelry pieces that capture the essence of sophistication."
-    },
-    {
-        img: "/4.jpeg",
-        name: "Gift",
-        description: "Curated boxes and bundles for every celebration."
-    },
-    {
-        img: "/5.jpeg",
-        name: "T-Shirt",
-        description: "Soft cotton tees with thoughtful details and prints."
-    }
-]
-
-function CategoriesDropDown() {
-    const container = useRef<HTMLDivElement>(null);
-    const router = useRouter()
-
-    return (
-        <div className="flex flex-wrap w-[560px] mx-auto gap-2 bg-card rounded-lg p-2 hover:cursor-pointer" ref={container}>
-            {Categories.map((category, index) => (
-                <div key={index} className="flex flex-col px-2" onClick={() => router.push(`/shop/${category.name}`)}>
-                    <Image src={category.img} alt={category.name} width={160} height={144} className="w-40 h-36 rounded-lg bg-orange-500 object-cover" />
-                    <span className="text-lg font-medium pt-2 w-[60px] block leading-tight">{category.name}</span>
-                    <h4 className="text-sm text-gray-500 w-[120px]">{category.description}</h4>
-                </div>
-            ))}
-        </div>
     )
 }

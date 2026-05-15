@@ -46,7 +46,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     imageFrameClass: "aspect-[3/2] sm:aspect-[2/1] min-h-[240px] sm:min-h-[300px] w-full",
     caption: "Craft in the detail",
   },
-  gift: {
+  gifts: {
     variant: "split-image-right",
     image: "/4.jpeg",
     imageAlt: "Styled flat lay of gift products arranged together",
@@ -54,7 +54,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     imageFrameClass: "min-h-[300px] w-full lg:min-h-[420px] lg:h-full aspect-square lg:aspect-auto",
     caption: "For her birthday · for the home",
   },
-  "t-shirt": {
+  clothing: {
     variant: "stack-top",
     image: "/5.jpeg",
     imageAlt: "Person wearing a t-shirt in a candid everyday setting",
@@ -62,24 +62,33 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     imageFrameClass: "aspect-[16/10] min-h-[220px] sm:min-h-[280px] w-full",
     caption: "Everyday, not studio",
   },
+  jewellery: {
+    variant: "stack-top",
+    image: "/3.jpeg",
+    imageAlt: "Close-up of jewellery",
+    objectPosition: "center 35%",
+    imageFrameClass: "aspect-[3/2] sm:aspect-[2/1] min-h-[240px] sm:min-h-[300px] w-full",
+    caption: "Craft in the detail",
+  },
 };
 
 /** Index (0-based) after which to insert the mid-page bestseller block — after Jewelry (3rd category). */
 export const BESTSELLER_INSERT_AFTER_INDEX = 2;
 
 export const CATEGORY_DISPLAY_ORDER = [
-  "Candles",
-  "Scarves",
-  "Jewelry",
-  "Gift",
-  "T-Shirt",
+  "candles",
+  "scarves",
+  "jewellery",
+  "gifts",
+  "clothing",
 ] as const;
 
 function normalizeCategoryKey(name: string): string {
   const n = name.trim().toLowerCase();
-  if (n === "jewellery") return "jewelry";
-  if (n === "gifts") return "gift";
-  if (n === "t-shirts" || n === "tshirts" || n === "t shirts") return "t-shirt";
+  if (n === "jewelry") return "jewellery";
+  if (n === "gift") return "gifts";
+  if (n === "t-shirts" || n === "tshirts" || n === "t shirts" || n === "t-shirt") return "clothing";
+  if (n === "candle") return "candles";
   return n;
 }
 

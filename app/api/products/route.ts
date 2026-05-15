@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
+import { serializeProducts } from "@/lib/productSerializer";
 import { jwtVerify } from "jose";
 
 async function checkAdmin(req: NextRequest) {
@@ -74,11 +75,11 @@ export async function GET(req: NextRequest) {
         .sort({ rating: -1, reviews: -1 })
         .limit(12)
         .lean();
-      return NextResponse.json({ products: others }, { status: 200 });
+      return NextResponse.json({ products: serializeProducts(others) }, { status: 200 });
     }
 
     const products = await Product.find({}).sort({ createdAt: -1 }).lean();
-    return NextResponse.json({ products }, { status: 200 });
+    return NextResponse.json({ products: serializeProducts(products) }, { status: 200 });
   } catch (error: unknown) {
     console.error("Fetch products error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

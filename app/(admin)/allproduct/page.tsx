@@ -21,10 +21,8 @@ export default function AllProductsPage() {
             try {
                 const res = await fetch('/api/products')
                 const data = await res.json()
-                // Convert mongo `_id` to `id` for compatibility
                 if (data.products) {
-                    const mapped = data.products.map((p: Product & { _id: string }) => ({ ...p, id: String(p._id) }))
-                    setProducts(mapped)
+                    setProducts(data.products as Product[])
                 }
             } catch (error) {
                 console.error("Failed to fetch products", error)

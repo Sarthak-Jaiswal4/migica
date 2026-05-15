@@ -8,6 +8,7 @@ import {
 import { CategoryBreather } from "./CategoryBreather";
 import { CategoryRow } from "./CategoryRow";
 import connectDB from "@/lib/mongodb";
+import { serializeProducts } from "@/lib/productSerializer";
 import ProductModel from "@/models/Product";
 
 type Props = {
@@ -19,12 +20,7 @@ export async function CategoriesShop({ midPageSlot }: Props) {
   await connectDB();
   const dbProducts = await ProductModel.find({}).sort({ createdAt: -1 }).lean();
 
-  const products: Product[] = dbProducts.map((p: any) => {
-    const plain = { ...p, id: String(p._id), _id: String(p._id) };
-    if (plain.createdAt) plain.createdAt = String(plain.createdAt);
-    if (plain.updatedAt) plain.updatedAt = String(plain.updatedAt);
-    return plain;
-  });
+  const products: Product[] = serializeProducts(dbProducts);
 
   const byCategory = new Map<string, Product[]>();
   for (const p of products) {

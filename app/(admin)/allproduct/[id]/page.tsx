@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
+import { ProductTaxonomyFields } from '@/components/admin/ProductTaxonomyFields'
 import { ChevronLeft, Save, Trash2, Upload, X, AlertCircle, Plus, Loader2 } from 'lucide-react'
 import { AppImage as Image } from '@/components/AppImage'
 
@@ -42,7 +41,7 @@ export default function EditProductPage() {
                 const res = await fetch(`/api/products/${params.id}`)
                 const data = await res.json()
                 if (data.product) {
-                    setProduct({ ...data.product, id: String(data.product._id) })
+                    setProduct(data.product as Product)
                 }
             } catch (error) {
                 console.error('Error fetching product:', error)
@@ -59,10 +58,6 @@ export default function EditProductPage() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setProduct(prev => prev ? { ...prev, [name]: name === 'price' || name === 'quantity' ? Number(value) : value } : null)
-    }
-
-    const handleCategoryChange = (value: string) => {
-        setProduct(prev => prev ? { ...prev, category: value } : null)
     }
 
     const handleSave = async () => {
@@ -272,27 +267,22 @@ export default function EditProductPage() {
                                         />
                                     </div>
 
-                                    <div className='space-y-2'>
-                                        <Label htmlFor='category' className='font-bold ml-1'>Category</Label>
-                                        <Select value={product.category} onValueChange={handleCategoryChange}>
-                                            <SelectTrigger id='category' className='h-12 bg-card border-border rounded-xl'>
-                                                <SelectValue placeholder='Select Category' />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Candles">Candles</SelectItem>
-                                                <SelectItem value="Aromatherapy">Aromatherapy</SelectItem>
-                                                <SelectItem value="Fresh">Fresh</SelectItem>
-                                                <SelectItem value="Floral">Floral</SelectItem>
-                                                <SelectItem value="Woodsy">Woodsy</SelectItem>
-                                                <SelectItem value="Luxury">Luxury</SelectItem>
-                                                <SelectItem value="Seasonal">Seasonal</SelectItem>
-                                                <SelectItem value="Scarves">Scarves</SelectItem>
-                                                <SelectItem value="Jewelry">Jewelry</SelectItem>
-                                                <SelectItem value="Gift">Gift</SelectItem>
-                                                <SelectItem value="T-Shirt">T-Shirt</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                    <ProductTaxonomyFields
+                                        category={product.category}
+                                        subcategory={product.subcategory ?? ''}
+                                        tags={product.tags ?? []}
+                                        onCategoryChange={(category) =>
+                                            setProduct((prev) =>
+                                                prev ? { ...prev, category, subcategory: '' } : null
+                                            )
+                                        }
+                                        onSubcategoryChange={(subcategory) =>
+                                            setProduct((prev) => (prev ? { ...prev, subcategory } : null))
+                                        }
+                                        onTagsChange={(tags) =>
+                                            setProduct((prev) => (prev ? { ...prev, tags } : null))
+                                        }
+                                    />
 
                                     <div className='space-y-2'>
                                         <Label htmlFor='price' className='font-bold ml-1'>Price (₹)</Label>
