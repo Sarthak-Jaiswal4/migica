@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { DiscountPopup } from "@/components/DiscountPopup";
+import { usePathname } from "next/navigation";
 
 const POPUP_DELAY_MS = 10_000;
 const SESSION_KEY = "silver_star_discount_popup_seen";
 
 export function AppInitializer() {
   const [showDiscount, setShowDiscount] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     try {
@@ -16,12 +18,14 @@ export function AppInitializer() {
       return;
     }
 
+    if (pathname === "/coming-soon") return;
+
     const id = window.setTimeout(() => {
       setShowDiscount(true);
     }, POPUP_DELAY_MS);
 
     return () => window.clearTimeout(id);
-  }, []);
+  }, [pathname]);
 
   const handleDiscountClose = () => {
     setShowDiscount(false);
