@@ -46,15 +46,7 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-[#ffcf00] px-4 md:px-8 py-12 select-none">
-      {/* Dynamic Warning/Construction Background Stripes */}
-      <div className="absolute inset-0 z-0 opacity-15 pointer-events-none">
-        <div className="absolute w-[200%] h-1.5 bg-black -rotate-12 top-1/4 left-[-50%]" />
-        <div className="absolute w-[200%] h-1 bg-white -rotate-12 top-1/3 left-[-50%]" />
-        <div className="absolute w-[200%] h-2.5 bg-black -rotate-12 top-2/3 left-[-50%]" />
-        <div className="absolute w-[200%] h-1 bg-white -rotate-12 top-[60%] left-[-50%]" />
-        <div className="absolute w-[200%] h-2 bg-black -rotate-12 top-1/2 left-[-50%]" />
-        <div className="absolute w-[200%] h-1 bg-white -rotate-12 top-[72%] left-[-50%]" />
-      </div>
+
 
       {/* Floating subtle ambient particles */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -175,7 +167,7 @@ export default function Home() {
       </div>
 
       {/* Footer Branding */}
-      <div className="absolute bottom-6 relative z-10 text-[10px] text-zinc-700/60 font-semibold tracking-widest uppercase">
+      <div className="mt-16 pb-6 z-10 text-[10px] text-zinc-700/60 font-semibold tracking-widest uppercase">
         © {new Date().getFullYear()} SILVER STAR. ALL RIGHTS RESERVED.
       </div>
     </main>
