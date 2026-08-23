@@ -18,7 +18,7 @@ export function AppInitializer() {
       return;
     }
 
-    if (pathname === "/coming-soon") return;
+    if (pathname === "/coming-soon" || pathname === "/") return;
 
     const id = window.setTimeout(() => {
       setShowDiscount(true);
