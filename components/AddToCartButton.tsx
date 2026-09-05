@@ -76,7 +76,7 @@ export function AddToCartButton({
         disabled={!inStock}
         className={`${
           inStock
-            ? `bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] shadow-md hover:bg-[#E8D0C0] hover:text-[#2C1810] hover:scale-103 hover:cursor-pointer shadow-black/10 ${added ? "bg-emerald-500 text-white hover:bg-emerald-500 hover:scale-103 hover:text-white hover:cursor-pointer hover:shadow-emerald-500/10 hover:shadow-black/10" : ""}`
+            ? `bg-[#1a1a1a] text-white border-0 shadow-none hover:bg-black hover:text-white hover:cursor-pointer ${added ? "bg-emerald-600 text-white hover:bg-emerald-600 hover:text-white hover:cursor-pointer" : ""}`
             : "cursor-not-allowed bg-neutral-300 text-muted-foreground"
         } transition-all duration-300 px-4 sm:px-4 tracking-tight w-full mx-auto rounded-xl overflow-hidden ${
           large ? "h-12 sm:h-12 text-md font-normal" : "h-9 sm:h-9 text-sm"

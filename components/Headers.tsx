@@ -85,40 +85,59 @@ export function Headers() {
         <>
             <header className="relative z-50">
                 {/* Desktop Header */}
-                <div className={`hidden md:grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto py-1 fixed top-4 left-0 right-0 rounded-2xl px-4 lg:px-6 min-[1200px]:px-8 ${desktopHeaderBg}`}>
-                    <div className="flex items-center gap-2 lg:gap-3 min-[1200px]:gap-5 min-w-0 overflow-hidden">
-                        <span className="shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm min-[1200px]:text-base" onClick={() => router.push("/")}>Home</span>
+                <div className={`hidden md:grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto py-2 fixed top-4 left-0 right-0 rounded-2xl px-4 lg:px-6 min-[1200px]:px-8 ${desktopHeaderBg}`}>
+                    <div className="flex items-center gap-1 lg:gap-2 min-w-0 overflow-hidden">
+                        <span
+                            className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/' ? 'text-orange-500' : ''}`}
+                            onClick={() => router.push("/")}
+                        >
+                            Home
+                        </span>
+                        <span
+                            className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname.startsWith('/shop') ? 'text-orange-500' : ''}`}
+                            onClick={() => router.push("/shop/all")}
+                        >
+                            Shop
+                        </span>
                         <HoverCard openDelay={20} closeDelay={200}>
                             <HoverCardTrigger asChild>
-                                <span className="shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 block text-sm min-[1200px]:text-base">Categories</span>
+                                <span className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors flex items-center gap-1">
+                                    Categories
+                                    <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </span>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-full h-full mt-2" align="center">
                                 <CategoryNavDropdown />
                             </HoverCardContent>
                         </HoverCard>
-                        <span className="hidden shrink-0 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm min-[1200px]:inline-block min-[1200px]:text-base">Collections</span>
+                        {isLoggedIn && (
+                            <span
+                                className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/my-orders' ? 'text-orange-500' : ''}`}
+                                onClick={() => router.push("/my-orders")}
+                            >
+                                My Orders
+                            </span>
+                        )}
                         {isAdmin && (
                             <>
                                 <span
-                                    className="flex shrink-0 items-center gap-1.5 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm font-medium"
+                                    className="flex shrink-0 items-center gap-1.5 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-sm font-medium transition-colors"
                                     onClick={() => router.push("/allproduct")}
-                                    title="All Products"
                                 >
-                                    <LayoutGrid size={15} />
-                                    <span className="hidden min-[1200px]:inline">All Products</span>
+                                    <LayoutGrid size={14} />
+                                    <span>Products</span>
                                 </span>
                                 <span
-                                    className="flex shrink-0 items-center gap-1.5 p-2 rounded-md hover:cursor-pointer hover:text-orange-500 text-sm font-medium"
+                                    className="flex shrink-0 items-center gap-1.5 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-sm font-medium transition-colors"
                                     onClick={() => router.push("/orders")}
-                                    title="Manage Orders"
                                 >
-                                    <Settings2 size={15} />
-                                    <span className="hidden min-[1200px]:inline">Manage Orders</span>
+                                    <Settings2 size={14} />
+                                    <span>Orders</span>
                                 </span>
                             </>
                         )}
                     </div>
-                    <div className="text-2xl min-[1200px]:text-3xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-center px-2 whitespace-nowrap" onClick={() => router.push("/")}>
+                    <div className="text-3xl min-[1200px]:text-4xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-center px-2 whitespace-nowrap" onClick={() => router.push("/")}>
                         <span>Silver Star</span>
                     </div>
                     <div className="flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0">
@@ -234,66 +253,57 @@ export function Headers() {
                     <div
                         className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
                     >
-                        <div className="flex flex-col gap-8 px-6 pb-12 pt-6 text-4xl tracking-tight font-semibold">
-                            {["Home", "Shop", "Wishlist", "Categories", "Collections", ...(isAdmin ? ["All Products", "Manage Products"] : []), ...(isLoggedIn ? ["Account", "Logout"] : ["Login"])].map((item, i) => {
-                                if (item === "Account") {
-                                    return (
-                                        <div key={item} ref={(el) => { mobileMenuItemsRef.current[i] = el; }} className="will-change-transform">
-                                            <div
-                                                className="cursor-pointer hover:text-orange-500 flex items-center justify-between"
-                                                onClick={() => setIsMobileAccountOpen(!isMobileAccountOpen)}
-                                            >
-                                                Account
-                                                <svg
-                                                    className={`w-8 h-8 transition-transform duration-300 ${isMobileAccountOpen ? "rotate-180" : ""}`}
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                            <div
-                                                className={`flex flex-col gap-4 overflow-hidden transition-all duration-300 ${isMobileAccountOpen ? "max-h-40 mt-6 opacity-100" : "max-h-0 opacity-0"}`}
-                                            >
-                                                <div
-                                                    className="text-2xl text-muted-foreground hover:text-orange-500 cursor-pointer pl-4 font-medium"
-                                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/profile"); }}
-                                                >
-                                                    My Profile
-                                                </div>
-                                                <div
-                                                    className="text-2xl text-muted-foreground hover:text-orange-500 cursor-pointer pl-4 font-medium"
-                                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/my-orders"); }}
-                                                >
-                                                    Track Orders
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                                return (
+                        <div className="flex flex-col gap-6 px-6 pb-12 pt-6 text-3xl tracking-tight font-semibold">
+                            {[
+                                { label: "Home", path: "/" },
+                                { label: "Shop", path: "/shop/all" },
+                                { label: "Categories", path: "/shop/all" },
+                                { label: "Wishlist", path: "/wishlist" },
+                                ...(isLoggedIn ? [{ label: "My Orders", path: "/my-orders" }] : []),
+                                ...(isAdmin ? [
+                                    { label: "All Products", path: "/allproduct" },
+                                    { label: "Manage Orders", path: "/orders" },
+                                ] : []),
+                            ].map((item, i) => (
+                                <div
+                                    key={item.label}
+                                    ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                    className={`cursor-pointer will-change-transform transition-colors ${
+                                        pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'
+                                    }`}
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        router.push(item.path);
+                                    }}
+                                >
+                                    {item.label}
+                                </div>
+                            ))}
+
+                            {/* Account / Login / Logout */}
+                            {isLoggedIn ? (
+                                <>
                                     <div
-                                        key={item}
-                                        ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
                                         className="cursor-pointer hover:text-orange-500 will-change-transform"
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            if (item === "Home") router.push("/");
-                                            else if (item === "Shop") router.push("/shop/all");
-                                            else if (item === "Wishlist") router.push("/wishlist");
-                                            else if (item === "Login") router.push("/login");
-                                            else if (item === "All Products") router.push("/allproduct");
-                                            else if (item === "Manage Orders") router.push("/orders");
-                                            else if (item === "Logout") {
-                                                setShowLogoutDialog(true);
-                                            }
-                                        }}
+                                        onClick={() => { setIsMobileMenuOpen(false); router.push("/profile"); }}
                                     >
-                                        {item}
+                                        Account
                                     </div>
-                                );
-                            })}
+                                    <div
+                                        className="cursor-pointer text-red-500 hover:text-red-600 will-change-transform"
+                                        onClick={() => { setIsMobileMenuOpen(false); setShowLogoutDialog(true); }}
+                                    >
+                                        Log Out
+                                    </div>
+                                </>
+                            ) : (
+                                <div
+                                    className="cursor-pointer hover:text-orange-500 will-change-transform"
+                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/login"); }}
+                                >
+                                    Login
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

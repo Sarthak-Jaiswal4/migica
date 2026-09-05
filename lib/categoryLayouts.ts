@@ -18,7 +18,10 @@ export const CATEGORY_BREATHERS: Record<string, string> = {
   candles: "Every scent tells a story.",
   scarves: "Worn close, made carefully.",
   jewelry: "The details are everything.",
+  jewellery: "The details are everything.",
   gift: "Given with intention.",
+  gifts: "Given with intention.",
+  clothing: "Style that speaks for itself.",
 };
 
 const LAYOUTS: Record<string, CategoryLayoutConfig> = {
@@ -27,7 +30,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/2.jpeg",
     imageAlt: "Candle lit on a dark surface with a warm glow",
     objectPosition: "center",
-    imageFrameClass: "aspect-[21/9] min-h-[200px] sm:min-h-[260px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
     caption: "Warm light, slow evenings",
   },
   scarves: {
@@ -35,7 +38,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/1.jpeg",
     imageAlt: "Person wearing a scarf in soft natural light",
     objectPosition: "center top",
-    imageFrameClass: "min-h-[300px] w-full lg:min-h-[420px] lg:h-full aspect-[4/5] lg:aspect-auto",
+    imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
     caption: "Wear it, feel it",
   },
   jewelry: {
@@ -43,7 +46,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/3.jpeg",
     imageAlt: "Close-up of jewellery — hand with a ring, neck with a necklace",
     objectPosition: "center 35%",
-    imageFrameClass: "aspect-[3/2] sm:aspect-[2/1] min-h-[240px] sm:min-h-[300px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
     caption: "Craft in the detail",
   },
   gifts: {
@@ -51,15 +54,15 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/4.jpeg",
     imageAlt: "Styled flat lay of gift products arranged together",
     objectPosition: "center",
-    imageFrameClass: "min-h-[300px] w-full lg:min-h-[420px] lg:h-full aspect-square lg:aspect-auto",
+    imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-square lg:aspect-auto",
     caption: "For her birthday · for the home",
   },
   clothing: {
-    variant: "stack-top",
+    variant: "split-image-left",
     image: "/5.jpeg",
     imageAlt: "Person wearing a t-shirt in a candid everyday setting",
     objectPosition: "center",
-    imageFrameClass: "aspect-[16/10] min-h-[220px] sm:min-h-[280px] w-full",
+    imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
     caption: "Everyday, not studio",
   },
   jewellery: {
@@ -67,7 +70,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/3.jpeg",
     imageAlt: "Close-up of jewellery",
     objectPosition: "center 35%",
-    imageFrameClass: "aspect-[3/2] sm:aspect-[2/1] min-h-[240px] sm:min-h-[300px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
     caption: "Craft in the detail",
   },
 };

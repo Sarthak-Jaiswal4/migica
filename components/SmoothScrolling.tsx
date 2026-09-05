@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function SmoothScrolling({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +23,8 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
       touchMultiplier: 2,
     });
 
+    lenisRef.current = lenis;
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const tickerRaf = (time: number) => {
@@ -31,8 +37,18 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
     return () => {
       gsap.ticker.remove(tickerRaf);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
+
+  // Scroll to top on every route change
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
 
   return <>{children}</>;
 }

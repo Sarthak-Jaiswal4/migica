@@ -50,7 +50,7 @@ export async function CategoriesShop({ midPageSlot }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-8 md:gap-16">
         {allCats.map((cat, index) => (
           <div key={cat.name}>
             <CategoryRow name={cat.name} products={cat.products} />

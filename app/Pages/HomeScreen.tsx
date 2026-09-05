@@ -6,6 +6,7 @@ import { CategoriesShop } from '../../components/CategoriesShop'
 import { CompleteTheSetSection } from '../../components/CompleteTheSetSection'
 import { Testimonials } from '../../components/Testimonials'
 import { Footer } from '../../components/Footer'
+import { CategoryGrid } from '../../components/CategoryGrid'
 
 function HomeScreen() {
   return (
@@ -16,6 +17,7 @@ function HomeScreen() {
         <div className='h-screen w-full bg-background'>
           <HomePageCarosol />
         </div>
+        <CategoryGrid />
         <CraftStorySection />
         <CategoriesShop midPageSlot={<MidPageBestSellers />} />
         <CompleteTheSetSection />

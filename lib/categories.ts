@@ -51,6 +51,10 @@ export const SHOP_CATEGORIES: CategoryDef[] = [
       { slug: "necklaces", label: "Necklaces" },
       { slug: "rings", label: "Rings" },
       { slug: "bracelets", label: "Bracelets" },
+      { slug: "bangles", label: "Bangles" },
+      { slug: "anklets", label: "Anklets" },
+      { slug: "nose-pins", label: "Nose Pins" },
+      { slug: "maangteeka", label: "Maangteeka" },
     ],
   },
   {
@@ -63,6 +67,11 @@ export const SHOP_CATEGORIES: CategoryDef[] = [
       { slug: "t-shirts", label: "T-Shirts" },
       { slug: "co-ords", label: "Co-ords" },
       { slug: "bestsellers", label: "Bestsellers", tag: "bestseller" },
+      { slug: "lehnga", label: "Lehnga" },
+      { slug: "saree", label: "Saree" },
+      { slug: "suit", label: "Suit" },
+      { slug: "gown", label: "Gown" },
+      { slug: "western-dress", label: "Western Dress" },
     ],
   },
   {

@@ -23,16 +23,16 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
     return (
         <Link href={`/product/${product.slug || product.id}`} className="block h-full w-full outline-none">
             <Card
-                className="group rounded-[8px] p-0 border border-border shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative hover:scale-101 h-full"
+                className="group rounded-none p-0 border-0 shadow-none bg-transparent overflow-hidden transition-all duration-300 cursor-pointer relative h-full"
             >
                 {/* Image */}
-                <div className={`${compact ? 'h-40 sm:h-56' : 'h-56'} w-full overflow-hidden relative`}>
+                <div className={`${compact ? 'h-44 sm:h-60' : 'h-60'} w-full overflow-hidden relative bg-[#f0efeb]`}>
                     <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
+                            <Image src={product?.image} alt={product.name} className="object-contain p-3" fill sizes="300px" />
                         </div>
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
+                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-contain p-3" fill sizes="300px" />
                         </div>
                     </div>
                     {!product.inStock && (
@@ -41,25 +41,25 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         </Badge>
                     )}
                     {product.rating >= 4.9 && (
-                        <Badge className="absolute top-2 left-2 bg-amber-500 text-white z-10">
-                            Bestseller
+                        <Badge className="absolute top-2 right-2 bg-black text-white z-10 rounded-full px-3 py-1 text-[11px] font-medium shadow-none border-0">
+                            Best Seller
                         </Badge>
                     )}
                     <WishlistButton product={product} />
                 </div>
 
                 <CardContent className="px-2 sm:px-3 pb-3 sm:pb-4 pt-1">
-                    <div className="w-full flex items-center flex-col gap-2">
-                        <h2 className="text-sm sm:text-lg font-medium mb-0.5 sm:mb-1 text-foreground transition-colors text-center line-clamp-1">
+                    <div className="w-full flex items-left flex-col gap-1">
+                        <h2 className="text-sm sm:text-lg font-medium sm:mb-1 text-foreground transition-colors text-left line-clamp-1">
                             {product.name}
                         </h2>
-                        <p className="text-muted-foreground text-[10px] sm:text-[12px] leading-tight text-center line-clamp-1 mb-2 px-2">
+                        <p className="text-muted-foreground text-[10px] sm:text-[12px] leading-tight text-left line-clamp-1 mb-2">
                             {product.description || product.category}
                         </p>
                     </div>
 
                     {/* Price and Action */}
-                    <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 justify-between pt-2 px-2 md:px-0 sm:pt-3 border-t border-border">
+                    <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 justify-between pt-2 px-2 md:px-0 sm:pt-2">
                         <div className="flex gap-2 items-center pb-2">
                             <span className="text-md text-muted-foreground line-through decoration-2">₹{699}</span>
                             <span className="text-lg sm:text-lg font-normal sm:font-normal tracking-tight text-foreground">₹{product.price}</span>
