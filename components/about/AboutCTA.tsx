@@ -4,9 +4,9 @@ import { Instagram, Mail } from "lucide-react";
 
 export function AboutCTA() {
   return (
-    <section className="w-full px-4 pb-16 bg-background" aria-labelledby="cta-heading">
+    <section className="w-full md:px-4 pb-16 bg-background" aria-labelledby="cta-heading">
       <div className="mx-auto max-w-6xl">
-        <div className="relative overflow-hidden rounded-[3rem] bg-neutral-900 text-white px-8 py-16 md:px-16 md:py-20">
+        <div className="relative overflow-hidden md:rounded-[3rem] bg-neutral-900 text-white px-8 py-16 md:px-16 md:py-20">
           {/* Background image */}
           <div className="absolute inset-0">
             <Image
@@ -72,10 +72,10 @@ export function AboutCTA() {
             {/* Stats row */}
             <div className="mt-6 w-full grid grid-cols-2 gap-px rounded-2xl overflow-hidden border border-white/10 sm:grid-cols-4">
               {[
-                { stat: "500+", label: "Orders shipped" },
-                { stat: "12", label: "Active scents" },
-                { stat: "5", label: "Exhibition cities" },
-                { stat: "7 yrs", label: "Of handcrafting" },
+                { stat: "15000+", label: "Orders shipped" },
+                { stat: "7", label: "Categories" },
+                { stat: "7", label: "Exhibition cities" },
+                { stat: "15 yrs", label: "Of handcrafting" },
               ].map((s) => (
                 <div key={s.label} className="bg-white/5 py-6 px-4 text-center">
                   <p className="font-[style] text-2xl font-semibold text-white">{s.stat}</p>

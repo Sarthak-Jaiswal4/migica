@@ -25,7 +25,7 @@ export function OwnerSection() {
 
             {/* Floating stat card */}
             <div className="absolute -bottom-6 -right-4 md:-right-8 rounded-2xl bg-white/90 backdrop-blur-sm border border-border shadow-lg p-5 w-44">
-              <p className="text-3xl font-[style] font-semibold text-foreground">12+</p>
+              <p className="text-3xl font-[style] font-semibold text-foreground">15+</p>
               <p className="text-xs text-muted-foreground mt-1 leading-snug">Years of handcrafting magic</p>
             </div>
 
@@ -48,7 +48,7 @@ export function OwnerSection() {
 
             <div className="mt-8 space-y-5 text-base leading-relaxed text-neutral-700">
               <p>
-                Before Silver Star existed, Priya was a textile designer in Mumbai who couldn't stop
+                Before Silver Star existed, Shalini was a textile designer in Mumbai who couldn't stop
                 experimenting with fragrance on the side. Weekend markets, borrowed copper pots, and
                 notebooks full of scent ratios — that's how the first candles were born.
               </p>
@@ -58,7 +58,7 @@ export function OwnerSection() {
                 That bar hasn't lowered as the team has grown.
               </p>
               <p>
-                Outside the studio, Priya obsesses over monsoon walks, second-hand pottery finds, and
+                Outside the studio, Shalini obsesses over monsoon walks, second-hand pottery finds, and
                 the kind of tea that steeps exactly four minutes. She answers the @silverstar DMs herself.
               </p>
             </div>

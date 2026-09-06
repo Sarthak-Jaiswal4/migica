@@ -22,7 +22,7 @@ const pillars: BundlePillar[] = [
     title: "Scarves",
     blurb: "Soft drape — something to keep on the sofa or wear out the same week.",
     href: "/shop/scarves",
-    imageSrc: "/4.1.png",
+    imageSrc: "/Gemini_Generated_Image_32dxqr32dxqr32dx.png",
     imageAlt: "Folded scarf texture",
   },
   {

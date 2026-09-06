@@ -1,4 +1,7 @@
+"use client";
+
 import { Quote } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const testimonials = [
   {
@@ -51,17 +54,68 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+function TestimonialCard({ t }: { t: typeof testimonials[0] }) {
+  return (
+    <article className="h-full rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col">
+      <Quote className="h-7 w-7 text-amber-900/10 mb-3 shrink-0" strokeWidth={1} aria-hidden />
+      <blockquote className="text-sm leading-relaxed text-foreground flex-1">
+        &ldquo;{t.body}&rdquo;
+      </blockquote>
+      <footer className="mt-5 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
+        <div>
+          <p className="text-sm font-semibold text-foreground">{t.name}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">{t.detail}</p>
+        </div>
+        <Stars count={t.stars} />
+      </footer>
+    </article>
+  );
+}
+
 export function AboutTestimonials() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const observers: IntersectionObserver[] = [];
+
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            setActiveIndex(i);
+          }
+        },
+        { root: slider, threshold: 0.5 }
+      );
+      observer.observe(card);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  function scrollToSlide(i: number) {
+    const card = cardRefs.current[i];
+    if (!card || !sliderRef.current) return;
+    sliderRef.current.scrollTo({ left: card.offsetLeft - 24, behavior: "smooth" });
+  }
+
   return (
     <section
       className="w-full bg-background py-20 md:py-28"
       aria-labelledby="about-testimonials-heading"
     >
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16">
+      <div className="mx-auto max-w-6xl">
+
         {/* Header */}
-        <div className="mx-auto mb-14 max-w-2xl text-center">
+        <div className="mx-auto mb-14 max-w-2xl text-center px-6 sm:px-10 lg:px-16">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-3">
-            Voices we've earned
+            Voices we&apos;ve earned
           </p>
           <h2
             id="about-testimonials-heading"
@@ -70,32 +124,59 @@ export function AboutTestimonials() {
             What people say when they come back
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-            We don't do incentivised reviews. These came in over email, WhatsApp, and
+            We don&apos;t do incentivised reviews. These came in over email, WhatsApp, and
             a note tucked inside a returned shipping box.
           </p>
         </div>
 
-        {/* Masonry-style grid */}
-        <div className="columns-1 gap-5 sm:columns-2 lg:columns-3 space-y-5">
-          {testimonials.map((t, i) => (
-            <article
-              key={i}
-              className="break-inside-avoid rounded-2xl border border-border/80 bg-card p-6 shadow-sm hover:shadow-md transition-shadow duration-300 inline-block w-full"
-            >
-              <Quote className="h-7 w-7 text-amber-900/10 mb-3" strokeWidth={1} aria-hidden />
-              <blockquote className="text-sm leading-relaxed text-foreground">
-                &ldquo;{t.body}&rdquo;
-              </blockquote>
-              <footer className="mt-5 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{t.detail}</p>
-                </div>
-                <Stars count={t.stars} />
-              </footer>
-            </article>
-          ))}
+        {/* MOBILE: horizontal snap slider */}
+        <div className="lg:hidden">
+          <div
+            ref={sliderRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2"
+            style={{ scrollbarWidth: "none", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}
+          >
+            {testimonials.map((t, i) => (
+              <div
+                key={i}
+                ref={(el) => { cardRefs.current[i] = el; }}
+                className="snap-center shrink-0 w-[82vw] max-w-[340px]"
+              >
+                <TestimonialCard t={t} />
+              </div>
+            ))}
+            <div className="shrink-0 w-6" aria-hidden />
+          </div>
+
+          {/* Interactive dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToSlide(i)}
+                aria-label={`Go to review ${i + 1}`}
+                className={
+                  "rounded-full transition-all duration-300 " +
+                  (i === activeIndex
+                    ? "w-6 h-2 bg-foreground/80"
+                    : "w-2 h-2 bg-foreground/25 hover:bg-foreground/50")
+                }
+              />
+            ))}
+          </div>
         </div>
+
+        {/* DESKTOP: masonry grid */}
+        <div className="hidden lg:block px-16">
+          <div className="columns-3 gap-5 space-y-5">
+            {testimonials.map((t, i) => (
+              <div key={i} className="break-inside-avoid">
+                <TestimonialCard t={t} />
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );
