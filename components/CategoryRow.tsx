@@ -109,7 +109,7 @@ export function CategoryRow({ name, products }: { name: string; products: Produc
   })();
 
   return (
-    <article className="mx-auto w-full max-w-[1400px] px-4 pb-6 pt-8 md:px-8">
+    <article className="mx-auto w-full max-w-[1400px] px-4 pb-8 pt-8 md:px-8">
       {header}
       {quoteBlock}
       {editorialBody}

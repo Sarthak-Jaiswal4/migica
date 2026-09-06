@@ -34,7 +34,7 @@ export async function CategoriesShop({ midPageSlot }: Props) {
   );
 
   return (
-    <section id="categories-shop" className="scroll-mt-24 overflow-x-hidden bg-background pt-16 pb-12">
+    <section id="categories-shop" className="scroll-mt-24 overflow-x-hidden bg-background pt-12 pb-10">
       <div className="mx-auto mb-16 max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -50,7 +50,7 @@ export async function CategoriesShop({ midPageSlot }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 md:gap-16">
+      <div className="flex flex-col gap-4 md:gap-0">
         {allCats.map((cat, index) => (
           <div key={cat.name}>
             <CategoryRow name={cat.name} products={cat.products} />
