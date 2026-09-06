@@ -29,7 +29,7 @@ const pillars: BundlePillar[] = [
     title: "Jewelry",
     blurb: "A small shine that feels personal, not loud.",
     href: "/shop/jewellery",
-    imageSrc: "/6.1.png",
+    imageSrc: "/Gemini_Generated_Image_5s7v95s7v95s7v95.png",
     imageAlt: "Jewellery detail",
   },
 ];

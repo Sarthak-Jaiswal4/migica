@@ -77,7 +77,7 @@ function StarRow({ filled = 5, of = 5 }: { filled?: number; of?: number }) {
 export function Testimonials() {
   return (
     <section
-      className="relative overflow-hidden bg-[#EDE8E2] py-20 md:py-28"
+      className="relative overflow-hidden bg-[#EDE8E2] py-10 md:py-14"
       aria-labelledby="testimonials-heading"
     >
       <div
@@ -89,7 +89,7 @@ export function Testimonials() {
       />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <header className="mx-auto mb-14 max-w-2xl text-center md:mb-20">
+        <header className="mx-auto mb-8 max-w-2xl text-center md:mb-10">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Real voices</p>
           <h2
             id="testimonials-heading"
