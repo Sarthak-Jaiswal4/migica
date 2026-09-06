@@ -22,7 +22,7 @@ export function CategoryEditorialImage({ config, className = "" }: Props) {
         src={config.image}
         alt={config.imageAlt}
         fill
-        className="object-cover brightness-[0.92] contrast-[1.04] saturate-[0.88] sepia-[0.12]"
+        className="object-cover brightness-[0.92] contrast-[1.04] saturate-[0.88] sepia-[0.1]"
         style={{ objectPosition: config.objectPosition ?? "center" }}
         sizes="(max-width: 1024px) 100vw, 50vw"
       />

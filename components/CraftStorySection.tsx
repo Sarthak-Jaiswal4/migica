@@ -1,6 +1,6 @@
 import { AppImage as Image } from "@/components/AppImage";
 
-const CRAFT_IMAGE = "/10.jpeg";
+const CRAFT_IMAGE = "/Gemini_Generated_Image_aoly2iaoly2iaoly.png";
 
 /**
  * Trust-first intro: who makes things, how they’re sourced.

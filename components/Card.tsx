@@ -26,13 +26,13 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                 className="group rounded-none p-0 border-0 shadow-none bg-transparent overflow-hidden transition-all duration-300 cursor-pointer relative h-full"
             >
                 {/* Image */}
-                <div className={`${compact ? 'h-44 sm:h-60' : 'h-60'} w-full overflow-hidden relative bg-[#f0efeb]`}>
+                <div className={`${compact ? 'h-44 sm:h-60' : 'h-60'} w-full overflow-hidden relative bg-white`}>
                     <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={product?.image} alt={product.name} className="object-contain p-3" fill sizes="300px" />
+                            <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
                         </div>
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-contain p-3" fill sizes="300px" />
+                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
                         </div>
                     </div>
                     {!product.inStock && (
@@ -58,11 +58,20 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                         </p>
                     </div>
 
+                    {/* Subcategory pill */}
+                    {product.subcategory && (
+                        <div className="flex justify-start px-2 md:px-0 mb-1.5">
+                            <span className="font-[style] inline-flex items-center rounded-full border border-[#E8D5C8] bg-[#F7F0EA] px-3 py-1 text-[11px] sm:text-[12px] font-semibold tracking-wider text-[#8C6E5D]">
+                                {product.subcategory}
+                            </span>
+                        </div>
+                    )}
+
                     {/* Price and Action */}
-                    <div className="flex items-center w-full mx-auto flex-col gap-2 sm:gap-0 justify-between pt-2 px-2 md:px-0 sm:pt-2">
-                        <div className="flex gap-2 items-center pb-2">
-                            <span className="text-md text-muted-foreground line-through decoration-2">₹{699}</span>
-                            <span className="text-lg sm:text-lg font-normal sm:font-normal tracking-tight text-foreground">₹{product.price}</span>
+                    <div className="flex items-start w-full flex-col gap-2 sm:gap-0 pt-2 px-2 md:px-0 sm:pt-2">
+                        <div className="flex items-center gap-2 pb-2">
+                            <span className="text-lg sm:text-lg font-semibold tracking-tight text-foreground">₹{product.price}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-2">₹{product.originalPrice || 699}</span>
                         </div>
                         <AddToCartButton
                             product={{

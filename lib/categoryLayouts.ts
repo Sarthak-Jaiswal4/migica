@@ -27,7 +27,7 @@ export const CATEGORY_BREATHERS: Record<string, string> = {
 const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   candles: {
     variant: "stack-top",
-    image: "/2.jpeg",
+    image: "/Gemini_Generated_Image_w0ls4bw0ls4bw0ls.png",
     imageAlt: "Candle lit on a dark surface with a warm glow",
     objectPosition: "center",
     imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
@@ -35,15 +35,15 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   },
   scarves: {
     variant: "split-image-left",
-    image: "/1.jpeg",
+    image: "/Gemini_Generated_Image_vr7s1kvr7s1kvr7s.png",
     imageAlt: "Person wearing a scarf in soft natural light",
-    objectPosition: "center top",
+    objectPosition: "center 15%",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
     caption: "Wear it, feel it",
   },
   jewelry: {
     variant: "stack-top",
-    image: "/3.jpeg",
+    image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
     imageAlt: "Close-up of jewellery — hand with a ring, neck with a necklace",
     objectPosition: "center 35%",
     imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
@@ -51,7 +51,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   },
   gifts: {
     variant: "split-image-right",
-    image: "/4.jpeg",
+    image: "/Gemini_Generated_Image_emozbemozbemozbe.png",
     imageAlt: "Styled flat lay of gift products arranged together",
     objectPosition: "center",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-square lg:aspect-auto",
@@ -59,15 +59,15 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   },
   clothing: {
     variant: "split-image-left",
-    image: "/5.jpeg",
+    image: "/Gemini_Generated_Image_jc73sjc73sjc73sj.png",
     imageAlt: "Person wearing a t-shirt in a candid everyday setting",
-    objectPosition: "center",
+    objectPosition: "center 6%",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
     caption: "Everyday, not studio",
   },
   jewellery: {
     variant: "stack-top",
-    image: "/3.jpeg",
+    image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
     imageAlt: "Close-up of jewellery",
     objectPosition: "center 35%",
     imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
