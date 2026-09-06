@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AppInitializer } from "@/components/AppInitializer";
 import { SmoothScrolling } from "@/components/SmoothScrolling";
+import { Analytics } from "@vercel/analytics/next"
 
 export const viewport: Viewport = {
   themeColor: "#F6F4F1",
@@ -112,6 +113,7 @@ export default function RootLayout({
           {children}
           <AppInitializer />
         </SmoothScrolling>
+        <Analytics />
       </body>
     </html>
   );

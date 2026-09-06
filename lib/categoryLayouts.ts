@@ -30,7 +30,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/Gemini_Generated_Image_w0ls4bw0ls4bw0ls.png",
     imageAlt: "Candle lit on a dark surface with a warm glow",
     objectPosition: "center",
-    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[240px] sm:min-h-[160px] w-full",
     caption: "Warm light, slow evenings",
   },
   scarves: {
@@ -46,7 +46,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
     imageAlt: "Close-up of jewellery — hand with a ring, neck with a necklace",
     objectPosition: "center 35%",
-    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[240px] sm:min-h-[160px] w-full",
     caption: "Craft in the detail",
   },
   gifts: {
@@ -70,7 +70,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
     imageAlt: "Close-up of jewellery",
     objectPosition: "center 35%",
-    imageFrameClass: "aspect-[21/7] min-h-[120px] sm:min-h-[160px] w-full",
+    imageFrameClass: "aspect-[21/7] min-h-[240px] sm:min-h-[160px] w-full",
     caption: "Craft in the detail",
   },
 };

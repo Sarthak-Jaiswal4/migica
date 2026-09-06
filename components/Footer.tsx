@@ -29,7 +29,7 @@ export function Footer() {
                             <a href="#" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Twitter size={18} />
                             </a>
-                            <a href="#" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                            <a href="https://www.facebook.com/SilverStarCreation?mibextid=LQQJ4d" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Facebook size={18} />
                             </a>
                         </div>
