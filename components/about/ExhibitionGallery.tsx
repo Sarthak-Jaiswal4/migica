@@ -2,13 +2,14 @@ import { AppImage as Image } from "@/components/AppImage";
 
 const exhibitions = [
   {
-    title: "Maker's Market Mumbai 2022",
+    title: "Dayal Gateway Paradise Mother’s Day Event 2026",
     location: "Bandra, Mumbai",
     description: "Our first major public exhibition. 200+ visitors in a single afternoon, 3 wholesale inquiries, and the booth that started the stockist conversation.",
-    image: "/Gemini_Generated_Image_jc73sjc73sjc73sj.png",
+    image: "/my-4.jpeg",
     alt: "Silver Star booth at Maker's Market Mumbai with candles on display",
     span: "lg:col-span-2",
-    aspectClass: "aspect-[16/9]",
+    aspectClass: "aspect-[11/7]",
+    objectPosition: "top",
   },
   {
     title: "Craft Collective Goa 2023",
@@ -21,27 +22,27 @@ const exhibitions = [
   },
   {
     title: "Diwali Festive Edit 2023",
-    location: "Juhu, Mumbai",
+    location: "Hilton Garden, Lucknow",
     description: "Curated gifting sets, festive editions, and the debut of brass taper holders.",
-    image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
+    image: "/my-2.jpeg",
     alt: "Silver Star festive gifting display during Diwali edit",
     span: "lg:col-span-1",
     aspectClass: "aspect-[3/4]",
   },
   {
     title: "Artisan Fair Delhi 2024",
-    location: "Lodhi Colony, Delhi",
+    location: "Shalimar Gateway mall, Lucknow",
     description: "North India debut. Introduced the jewellery line alongside candles and scarves.",
-    image: "/Gemini_Generated_Image_nqx3aunqx3aunqx3.png",
+    image: "/my-3.jpeg",
     alt: "Silver Star artisan fair booth in Delhi",
     span: "lg:col-span-1",
-    aspectClass: "aspect-video",
+    aspectClass: "aspect-[3/4]",
   },
   {
-    title: "Boutique Pop-up Bangalore 2024",
-    location: "Indiranagar, Bengaluru",
-    description: "Invitation-only preview. 50 curated attendees, a live candle-pouring demo, and the complete gifting catalogue.",
-    image: "/Gemini_Generated_Image_w0ls4bw0ls4bw0ls.png",
+    title: "Teej festive exhibition 2026",
+    location: "Casayan lnn hotel, Lucknow",
+    description: " 1-Award received by  Mayor of Lucknow {Sushma kharakwar) Best Exhibitor Received by President of Mahila Aayog LucknowWinner Festive  Queen👸Best Rampwalk Best Performer.",
+    image: "/my-5.jpeg",
     alt: "Silver Star boutique pop-up in Bangalore",
     span: "lg:col-span-2",
     aspectClass: "aspect-video",
@@ -87,6 +88,7 @@ export function ExhibitionGallery() {
                   alt={ex.alt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ objectPosition: ex.objectPosition ?? "center" }}
                   sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
                 />
                 {/* Dark overlay */}
@@ -99,10 +101,10 @@ export function ExhibitionGallery() {
 
                 {/* Text overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <h3 className="font-[style] text-base font-semibold text-white leading-tight">
+                  <h3 className="font-[style] text-lg font-semibold text-white leading-tight">
                     {ex.title}
                   </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-white/75 line-clamp-2">
+                  <p className="mt-1.5 text-sm leading-relaxed text-white/75 line-clamp-2">
                     {ex.description}
                   </p>
                 </div>
@@ -115,7 +117,8 @@ export function ExhibitionGallery() {
         <div className="mt-10 flex items-center justify-center gap-3">
           <div className="h-px flex-1 bg-border" />
           <span className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium text-muted-foreground">
-            More exhibitions coming in 2026 — follow @silverstar to stay updated
+            More exhibitions coming in 2026 — follow @silverstar.live
+            to stay updated
           </span>
           <div className="h-px flex-1 bg-border" />
         </div>

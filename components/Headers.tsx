@@ -99,6 +99,12 @@ export function Headers() {
                         >
                             Shop
                         </span>
+                        <span
+                            className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/about' ? 'text-orange-500' : ''}`}
+                            onClick={() => router.push("/about")}
+                        >
+                            About
+                        </span>
                         <HoverCard openDelay={20} closeDelay={200}>
                             <HoverCardTrigger asChild>
                                 <span className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors flex items-center gap-1">
@@ -257,6 +263,7 @@ export function Headers() {
                             {[
                                 { label: "Home", path: "/" },
                                 { label: "Shop", path: "/shop/all" },
+                                { label: "About", path: "/about" },
                                 { label: "Categories", path: "/shop/all" },
                                 { label: "Wishlist", path: "/wishlist" },
                                 ...(isLoggedIn ? [{ label: "My Orders", path: "/my-orders" }] : []),

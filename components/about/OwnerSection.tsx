@@ -13,7 +13,7 @@ export function OwnerSection() {
           <div className="relative">
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl shadow-xl">
               <Image
-                src="/Gemini_Generated_Image_emozbemozbemozbe.png"
+                src="/my.jpeg"
                 alt="Priya Sharma, founder of Silver Star"
                 fill
                 className="object-cover"
@@ -25,7 +25,7 @@ export function OwnerSection() {
 
             {/* Floating stat card */}
             <div className="absolute -bottom-6 -right-4 md:-right-8 rounded-2xl bg-white/90 backdrop-blur-sm border border-border shadow-lg p-5 w-44">
-              <p className="text-3xl font-[style] font-semibold text-foreground">7+</p>
+              <p className="text-3xl font-[style] font-semibold text-foreground">12+</p>
               <p className="text-xs text-muted-foreground mt-1 leading-snug">Years of handcrafting magic</p>
             </div>
 
@@ -76,7 +76,7 @@ export function OwnerSection() {
                 className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-[#C9956C] transition-colors border border-border rounded-full px-4 py-2"
               >
                 <Instagram size={15} />
-                @silverstar
+                @silverstar.live
               </a>
             </div>
 
