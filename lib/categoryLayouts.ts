@@ -22,6 +22,7 @@ export const CATEGORY_BREATHERS: Record<string, string> = {
   gift: "Given with intention.",
   gifts: "Given with intention.",
   clothing: "Style that speaks for itself.",
+  "fashion-accessories": "The finishing touch that ties it all together.",
 };
 
 const LAYOUTS: Record<string, CategoryLayoutConfig> = {
@@ -40,14 +41,6 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     objectPosition: "center 15%",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
     caption: "Wear it, feel it",
-  },
-  jewelry: {
-    variant: "stack-top",
-    image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
-    imageAlt: "Close-up of jewellery — hand with a ring, neck with a necklace",
-    objectPosition: "center 35%",
-    imageFrameClass: "aspect-[21/7] min-h-[240px] sm:min-h-[160px] w-full",
-    caption: "Craft in the detail",
   },
   gifts: {
     variant: "split-image-right",
@@ -70,8 +63,16 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
     image: "/Gemini_Generated_Image_qlzon6qlzon6qlzo.png",
     imageAlt: "Close-up of jewellery",
     objectPosition: "center 35%",
-    imageFrameClass: "aspect-[21/7] min-h-[240px] sm:min-h-[160px] w-full",
+    imageFrameClass: "aspect-[24/7] min-h-[240px] sm:min-h-[160px] w-full",
     caption: "Craft in the detail",
+  },
+  "fashion-accessories": {
+    variant: "split-image-right",
+    image: "/3.jpeg",
+    imageAlt: "Fashion accessories — sunglasses, belt, hair accessories styled together",
+    objectPosition: "center",
+    imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-square lg:aspect-auto",
+    caption: "Style in the details",
   },
 };
 
@@ -84,6 +85,7 @@ export const CATEGORY_DISPLAY_ORDER = [
   "jewellery",
   "gifts",
   "clothing",
+  "fashion-accessories",
 ] as const;
 
 function normalizeCategoryKey(name: string): string {
@@ -92,6 +94,7 @@ function normalizeCategoryKey(name: string): string {
   if (n === "gift") return "gifts";
   if (n === "t-shirts" || n === "tshirts" || n === "t shirts" || n === "t-shirt") return "clothing";
   if (n === "candle") return "candles";
+  if (n === "accessories" || n === "fashion accessories") return "fashion-accessories";
   return n;
 }
 

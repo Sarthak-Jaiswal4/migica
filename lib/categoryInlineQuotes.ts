@@ -27,6 +27,10 @@ const QUOTES: Record<string, CategoryInlineQuote> = {
     quote: "Fabric held up after several washes; neckline didn't bacon. My partner stole the second one I ordered.",
     attribution: "Dev · T-Shirt",
   },
+  "Fashion Accessories": {
+    quote: "The sunglasses are exactly what I needed — sturdy, stylish, and shipped faster than I expected. The hair clips were a bonus steal.",
+    attribution: "Priya · Fashion Accessories",
+  },
 };
 
 export function getInlineQuoteForCategory(categoryName: string): CategoryInlineQuote | null {

@@ -6,15 +6,20 @@ import { Footer } from '@/components/Footer'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { AppImage as Image } from '@/components/AppImage'
-import { Pencil, Plus, Trash2, Loader2, Package } from 'lucide-react'
+import { Pencil, Plus, Trash2, Loader2, Package, Search, Filter } from 'lucide-react'
 import type { Product } from '@/lib/product'
 
 export default function AllProductsPage() {
     const router = useRouter()
     const [products, setProducts] = useState<Product[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    
+    // Filtering state
+    const [searchQuery, setSearchQuery] = useState('')
+    const [categoryFilter, setCategoryFilter] = useState('All')
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -32,6 +37,14 @@ export default function AllProductsPage() {
         }
         fetchProducts()
     }, [])
+
+    const uniqueCategories = ['All', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))]
+
+    const filteredProducts = products.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const matchesCategory = categoryFilter === 'All' || p.category === categoryFilter
+        return matchesSearch && matchesCategory
+    })
 
     return (
         <div className='min-h-screen w-full relative bg-background flex flex-col'>
@@ -61,9 +74,37 @@ export default function AllProductsPage() {
                 </div>
 
                 <Card className='border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden'>
-                    <CardHeader className='border-b border-border pb-6'>
-                        <CardTitle className='text-lg'>All Products ({products.length})</CardTitle>
-                        <CardDescription>Click on any product to edit its details</CardDescription>
+                    <CardHeader className='border-b border-border pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
+                        <div>
+                            <CardTitle className='text-lg'>All Products ({filteredProducts.length})</CardTitle>
+                            <CardDescription>Click on any product to edit its details</CardDescription>
+                        </div>
+                        <div className='flex flex-col sm:flex-row w-full md:w-auto gap-3'>
+                            <div className='relative w-full sm:w-64'>
+                                <Search className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' size={16} />
+                                <Input 
+                                    placeholder='Search products...' 
+                                    className='pl-9 rounded-xl border-border bg-background/50 h-10 focus-visible:ring-1 focus-visible:ring-amber-600/50'
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                            <div className='relative w-full sm:w-48'>
+                                <Filter className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' size={16} />
+                                <select
+                                    className='w-full h-10 pl-9 pr-8 text-sm rounded-xl border border-border bg-background/50 focus:outline-none focus:ring-1 focus:ring-amber-600/50 appearance-none'
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                >
+                                    {uniqueCategories.map(cat => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className='p-0'>
                         <div className='overflow-x-auto'>
@@ -88,14 +129,14 @@ export default function AllProductsPage() {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ) : products.length === 0 ? (
+                                    ) : filteredProducts.length === 0 ? (
                                         <tr>
                                             <td colSpan={6} className='px-6 py-12 text-center text-muted-foreground'>
-                                                No products found.
+                                                No products found matching your filters.
                                             </td>
                                         </tr>
                                     ) : (
-                                        products.map((product) => (
+                                        filteredProducts.map((product) => (
                                             <tr
                                                 key={product.id}
                                                 className='hover:bg-neutral-50/80 transition-colors cursor-pointer group'

@@ -34,7 +34,7 @@ export async function CategoriesShop({ midPageSlot }: Props) {
   );
 
   return (
-    <section id="categories-shop" className="scroll-mt-24 overflow-x-hidden bg-background pt-12 pb-10">
+    <section id="categories-shop" className="scroll-mt-24 overflow-x-hidden bg-background pt-16 pb-4">
       <div className="mx-auto mb-16 max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">

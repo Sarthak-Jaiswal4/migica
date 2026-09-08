@@ -44,6 +44,7 @@ export function Footer() {
                             <li><Link href="/shop/jewellery" className="hover:text-amber-500 transition-colors">Jewellery</Link></li>
                             <li><Link href="/shop/clothing" className="hover:text-amber-500 transition-colors">Clothing</Link></li>
                             <li><Link href="/shop/gifts" className="hover:text-amber-500 transition-colors">Gifts</Link></li>
+                            <li><Link href="/shop/fashion-accessories" className="hover:text-amber-500 transition-colors">Fashion Accessories</Link></li>
                             <li><Link href="/shop/all" className="hover:text-amber-500 transition-colors">Collections</Link></li>
                         </ul>
                     </div>

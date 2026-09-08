@@ -107,7 +107,7 @@ export function AboutTestimonials() {
 
   return (
     <section
-      className="w-full bg-background py-20 md:py-28"
+      className="w-full bg-background py-20 md:py-10"
       aria-labelledby="about-testimonials-heading"
     >
       <div className="mx-auto max-w-6xl">

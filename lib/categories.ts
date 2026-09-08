@@ -86,6 +86,17 @@ export const SHOP_CATEGORIES: CategoryDef[] = [
       { slug: "for-him", label: "For Him" },
     ],
   },
+  {
+    slug: "fashion-accessories",
+    label: "Fashion Accessories",
+    description: "Complete your look with sunglasses, belts, and hair accessories.",
+    image: "/3.jpeg",
+    subcategories: [
+      { slug: "sunglasses", label: "Sunglasses" },
+      { slug: "belt", label: "Belts" },
+      { slug: "hair-accessories", label: "Hair Accessories" },
+    ],
+  },
 ];
 
 const LEGACY_CATEGORY_ALIASES: Record<string, string> = {
@@ -102,6 +113,9 @@ const LEGACY_CATEGORY_ALIASES: Record<string, string> = {
   tshirts: "clothing",
   clothing: "clothing",
   clothes: "clothing",
+  accessories: "fashion-accessories",
+  "fashion accessories": "fashion-accessories",
+  "fashion-accessories": "fashion-accessories",
 };
 
 export function normalizeCategorySlug(value?: string | null): string {
