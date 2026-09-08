@@ -125,7 +125,7 @@ export function HappyCustomers() {
 
   return (
     <section
-      className="py-8 md:py-10 overflow-hidden bg-[#FDFAF7]"
+      className="py-8 md:py-6 overflow-hidden bg-[#FDFAF7]"
       aria-labelledby="happy-customers-heading"
     >
       {/* ── Header ── */}
