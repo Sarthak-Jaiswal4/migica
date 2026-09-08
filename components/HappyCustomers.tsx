@@ -70,25 +70,42 @@ export function HappyCustomers() {
   const dragStart = useRef(0);
   const scrollStart = useRef(0);
 
-  /* Update active dot based on scroll position */
+  /* Update active dot based on scroll progress from 1st to last card */
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
     const onScroll = () => {
-      const cardW = track.firstElementChild?.clientWidth ?? 260;
-      const gap = 24;
-      setActiveIdx(Math.round(track.scrollLeft / (cardW + gap)));
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      if (maxScroll <= 0) {
+        setActiveIdx(0);
+        return;
+      }
+      const progress = Math.max(0, Math.min(1, track.scrollLeft / maxScroll));
+      const newIdx = Math.min(
+        PHOTOS.length - 1,
+        Math.max(0, Math.round(progress * (PHOTOS.length - 1)))
+      );
+      setActiveIdx(newIdx);
     };
+
     track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    onScroll();
+
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   const scrollTo = useCallback((idx: number) => {
     const track = trackRef.current;
     if (!track) return;
-    const cardW = track.firstElementChild?.clientWidth ?? 260;
-    const gap = 24;
-    track.scrollTo({ left: idx * (cardW + gap), behavior: "smooth" });
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    if (maxScroll <= 0) return;
+    const targetLeft = (idx / (PHOTOS.length - 1)) * maxScroll;
+    track.scrollTo({ left: targetLeft, behavior: "smooth" });
   }, []);
 
   const prev = () => scrollTo(Math.max(0, activeIdx - 1));
@@ -99,7 +116,6 @@ export function HappyCustomers() {
     setIsDragging(true);
     dragStart.current = e.pageX;
     scrollStart.current = trackRef.current?.scrollLeft ?? 0;
-    e.preventDefault();
   };
   const onMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !trackRef.current) return;
@@ -132,18 +148,20 @@ export function HappyCustomers() {
         {/* Arrow buttons — desktop */}
         <div className="hidden sm:flex items-center gap-3 pb-1">
           <button
+            type="button"
             onClick={prev}
             disabled={activeIdx === 0}
             aria-label="Previous photo"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5C8] bg-white text-[#8C6E5D] shadow-sm transition hover:bg-[#F4EFE8] hover:text-[#C9956C] disabled:opacity-30"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5C8] bg-white text-[#8C6E5D] shadow-sm transition hover:bg-[#F4EFE8] hover:text-[#C9956C] disabled:opacity-30 cursor-pointer"
           >
             <ChevronLeft size={18} />
           </button>
           <button
+            type="button"
             onClick={next}
             disabled={activeIdx === PHOTOS.length - 1}
             aria-label="Next photo"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5C8] bg-white text-[#8C6E5D] shadow-sm transition hover:bg-[#F4EFE8] hover:text-[#C9956C] disabled:opacity-30"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5C8] bg-white text-[#8C6E5D] shadow-sm transition hover:bg-[#F4EFE8] hover:text-[#C9956C] disabled:opacity-30 cursor-pointer"
           >
             <ChevronRight size={18} />
           </button>
@@ -211,12 +229,13 @@ export function HappyCustomers() {
         {PHOTOS.map((_, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => scrollTo(i)}
             aria-label={`Go to photo ${i + 1}`}
-            className={`rounded-full transition-all duration-300 ${
+            className={`rounded-full transition-all duration-300 cursor-pointer ${
               i === activeIdx
                 ? "w-6 h-2 bg-[#C9956C]"
-                : "w-2 h-2 bg-[#E8D5C8]"
+                : "w-2 h-2 bg-[#E8D5C8] hover:bg-[#C9956C]/50"
             }`}
           />
         ))}

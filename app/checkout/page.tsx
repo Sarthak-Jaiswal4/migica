@@ -19,7 +19,7 @@ import { SHIPPING_COST } from '@/lib/constants'
 import Link from 'next/link'
 
 const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID || "silverstar@upi";
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ;
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012";
 
 /* ─── tiny helper: labelled input field ─────────────────────────── */
 function Field({
