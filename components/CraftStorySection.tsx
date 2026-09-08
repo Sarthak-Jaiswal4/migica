@@ -9,7 +9,7 @@ const CRAFT_IMAGE = "/Gemini_Generated_Image_aoly2iaoly2iaoly.png";
 export function CraftStorySection() {
   return (
     <section
-      className="w-full border-y border-border/60 bg-[#F4EFE8] py-20"
+      className="w-full border-y border-border/60 bg-[#F4EFE8] md:py-10"
       aria-labelledby="craft-story-heading"
     >
       <div className="mx-auto grid max-w-[1600px] md:grid-cols-2 md:items-stretch">
