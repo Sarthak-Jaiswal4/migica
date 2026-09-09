@@ -11,8 +11,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { ProductTaxonomyFields } from '@/components/admin/ProductTaxonomyFields'
-import { ChevronLeft, Save, Trash2, Upload, X, AlertCircle, Plus, Loader2 } from 'lucide-react'
+import { ChevronLeft, Save, Trash2, Upload, AlertCircle, Loader2 } from 'lucide-react'
 import { AppImage as Image } from '@/components/AppImage'
+import { ProductImageGallery } from '@/components/admin/ProductImageGallery'
 
 async function uploadToCloudinary(file: File): Promise<string> {
     const formData = new FormData()
@@ -140,6 +141,16 @@ export default function EditProductPage() {
         })
     }
 
+    const reorderImages = (fromIndex: number, toIndex: number) => {
+        setProduct(prev => {
+            if (!prev || toIndex < 0 || toIndex >= (prev.images || []).length || fromIndex === toIndex) return prev
+            const nextImages = [...(prev.images || [])]
+            const [movedImage] = nextImages.splice(fromIndex, 1)
+            nextImages.splice(toIndex, 0, movedImage)
+            return { ...prev, images: nextImages }
+        })
+    }
+
     return (
         <div className='min-h-screen w-full relative bg-background flex flex-col'>
             <Headers />
@@ -199,32 +210,13 @@ export default function EditProductPage() {
                                 </div>
 
                                 {/* Gallery */}
-                                <div className='grid grid-cols-3 gap-3'>
-                                    {(product.images || []).map((img, idx) => (
-                                        <div key={idx} className='aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-border group'>
-                                            <Image src={img} alt={`Gallery ${idx}`} fill className='object-cover' />
-                                            <button
-                                                onClick={() => removeImage(idx)}
-                                                className='absolute top-1 right-1 h-6 w-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'
-                                            >
-                                                <X size={12} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        className='aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-amber-500 hover:text-amber-500 transition-all'
-                                        onClick={() => galleryImageInputRef.current?.click()}
-                                        disabled={isUploading}
-                                    >
-                                        {isUploading ? (
-                                            <Loader2 size={20} className="animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Plus size={20} />
-                                                <span className='text-[10px] uppercase font-black'>Add</span>
-                                            </>
-                                        )}
-                                    </button>
+                                <ProductImageGallery
+                                    images={product.images || []}
+                                    isUploading={isUploading}
+                                    onAddImage={() => galleryImageInputRef.current?.click()}
+                                    onRemoveImage={removeImage}
+                                    onReorderImages={reorderImages}
+                                />
                                     <input
                                         ref={galleryImageInputRef}
                                         type="file"
@@ -232,7 +224,6 @@ export default function EditProductPage() {
                                         className="hidden"
                                         onChange={handleGalleryImageUpload}
                                     />
-                                </div>
                             </CardContent>
                         </Card>
 

@@ -8,6 +8,7 @@ import { Testimonials } from '../../components/Testimonials'
 import { Footer } from '../../components/Footer'
 import { CategoryGrid } from '../../components/CategoryGrid'
 import { HappyCustomers } from '../../components/HappyCustomers'
+import { ExhibitionGallery } from '@/components/about/ExhibitionGallery'
 
 function HomeScreen() {
   return (
@@ -23,6 +24,7 @@ function HomeScreen() {
         <CategoriesShop midPageSlot={<MidPageBestSellers />} />
         <CompleteTheSetSection />
         <HappyCustomers />
+        <ExhibitionGallery/>
         <Testimonials />
         <Footer />
       </div>

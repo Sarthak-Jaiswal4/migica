@@ -13,13 +13,12 @@ import { AppImage as Image } from '@/components/AppImage'
 import {
   Loader2, MapPin, Package, Shield, ArrowLeft,
   Truck, Tag, CheckCircle2, Lock, Gift,
-  QrCode, Copy, Check, X, MessageCircle, ExternalLink, AlertCircle
+  MessageCircle, AlertCircle
 } from 'lucide-react'
 import { SHIPPING_COST } from '@/lib/constants'
 import Link from 'next/link'
 
-const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID || "silverstar@upi";
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
 /* ─── tiny helper: labelled input field ─────────────────────────── */
 function Field({
@@ -62,16 +61,12 @@ export default function CheckoutPage() {
   const [fetchingAddress, setFetchingAddress] = useState(true)
   const [hasSavedAddress, setHasSavedAddress] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
-  const [copiedUpi, setCopiedUpi] = useState(false)
-  const [qrLoadFailed, setQrLoadFailed] = useState(false)
 
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
   const [couponError, setCouponError] = useState('')
   const [discountAmount, setDiscountAmount] = useState(0)
   const [error, setError] = useState('')
-  const [modalError, setModalError] = useState('')
 
   useEffect(() => {
     async function fetchProfile() {
@@ -96,17 +91,6 @@ export default function CheckoutPage() {
     fetchProfile()
   }, [])
 
-  /* ── Body scroll lock when payment popup is open ────────────────── */
-  useEffect(() => {
-    if (showPaymentModal) {
-      const prevOverflow = document.body.style.overflow
-      document.body.style.overflow = 'hidden'
-      return () => {
-        document.body.style.overflow = prevOverflow
-      }
-    }
-  }, [showPaymentModal])
-
   const subtotal = totalPrice()
   const shipping = items.length > 0 ? SHIPPING_COST : 0
   const total = Math.max(0, subtotal - discountAmount + shipping)
@@ -124,39 +108,48 @@ export default function CheckoutPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.id]: e.target.value })
 
-  /* ── Open Payment Popup ───────────────────────────────────────── */
-  const handleInitiatePayment = (e?: React.MouseEvent | React.FormEvent) => {
-    if (e) e.preventDefault()
-    setError('')
-    setModalError('')
-    setShowPaymentModal(true)
-  }
-
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText(UPI_ID)
-    setCopiedUpi(true)
-    setTimeout(() => setCopiedUpi(false), 2000)
-  }
-
+  /* ── Generate WhatsApp URL with Full Product Details ─────────── */
   const getWhatsAppUrl = () => {
     const formattedPhone = WHATSAPP_NUMBER.replace(/[^0-9]/g, '')
-    const itemList = items.length > 0
-      ? items.map(i => `${i.name} (x${i.quantity})`).join(', ')
-      : 'Silver Star Order Inquiry'
-    const finalAmount = total > 0 ? `₹${total.toFixed(2)}` : 'Inquiry'
-    const msg = `Hi Silver Star! 👋\nI have a query regarding my order:\n\n` +
-      `• Total Amount: ${finalAmount}\n` +
-      `• Items: ${itemList}\n` +
-      (formData.name ? `• Name: ${formData.name}\n` : '') +
-      (formData.city ? `• City: ${formData.city} (${formData.zipCode || ''})\n` : '') +
-      `\nCould you please assist me with my query?`
+    
+    // Detailed list of each item with price and quantity
+    const itemsDetailList = items.length > 0
+      ? items.map((item, idx) => 
+          `${idx + 1}. *${item.name}*\n   Qty: ${item.quantity} × ₹${item.price.toFixed(2)} = ₹${(item.price * item.quantity).toFixed(2)}`
+        ).join('\n\n')
+      : 'No items in cart'
+
+    let msg = `✨ *NEW ORDER - SILVER STAR* ✨\n`
+    msg += `════════════════════════════════════\n\n`
+    msg += `🛍️ *PRODUCTS DETAILS:*\n\n${itemsDetailList}\n\n`
+    msg += `────────────────────────────────────\n`
+    msg += `💰 *ORDER SUMMARY:*\n`
+    msg += `• Subtotal: ₹${subtotal.toFixed(2)}\n`
+    if (couponApplied) {
+      msg += `• Coupon (${couponCode}): -₹${discountAmount.toFixed(2)}\n`
+    }
+    msg += `• Delivery: ${shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}\n`
+    msg += `• *Total Amount to Pay: ₹${total.toFixed(2)}*\n`
+    msg += `────────────────────────────────────\n\n`
+    msg += `📍 *DELIVERY DETAILS:*\n`
+    msg += `• *Name:* ${formData.name || 'Customer'}\n`
+    msg += `• *Address:* ${formData.address || 'N/A'}\n`
+    msg += `• *City:* ${formData.city || 'N/A'} - ${formData.zipCode || 'N/A'}\n`
+    msg += `• *Country:* ${formData.country || 'India'}\n\n`
+    msg += `════════════════════════════════════\n`
+    msg += `Hi Silver Star! I would like to place and pay for this order on WhatsApp. Please share your payment / UPI details so I can complete it.`
+
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`
   }
 
-  /* ── Confirm & Place Order ────────────────────────────────────── */
-  const handleConfirmOrder = async () => {
+  /* ── Handle Pay on WhatsApp (Place order & launch WhatsApp) ──── */
+  const handlePayOnWhatsApp = async () => {
+    if (!WHATSAPP_NUMBER) {
+      setError('WhatsApp checkout is not configured yet. Please contact the store for assistance.')
+      return
+    }
     if (items.length === 0) {
-      setModalError('Your cart is empty. Please add items to cart before confirming order.')
+      setError('Your cart is empty. Please add items to cart before completing your order.')
       return
     }
     if (
@@ -166,15 +159,20 @@ export default function CheckoutPage() {
       !formData.zipCode.trim() ||
       !formData.country.trim()
     ) {
-      setModalError('Please fill in your complete delivery address before placing the order.')
+      setError('Please fill in your complete delivery address before proceeding to WhatsApp.')
       return
     }
 
-    setModalError('')
+    setError('')
     setLoading(true)
 
+    // Open WhatsApp immediately to avoid popup blockers
+    const whatsappUrl = getWhatsAppUrl()
+    window.open(whatsappUrl, '_blank')
+
     try {
-      const res = await fetch('/api/checkout', {
+      // Record the order in database
+      await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -184,26 +182,18 @@ export default function CheckoutPage() {
           discountAmount
         }),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setModalError(data.error || 'Checkout failed. Please try again.')
-        setLoading(false)
-        return
-      }
-      setShowPaymentModal(false)
+
       setSuccess(true)
       clearCart()
     } catch (err) {
       console.error('Checkout error:', err)
-      setModalError('Connection error. Please try again later.')
+      // Even if background API fails, user has already opened WhatsApp to complete order
+      setSuccess(true)
+      clearCart()
+    } finally {
       setLoading(false)
     }
   }
-
-  /* ─── UPI Details for QR ─── */
-  const displayTotal = total > 0 ? total : 999
-  const upiPayUrl = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent("Silver Star")}&am=${displayTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent("Order Payment Silver Star")}`
-  const qrCodeImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(upiPayUrl)}&margin=8`
 
   /* ─── SUCCESS SCREEN ─────────────────────────────────────────── */
   if (success) {
@@ -276,10 +266,10 @@ export default function CheckoutPage() {
                 </svg>
               </div>
               <h2 className="font-[style] text-3xl font-semibold tracking-tight text-foreground"
-                style={{ animation:'fadeUp 0.5s ease-out 1.4s both' }}>Order Confirmed!</h2>
+                style={{ animation:'fadeUp 0.5s ease-out 1.4s both' }}>Order Initiated!</h2>
               <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base"
                 style={{ animation:'fadeUp 0.5s ease-out 1.6s both' }}>
-                Your shipping details have been saved and a receipt has been sent to your email.
+                Your order details have been sent to WhatsApp and our team. We look forward to fulfilling your pieces.
               </p>
               <Button onClick={() => router.push('/shop/all')}
                 className="mt-8 h-12 px-10 bg-[#C9956C] text-white hover:bg-[#B8845A] rounded-xl font-semibold shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98]"
@@ -400,15 +390,16 @@ export default function CheckoutPage() {
                 <div className="lg:hidden">
                   <Button
                     type="button"
-                    onClick={handleInitiatePayment}
-                    className="w-full h-14 rounded-xl bg-[#C9956C] text-white hover:bg-[#B8845A] font-semibold text-base shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                    onClick={handlePayOnWhatsApp}
+                    disabled={loading}
+                    className="w-full h-14 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-base shadow-lg shadow-[#25D366]/25 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <QrCode className="w-5 h-5" />
-                    Place Order · ₹{total > 0 ? total.toFixed(2) : '0.00'}
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5 fill-current" />}
+                    {loading ? 'Opening WhatsApp...' : `Pay on WhatsApp · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
                   </Button>
                   <div className="flex items-center justify-center gap-2 mt-4 text-[#8C6E5D]">
                     <Lock className="w-3 h-3" />
-                    <span className="text-[10px] uppercase tracking-widest font-bold">Secured by 256-bit SSL</span>
+                    <span className="text-[10px] uppercase tracking-widest font-bold">Secured Order Process</span>
                   </div>
                 </div>
               </div>
@@ -524,23 +515,24 @@ export default function CheckoutPage() {
                   {/* Desktop CTA */}
                   <Button
                     type="button"
-                    onClick={handleInitiatePayment}
-                    className="hidden lg:flex w-full h-14 mt-3 items-center justify-center rounded-xl bg-[#C9956C] text-white hover:bg-[#B8845A] font-semibold text-base shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98] cursor-pointer gap-2"
+                    onClick={handlePayOnWhatsApp}
+                    disabled={loading}
+                    className="hidden lg:flex w-full h-14 mt-3 items-center justify-center rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-base shadow-lg shadow-[#25D366]/20 transition-all active:scale-[0.98] cursor-pointer gap-2"
                   >
-                    <QrCode className="w-5 h-5" />
-                    Place Order · ₹{total > 0 ? total.toFixed(2) : '0.00'}
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5 fill-current" />}
+                    {loading ? 'Opening WhatsApp...' : `Pay on WhatsApp · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
                   </Button>
 
                   {/* Trust row */}
                   <div className="flex items-center justify-center gap-4 pt-2">
                     <div className="flex items-center gap-1.5 text-[#8C6E5D]">
                       <Lock className="w-3 h-3" />
-                      <span className="text-[10px] uppercase tracking-widest font-bold">SSL Secure</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">Direct WhatsApp Checkout</span>
                     </div>
                     <span className="text-[#E8D5C8]">·</span>
                     <div className="flex items-center gap-1.5 text-[#8C6E5D]">
                       <Shield className="w-3 h-3" />
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Safe Payment</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">100% Safe</span>
                     </div>
                   </div>
                 </div>
@@ -561,190 +553,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </main>
-
-      {/* ─── PAYMENT & QR CODE POPUP MODAL ───────────────────────── */}
-      {showPaymentModal && (
-        <div
-          data-lenis-prevent="true"
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md overflow-hidden animate-in fade-in duration-200"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowPaymentModal(false)
-          }}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-        >
-          <div
-            data-lenis-prevent="true"
-            className="relative w-full max-w-lg max-h-[90vh] flex flex-col rounded-[2.2rem] border border-[#E8D5C8] bg-[#FDFAF7] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
-          >
-            
-            {/* Modal Header (Fixed at top of modal) */}
-            <div className="shrink-0 flex items-center justify-between px-6 sm:px-8 py-5 border-b border-[#F0E4D8] bg-white">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#C9956C]/15 border border-[#C9956C]/25">
-                  <QrCode className="h-5 w-5 text-[#C9956C]" />
-                </div>
-                <div>
-                  <h3 className="font-[style] text-xl font-bold text-foreground">Scan &amp; Pay via UPI</h3>
-                  <p className="text-xs text-[#8C6E5D]">Quick, direct &amp; 100% secure payment</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPaymentModal(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-400 hover:text-foreground hover:bg-neutral-100 transition-colors cursor-pointer"
-                aria-label="Close payment modal"
-              >
-                <X size={19} />
-              </button>
-            </div>
-
-            {/* Scrollable Modal Body (Isolated from Lenis & body scroll) */}
-            <div
-              data-lenis-prevent="true"
-              className="flex-1 overflow-y-auto overscroll-contain p-6 sm:p-8 space-y-6"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-              
-              {/* Amount Banner */}
-              <div className="flex items-center justify-between rounded-2xl border border-[#C9956C]/30 bg-[#F7F0EA] px-5 py-4">
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#8C6E5D]">Amount Payable</span>
-                  <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">₹{displayTotal.toFixed(2)}</p>
-                </div>
-                <div className="text-right">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200">
-                    <CheckCircle2 size={13} className="text-emerald-600" /> Free Delivery
-                  </span>
-                  <p className="text-[11px] text-[#8C6E5D] mt-1">{items.length} {items.length === 1 ? 'item' : 'items'} in order</p>
-                </div>
-              </div>
-
-              {/* QR Code Container */}
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E8D5C8] bg-white p-6 shadow-sm">
-                <div className="relative p-2.5 rounded-2xl border-2 border-dashed border-[#C9956C]/40 bg-white">
-                  {!qrLoadFailed ? (
-                    <img
-                      src={qrCodeImageSrc}
-                      alt="Silver Star UPI Payment QR Code"
-                      className="w-48 h-48 sm:w-56 sm:h-56 object-contain rounded-xl"
-                      onError={() => setQrLoadFailed(true)}
-                    />
-                  ) : (
-                    <div className="w-48 h-48 sm:w-56 sm:h-56 flex flex-col items-center justify-center bg-[#FDFAF7] rounded-xl p-4 text-center">
-                      <QrCode className="w-12 h-12 text-[#C9956C] mb-2" />
-                      <p className="text-xs font-bold text-foreground">Scan with Any UPI App</p>
-                      <p className="text-[10px] text-[#8C6E5D] mt-1">Pay to: {UPI_ID}</p>
-                    </div>
-                  )}
-                  <div className="absolute inset-x-0 -bottom-3 flex justify-center">
-                    <span className="bg-[#2C1810] text-white text-[10px] font-semibold px-3 py-0.5 rounded-full shadow-md uppercase tracking-wider">
-                      Silver Star Official
-                    </span>
-                  </div>
-                </div>
-
-                {/* Scan description */}
-                <p className="mt-5 text-center text-xs text-[#8C6E5D]">
-                  Open <span className="font-semibold text-foreground">Google Pay, PhonePe, Paytm, BHIM</span> or any banking app to scan.
-                </p>
-
-                {/* UPI ID copy strip */}
-                <div className="mt-4 flex items-center justify-between w-full max-w-xs rounded-xl border border-[#E8D5C8] bg-[#FDFAF7] px-3.5 py-2">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-bold text-[#8C6E5D]">UPI ID</span>
-                    <span className="text-xs font-mono font-bold text-foreground">{UPI_ID}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleCopyUpi}
-                    className="inline-flex items-center gap-1 rounded-lg bg-white border border-[#E8D5C8] px-2.5 py-1 text-xs font-semibold text-[#8C6E5D] hover:text-foreground hover:border-[#C9956C] transition-colors shadow-xs cursor-pointer"
-                  >
-                    {copiedUpi ? (
-                      <><Check size={12} className="text-emerald-600" /> Copied</>
-                    ) : (
-                      <><Copy size={12} /> Copy</>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* ── WhatsApp Query Section ── */}
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 sm:p-5">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm shadow-[#25D366]/30">
-                    <MessageCircle className="h-5 w-5 fill-current" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-neutral-900 flex items-center gap-1.5">
-                      Ask Any Query on WhatsApp
-                    </h4>
-                    <p className="text-xs text-neutral-600 mt-0.5 leading-relaxed">
-                      Need help with payment, custom scents, or order status? Chat directly with us.
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-3.5 pt-3 border-t border-emerald-200/70 flex justify-end">
-                  <a
-                    href={getWhatsAppUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-2 text-xs font-bold shadow-md shadow-[#25D366]/20 transition-all active:scale-[0.98] cursor-pointer"
-                  >
-                    <MessageCircle size={14} className="fill-current" />
-                    Chat on WhatsApp
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-              </div>
-
-              {/* Modal Error message if any */}
-              {modalError && (
-                <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-600">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-red-500 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-semibold">{modalError}</p>
-                    {modalError.includes('address') && (
-                      <button
-                        type="button"
-                        onClick={() => setShowPaymentModal(false)}
-                        className="mt-1.5 text-xs text-red-700 underline font-semibold hover:text-red-900 block"
-                      >
-                        ← Click here to fill delivery address
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Confirmation CTA */}
-              <div className="space-y-3 pt-2">
-                <Button
-                  type="button"
-                  onClick={handleConfirmOrder}
-                  disabled={loading}
-                  className="w-full h-13 rounded-xl bg-[#C9956C] text-white hover:bg-[#B8845A] font-semibold text-base shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {loading ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Confirming Payment &amp; Placing Order...</>
-                  ) : (
-                    'I Have Paid · Confirm Order'
-                  )}
-                </Button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowPaymentModal(false)}
-                  className="w-full text-center text-xs font-medium text-[#8C6E5D] hover:text-foreground py-1 transition-colors cursor-pointer"
-                >
-                  ← Go back to edit delivery address
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
 
       <Footer />
     </div>

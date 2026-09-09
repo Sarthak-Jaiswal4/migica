@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Save, Upload, X, Loader2, Plus } from "lucide-react";
+import { ChevronLeft, Save, Upload, Loader2 } from "lucide-react";
 import { AppImage as Image } from "@/components/AppImage";
 import { ProductTaxonomyFields } from "@/components/admin/ProductTaxonomyFields";
+import { ProductImageGallery } from "@/components/admin/ProductImageGallery";
 
 type NewProductPayload = {
   name: string;
@@ -102,6 +103,16 @@ export default function AddProductPage() {
     setGalleryImages((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function reorderGalleryImages(fromIndex: number, toIndex: number) {
+    setGalleryImages((prev) => {
+      if (toIndex < 0 || toIndex >= prev.length || fromIndex === toIndex) return prev;
+      const nextImages = [...prev];
+      const [movedImage] = nextImages.splice(fromIndex, 1);
+      nextImages.splice(toIndex, 0, movedImage);
+      return nextImages;
+    });
+  }
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -185,32 +196,13 @@ export default function AddProductPage() {
                 </div>
 
                 {/* Gallery Images */}
-                <div className="grid grid-cols-3 gap-3">
-                  {galleryImages.map((img, idx) => (
-                    <div key={idx} className="aspect-square relative rounded-xl bg-neutral-100 overflow-hidden border border-border group">
-                      <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
-                      <button
-                        onClick={() => removeGalleryImage(idx)}
-                        className="absolute top-1 right-1 h-6 w-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X size={12} />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-amber-500 hover:text-amber-500 transition-all"
-                    onClick={() => galleryImageInputRef.current?.click()}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <Loader2 size={20} className="animate-spin" />
-                    ) : (
-                      <>
-                        <Plus size={20} />
-                        <span className="text-[10px] uppercase font-black">Add</span>
-                      </>
-                    )}
-                  </button>
+                <ProductImageGallery
+                  images={galleryImages}
+                  isUploading={isUploading}
+                  onAddImage={() => galleryImageInputRef.current?.click()}
+                  onRemoveImage={removeGalleryImage}
+                  onReorderImages={reorderGalleryImages}
+                />
                   <input
                     ref={galleryImageInputRef}
                     type="file"
@@ -218,7 +210,6 @@ export default function AddProductPage() {
                     className="hidden"
                     onChange={handleGalleryImageUpload}
                   />
-                </div>
               </CardContent>
             </Card>
           </div>

@@ -26,7 +26,7 @@ export function Footer() {
                             <a href="https://www.instagram.com/silverstar.live?stkn=MWluZ3M0NzJhcXBkeg%3D%3D&utm_source=qr" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Instagram size={18} />
                             </a>
-                            <a href="" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                            <a href="https://youtube.com/@silverstar.fashion?si=mOY5ReUv64t7fb2w" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Youtube size={18} />
                             </a>
                             <a href="https://www.facebook.com/SilverStarCreation?mibextid=LQQJ4d" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
