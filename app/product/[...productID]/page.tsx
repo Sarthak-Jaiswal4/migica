@@ -132,6 +132,7 @@ export default async function ProductPage(props: PageProps) {
         image: product.image,
         inStock: product.inStock,
     };
+    let ln=product.images.length
 
     return (
         <div className="min-h-screen bg-background">
@@ -140,7 +141,7 @@ export default async function ProductPage(props: PageProps) {
 
             <Headers />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20 overflow-x-clip">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-x-clip">
                 {/* Breadcrumb */}
                 <Breadcrumb className="mb-8">
                     <BreadcrumbList>
@@ -166,11 +167,11 @@ export default async function ProductPage(props: PageProps) {
                     {/* Images Column */}
                     <div className="w-full lg:w-[55%]">
                         {/* Mobile: Swiper carousel (client) */}
-                        <ProductImageCarouselMobile images={product.images} product={productBasic} />
+                        <ProductImageCarouselMobile ln={ln} images={product.images} product={productBasic} />
 
                         {/* Desktop: Stacked Vertical Images */}
                         <div className="hidden lg:flex flex-col gap-6">
-                            {product.images.slice(0, 2).map((image, index) => (
+                            {product.images.slice(0, ln).map((image, index) => (
                                 <div
                                     key={image.id}
                                     className="w-full rounded-2xl overflow-hidden shadow-sm border border-border relative"
@@ -276,7 +277,7 @@ export default async function ProductPage(props: PageProps) {
                                 <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
                                     <Truck className="w-6 h-6 mb-2 text-foreground" />
                                     <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Shipping</span>
-                                    <span className="text-xs font-bold leading-tight">Free over ₹4,999</span>
+                                    <span className="text-xs font-bold leading-tight">Free over ₹1,999</span>
                                 </div>
                                 <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
                                     <Shield className="w-6 h-6 mb-2 text-foreground" />
@@ -286,7 +287,7 @@ export default async function ProductPage(props: PageProps) {
                                 <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
                                     <RotateCcw className="w-6 h-6 mb-2 text-foreground" />
                                     <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Returns</span>
-                                    <span className="text-xs font-bold leading-tight">30 Days Easy</span>
+                                    <span className="text-xs font-bold leading-tight">5 - 7 Days Easy</span>
                                 </div>
                             </div>
                         </div>
@@ -296,6 +297,7 @@ export default async function ProductPage(props: PageProps) {
                 <ProductTabs
                     product={{
                         name: product.name,
+                        category: product.category,
                         description: product.description,
                         rating: product.rating,
                         reviews: product.reviews,
@@ -304,6 +306,8 @@ export default async function ProductPage(props: PageProps) {
                 />
 
                 {/* Related Products */}
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-clip">
                 <h2 className="text-3xl font-bold tracking-wide mb-6 font-[style]">You May Also Like</h2>
                 <ProductRelatedSwiper products={relatedProductsRaw} />
             </div>

@@ -21,11 +21,13 @@ type ProductBasic = {
 export function ProductImageCarouselMobile({
     images,
     product,
+    ln
 }: {
     images: ImageItem[];
     product: ProductBasic;
+    ln: number;
 }) {
-    let ln=images.length
+
     return (
         <div className="lg:hidden">
             <Swiper

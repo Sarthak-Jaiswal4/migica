@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 type ProductTabsProps = {
   product: {
     name: string;
+    category: string;
     description?: string;
     rating: number;
     reviews: number;
@@ -16,6 +17,8 @@ type ProductTabsProps = {
 };
 
 export function ProductTabs({ product }: ProductTabsProps) {
+  const showScentProfile = product.category === "candles";
+
   return (
     <Tabs defaultValue="description" className="mb-16">
       <TabsList className="flex h-auto min-h-11 w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto overflow-y-hidden rounded-xl border border-border bg-neutral-100/80 p-1 [scrollbar-width:thin] backdrop-blur-sm sm:min-h-12 sm:gap-2 sm:rounded-2xl sm:p-1.5 lg:overflow-x-visible">
@@ -25,12 +28,14 @@ export function ProductTabs({ product }: ProductTabsProps) {
         >
           Description
         </TabsTrigger>
-        <TabsTrigger
-          value="scent"
-          className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
-        >
-          Scent Profile
-        </TabsTrigger>
+        {showScentProfile && (
+          <TabsTrigger
+            value="scent"
+            className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
+          >
+            Scent Profile
+          </TabsTrigger>
+        )}
         <TabsTrigger
           value="reviews"
           className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
@@ -54,33 +59,37 @@ export function ProductTabs({ product }: ProductTabsProps) {
               so the storefront stays fast and consistent.
             </p>
             <p className="mt-4 leading-relaxed tracking-wide text-neutral-600">
-              Read the scent profile and features tabs for specifics. If something feels unclear,
+              {showScentProfile
+                ? "Read the scent profile and features tabs for specifics."
+                : "Review the product details and features for specifics."} If something feels unclear,
               reach out before you buy—we are happy to help you pick the right piece.
             </p>
           </div>
         </div>
       </TabsContent>
 
-      <TabsContent value="scent" className="mt-6">
-        <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-8">
-          <div className="space-y-6">
-            <div>
-              <h3 className="mb-2 text-lg font-semibold tracking-wide">Top Notes</h3>
-              <p className="text-neutral-700">{product.scent.top}</p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="mb-2 text-lg font-semibold tracking-wide">Middle Notes</h3>
-              <p className="text-neutral-700">{product.scent.middle}</p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="mb-2 text-lg font-semibold tracking-wide">Base Notes</h3>
-              <p className="text-neutral-700">{product.scent.base}</p>
+      {showScentProfile && (
+        <TabsContent value="scent" className="mt-6">
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-8">
+            <div className="space-y-6">
+              <div>
+                <h3 className="mb-2 text-lg font-semibold tracking-wide">Top Notes</h3>
+                <p className="text-neutral-700">{product.scent.top}</p>
+              </div>
+              <Separator />
+              <div>
+                <h3 className="mb-2 text-lg font-semibold tracking-wide">Middle Notes</h3>
+                <p className="text-neutral-700">{product.scent.middle}</p>
+              </div>
+              <Separator />
+              <div>
+                <h3 className="mb-2 text-lg font-semibold tracking-wide">Base Notes</h3>
+                <p className="text-neutral-700">{product.scent.base}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </TabsContent>
+        </TabsContent>
+      )}
 
       <TabsContent value="reviews" className="mt-6">
         <div className="space-y-6 rounded-xl border border-border bg-card p-4 tracking-wide shadow-sm sm:rounded-2xl sm:p-8">
