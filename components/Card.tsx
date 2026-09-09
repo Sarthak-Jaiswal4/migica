@@ -60,16 +60,16 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
 
                     {/* Subcategory pill */}
                     {product.subcategory && (
-                        <div className="flex justify-start px-2 md:px-0 mb-1.5">
-                            <span className="font-[style] inline-flex items-center rounded-full border border-[#E8D5C8] bg-[#F7F0EA] px-3 py-1 text-[11px] sm:text-[12px] font-semibold tracking-wider text-[#8C6E5D]">
+                        <div className="flex justify-start md:px-0 mb-1.5">
+                            <span className="font-[style] inline-flex items-center rounded-full border border-[#E8D5C8] bg-[#F7F0EA] px-2 py-[2px] text-[11px] sm:text-[12px] font-semibold tracking-wider text-[#8C6E5D]">
                                 {product.subcategory}
                             </span>
                         </div>
                     )}
 
                     {/* Price and Action */}
-                    <div className="flex items-start w-full flex-col gap-2 sm:gap-0 pt-2 px-2 md:px-0 sm:pt-2">
-                        <div className="flex items-center gap-2 pb-2">
+                    <div className="flex items-start w-full flex-col gap-2 sm:gap-0 pt-2 sm:pt-2">
+                        <div className="flex items-center gap-2 pb-2 px-2">
                             <span className="text-lg sm:text-lg font-semibold tracking-tight text-foreground">₹{product.price}</span>
                             <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-2">₹{product.originalPrice || 699}</span>
                         </div>

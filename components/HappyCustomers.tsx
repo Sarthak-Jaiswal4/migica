@@ -3,62 +3,64 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { AppImage as Image } from "@/components/AppImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { HappyCustomer } from "@/lib/showcase";
 
 /* ─── Data ──────────────────────────────────────────────────────── */
-const PHOTOS = [
+const FALLBACK_PHOTOS: HappyCustomer[] = [
   {
-    src: "/my.jpeg",
+    id: "fallback-1",
+    image: "/my.jpeg",
     name: "Ananya S.",
     caption: "My birthday haul 🕯️",
-    rotate: "-rotate-[2.5deg]",
+    order: 0,
   },
   {
-    src: "/my-1.jpeg",
+    id: "fallback-2", image: "/my-1.jpeg",
     name: "Riya M.",
     caption: "Gifted to my mom — she cried!",
-    rotate: "rotate-[1.8deg]",
+    order: 1,
   },
   {
-    src: "/my-2.jpeg",
+    id: "fallback-3", image: "/my-2.jpeg",
     name: "Divya K.",
     caption: "Obsessed with the scent ✨",
-    rotate: "-rotate-[1.2deg]",
+    order: 2,
   },
   {
-    src: "/my-3.jpeg",
+    id: "fallback-4", image: "/my-3.jpeg",
     name: "Sneha P.",
     caption: "My vanity is complete now",
-    rotate: "rotate-[2.1deg]",
+    order: 3,
   },
   {
-    src: "/my-4.jpeg",
+    id: "fallback-5", image: "/my-4.jpeg",
     name: "Priya A.",
     caption: "Worth every rupee 💛",
-    rotate: "-rotate-[1.7deg]",
+    order: 4,
   },
   {
-    src: "/my-5.jpeg",
+    id: "fallback-6", image: "/my-5.jpeg",
     name: "Meena R.",
     caption: "Already reordering!",
-    rotate: "rotate-[1.3deg]",
+    order: 5,
   },
   {
-    src: "/WhatsApp Image 2026-01-06 at 2.15.23 AM.jpeg",
+    id: "fallback-7", image: "/WhatsApp Image 2026-01-06 at 2.15.23 AM.jpeg",
     name: "Kavya T.",
     caption: "Festival gifting sorted 🎁",
-    rotate: "-rotate-[2deg]",
+    order: 6,
   },
   {
-    src: "/WhatsApp Image 2026-01-06 at 2.15.25 AM.jpeg",
+    id: "fallback-8", image: "/WhatsApp Image 2026-01-06 at 2.15.25 AM.jpeg",
     name: "Pooja N.",
     caption: "The packaging alone!",
-    rotate: "rotate-[1.6deg]",
+    order: 7,
   },
   {
-    src: "/WhatsApp Image 2026-01-08 at 2.21.58 PM.jpeg",
+    id: "fallback-9", image: "/WhatsApp Image 2026-01-08 at 2.21.58 PM.jpeg",
     name: "Isha V.",
     caption: "My whole mood board 🌸",
-    rotate: "-rotate-[1.4deg]",
+    order: 8,
   },
 ];
 
@@ -66,9 +68,19 @@ const PHOTOS = [
 export function HappyCustomers() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [photos, setPhotos] = useState<HappyCustomer[]>(FALLBACK_PHOTOS);
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef(0);
   const scrollStart = useRef(0);
+
+  useEffect(() => {
+    fetch("/api/showcase/happy-customers")
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (data?.items?.length) setPhotos(data.items as HappyCustomer[]);
+      })
+      .catch(() => {});
+  }, []);
 
   /* Update active dot based on scroll progress from 1st to last card */
   useEffect(() => {
@@ -83,8 +95,8 @@ export function HappyCustomers() {
       }
       const progress = Math.max(0, Math.min(1, track.scrollLeft / maxScroll));
       const newIdx = Math.min(
-        PHOTOS.length - 1,
-        Math.max(0, Math.round(progress * (PHOTOS.length - 1)))
+        photos.length - 1,
+        Math.max(0, Math.round(progress * (photos.length - 1)))
       );
       setActiveIdx(newIdx);
     };
@@ -97,19 +109,19 @@ export function HappyCustomers() {
       track.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [photos.length]);
 
   const scrollTo = useCallback((idx: number) => {
     const track = trackRef.current;
     if (!track) return;
     const maxScroll = track.scrollWidth - track.clientWidth;
     if (maxScroll <= 0) return;
-    const targetLeft = (idx / (PHOTOS.length - 1)) * maxScroll;
+    const targetLeft = (idx / Math.max(photos.length - 1, 1)) * maxScroll;
     track.scrollTo({ left: targetLeft, behavior: "smooth" });
-  }, []);
+  }, [photos.length]);
 
   const prev = () => scrollTo(Math.max(0, activeIdx - 1));
-  const next = () => scrollTo(Math.min(PHOTOS.length - 1, activeIdx + 1));
+  const next = () => scrollTo(Math.min(photos.length - 1, activeIdx + 1));
 
   /* Mouse drag-to-scroll */
   const onMouseDown = (e: React.MouseEvent) => {
@@ -159,7 +171,7 @@ export function HappyCustomers() {
           <button
             type="button"
             onClick={next}
-            disabled={activeIdx === PHOTOS.length - 1}
+            disabled={activeIdx === photos.length - 1}
             aria-label="Next photo"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8D5C8] bg-white text-[#8C6E5D] shadow-sm transition hover:bg-[#F4EFE8] hover:text-[#C9956C] disabled:opacity-30 cursor-pointer"
           >
@@ -187,12 +199,11 @@ export function HappyCustomers() {
         {/* Leading spacer to centre-align on wide screens */}
         <div className="shrink-0 w-[calc((100vw-min(100vw,80rem))/2)] hidden lg:block" />
 
-        {PHOTOS.map((photo, i) => (
+        {photos.map((photo, i) => (
           <div
             key={i}
             className={`
               shrink-0 w-[220px] sm:w-[240px] md:w-[260px]
-              ${photo.rotate}
               transition-transform duration-300
               hover:-translate-y-2 hover:scale-[1.03] hover:z-10
             `}
@@ -203,7 +214,7 @@ export function HappyCustomers() {
               {/* Photo */}
               <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F4EFE8]">
                 <Image
-                  src={photo.src}
+                  src={photo.image}
                   alt={`${photo.name} — happy Silver Star customer`}
                   fill
                   sizes="260px"
@@ -226,7 +237,7 @@ export function HappyCustomers() {
 
       {/* ── Dot indicators ── */}
       <div className="mt-4 flex justify-center gap-1.5 px-4">
-        {PHOTOS.map((_, i) => (
+        {photos.map((_, i) => (
           <button
             key={i}
             type="button"

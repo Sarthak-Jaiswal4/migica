@@ -131,7 +131,7 @@ export function CartSheet() {
                         </div>
                         <Button 
                             onClick={() => router.push('/checkout')}
-                            className="w-full tracking-wide bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] h-12 rounded-md font-semibold shadow-lg shadow-brand/20 transition-all active:scale-[0.98]"
+                            className="w-full tracking-wide bg-orange-300 text-[#3D2314] border border-[#DEC4B4] hover:bg-orange-400/80 hover:text-[#2C1810] h-12 rounded-md font-semibold shadow-lg shadow-brand/20 transition-all active:scale-[0.98]"
                         >
                             Checkout Now
                         </Button>

@@ -2,7 +2,7 @@
 import { AppImage as Image } from "@/components/AppImage";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import gsap from "gsap";
-import { Heart, LogOut, ShoppingCart, User, UserCheck, Package, LayoutGrid, Settings2 } from "lucide-react";
+import { Heart, LogOut, ShoppingCart, User, UserCheck, Package, LayoutGrid, Settings2, Images } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "./ui/sheet";
@@ -140,6 +140,13 @@ export function Headers() {
                                     <Settings2 size={14} />
                                     <span>Orders</span>
                                 </span>
+                                <span
+                                    className="flex shrink-0 items-center gap-1.5 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-sm font-medium transition-colors"
+                                    onClick={() => router.push("/showcase")}
+                                >
+                                    <Images size={14} />
+                                    <span>Showcase</span>
+                                </span>
                             </>
                         )}
                     </div>
@@ -257,61 +264,82 @@ export function Headers() {
 
                     {/* Mobile Dropdown Menu Options */}
                     <div
-                        className={`overflow-hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
+                        className={`overflow-hidden transition-all duration-1000 ease-in-out ${isMobileMenuOpen ? "h-auto opacity-100" : "max-h-0 opacity-0"}`}
                     >
                         <div className="flex flex-col gap-6 px-6 pb-12 pt-6 text-3xl tracking-tight font-semibold">
                             {[
                                 { label: "Home", path: "/" },
                                 { label: "Shop", path: "/shop/all" },
                                 { label: "About", path: "/about" },
-                                { label: "Categories", path: "/shop/all" },
                                 { label: "Wishlist", path: "/wishlist" },
                                 ...(isLoggedIn ? [{ label: "My Orders", path: "/my-orders" }] : []),
                                 ...(isAdmin ? [
                                     { label: "All Products", path: "/allproduct" },
                                     { label: "Manage Orders", path: "/orders" },
+                                    { label: "Showcase", path: "/showcase" }
                                 ] : []),
-                            ].map((item, i) => (
-                                <div
-                                    key={item.label}
-                                    ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                    className={`cursor-pointer will-change-transform transition-colors ${
-                                        pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'
-                                    }`}
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        router.push(item.path);
-                                    }}
-                                >
-                                    {item.label}
-                                </div>
-                            ))}
-
-                            {/* Account / Login / Logout */}
-                            {isLoggedIn ? (
-                                <>
+                                ...(isLoggedIn
+                                    ? [
+                                        { label: "Account", path: "/profile", custom: "account" },
+                                        { label: "Log Out", path: "/logout", custom: "logout" }
+                                    ]
+                                    : [{ label: "Login", path: "/login", custom: "login" }]
+                                ),
+                            ].map((item, i) => {
+                                // Handle custom click logic for Account, Log Out, and Login
+                                if (item.custom === "logout") {
+                                    return (
+                                        <div
+                                            key={item.label}
+                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                            className="cursor-pointer text-red-500 hover:text-red-600 will-change-transform"
+                                            onClick={() => { setIsMobileMenuOpen(false); setShowLogoutDialog(true); }}
+                                        >
+                                            {item.label}
+                                        </div>
+                                    );
+                                }
+                                if (item.custom === "account") {
+                                    return (
+                                        <div
+                                            key={item.label}
+                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                            className={`cursor-pointer will-change-transform transition-colors ${pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'}`}
+                                            onClick={() => { setIsMobileMenuOpen(false); router.push(item.path); }}
+                                        >
+                                            {item.label}
+                                        </div>
+                                    );
+                                }
+                                if (item.custom === "login") {
+                                    return (
+                                        <div
+                                            key={item.label}
+                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                            className="cursor-pointer hover:text-orange-500 will-change-transform"
+                                            onClick={() => { setIsMobileMenuOpen(false); router.push(item.path); }}
+                                        >
+                                            {item.label}
+                                        </div>
+                                    );
+                                }
+                                // Default menu item
+                                return (
                                     <div
-                                        className="cursor-pointer hover:text-orange-500 will-change-transform"
-                                        onClick={() => { setIsMobileMenuOpen(false); router.push("/profile"); }}
+                                        key={item.label}
+                                        ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
+                                        className={`cursor-pointer will-change-transform transition-colors ${pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'}`}
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            router.push(item.path);
+                                        }}
                                     >
-                                        Account
+                                        {item.label}
                                     </div>
-                                    <div
-                                        className="cursor-pointer text-red-500 hover:text-red-600 will-change-transform"
-                                        onClick={() => { setIsMobileMenuOpen(false); setShowLogoutDialog(true); }}
-                                    >
-                                        Log Out
-                                    </div>
-                                </>
-                            ) : (
-                                <div
-                                    className="cursor-pointer hover:text-orange-500 will-change-transform"
-                                    onClick={() => { setIsMobileMenuOpen(false); router.push("/login"); }}
-                                >
-                                    Login
-                                </div>
-                            )}
+                                );
+                            })}
                         </div>
+
                     </div>
                 </div>
             </header>

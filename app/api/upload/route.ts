@@ -1,10 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 import cloudinary from "@/lib/cloudinary";
+
+async function isAdmin(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  if (!token) return false;
+
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    return (await jwtVerify(token, secret)).payload.isAdmin === true;
+  } catch {
+    return false;
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await isAdmin(req))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const requestedFolder = formData.get("folder");
+    const folder = requestedFolder === "happy-customers" || requestedFolder === "exhibitions"
+      ? requestedFolder
+      : "products";
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -22,12 +43,19 @@ export async function POST(req: NextRequest) {
       cloudinary.uploader
         .upload_stream(
           {
-            folder: "silver_star/products",
+            folder: `silver_star/${folder}`,
             resource_type: "image",
           },
           (error, result) => {
             if (error) reject(error);
-            else resolve(result as any);
+            else if (result) {
+              resolve({
+                secure_url: result.secure_url,
+                public_id: result.public_id,
+                width: result.width,
+                height: result.height,
+              });
+            } else reject(new Error("Cloudinary did not return an upload result"));
           }
         )
         .end(buffer);

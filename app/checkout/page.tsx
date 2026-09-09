@@ -18,7 +18,7 @@ import {
 import { SHIPPING_COST } from '@/lib/constants'
 import Link from 'next/link'
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012";
 
 /* ─── tiny helper: labelled input field ─────────────────────────── */
 function Field({
@@ -372,8 +372,8 @@ export default function CheckoutPage() {
                   <div className="mx-7 mb-6 flex items-center gap-3 rounded-2xl bg-[#F4EFE8] border border-[#E8D5C8] px-5 py-4">
                     <Truck className="h-4 w-4 text-[#C9956C] shrink-0" />
                     <p className="text-xs text-[#7A5C47] leading-relaxed">
-                      <span className="font-semibold text-foreground">Free delivery</span> on orders above ₹999 ·
-                      Standard delivery 3–5 business days across India
+                      <span className="font-semibold text-foreground">Free delivery</span> on orders above ₹1999 ·
+                      Standard delivery 3 – 5 business days across India
                     </p>
                   </div>
                 </div>

@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // Add the routes you want to protect with admin verification
-const adminProtectedRoutes = ['/allproduct', '/orders'];
+const adminProtectedRoutes = ['/allproduct', '/orders', '/showcase'];
 const userProtectedRoutes = ['/checkout', '/my-orders'];
 
 export async function middleware(request: NextRequest) {
@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
       }
 
       return NextResponse.next();
-    } catch (error) {
+    } catch {
       // Invalid token
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/allproduct/:path*', '/allproduct', '/checkout/:path*', '/checkout', '/orders/:path*', '/orders', '/my-orders/:path*', '/my-orders'],
+  matcher: ['/allproduct/:path*', '/allproduct', '/checkout/:path*', '/checkout', '/orders/:path*', '/orders', '/my-orders/:path*', '/my-orders', '/showcase/:path*', '/showcase'],
 };
