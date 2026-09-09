@@ -38,15 +38,18 @@ export function ProductImageCarouselMobile({
                 {images.slice(0, ln).map((image, index) => (
                     <SwiperSlide key={image.id}>
                         <div className="w-full">
-                            <Image
-                                src={image.url}
-                                alt={image.alt}
-                                width={1200}
-                                height={1600}
-                                className="w-full h-auto object-contain"
-                                sizes="100vw"
-                                priority={index === 0}
-                            />
+                            <div className="aspect-[3/4] w-full">
+                                <Image
+                                    src={image.url}
+                                    alt={image.alt}
+                                    width={1200}
+                                    height={1600}
+                                    className="w-full h-full object-contain"
+                                    sizes="100vw"
+                                    priority={index === 0}
+                                />
+                            </div>
+                      
                             {index === 0 && <WishlistButtonMobile product={product} />}
                         </div>
                     </SwiperSlide>
