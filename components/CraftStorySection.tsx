@@ -25,12 +25,12 @@ export function CraftStorySection() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent md:bg-gradient-to-r md:from-black/25 md:via-transparent md:to-transparent" />
         </div>
 
-        <div className="flex flex-col justify-center px-6 py-14 sm:px-10 md:py-16 lg:px-16">
+        <div className="flex flex-col justify-center px-6 py-10 sm:px-10 md:py-12 lg:px-16">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">How Silver Star comes together</p>
           <h2 id="craft-story-heading" className="mt-3 font-[style] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Small batches, real people
           </h2>
-          <div className="mt-8 space-y-5 text-base leading-relaxed text-neutral-700 sm:text-[17px]">
+          <div className="mt-2 space-y-5 text-base leading-relaxed text-neutral-700 sm:text-[17px]">
             <p>
               Our candles are poured in short runs — wicks centred by hand, fragrances blended in a studio rather than a
               factory line. When something sells through, we restock deliberately instead of rushing a generic batch.

@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Instagram, Twitter, Facebook, Mail, MapPin, Phone } from "lucide-react"
+import { Instagram, Twitter, Facebook, Mail, MapPin, Phone, Youtube } from "lucide-react"
 import Link from "next/link"
 
 export function Footer() {
@@ -23,11 +23,11 @@ export function Footer() {
                             Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                            <a href="https://www.instagram.com/silverstar.live?stkn=MWluZ3M0NzJhcXBkeg%3D%3D&utm_source=qr" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Instagram size={18} />
                             </a>
-                            <a href="#" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
-                                <Twitter size={18} />
+                            <a href="" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                                <Youtube size={18} />
                             </a>
                             <a href="https://www.facebook.com/SilverStarCreation?mibextid=LQQJ4d" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
                                 <Facebook size={18} />

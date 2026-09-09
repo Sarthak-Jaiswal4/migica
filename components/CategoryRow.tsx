@@ -15,7 +15,7 @@ export function CategoryRow({ name, products }: { name: string; products: Produc
   const getDescriptiveHeading = (cat: string) => {
     switch (cat.toLowerCase()) {
       case "candles":
-        return "Handmade Soy Candles";
+        return "Handmade Soy Wax Candles";
       case "jewelry":
         return "Handcrafted Artisanal Jewelry";
       case "scarves":

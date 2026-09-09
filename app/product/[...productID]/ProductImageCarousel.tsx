@@ -25,6 +25,7 @@ export function ProductImageCarouselMobile({
     images: ImageItem[];
     product: ProductBasic;
 }) {
+    let ln=images.length
     return (
         <div className="lg:hidden">
             <Swiper
@@ -34,7 +35,7 @@ export function ProductImageCarouselMobile({
                 slidesPerView={1}
                 className="w-full rounded-sm overflow-hidden [&_.swiper-pagination-bullet-active]:!bg-neutral-900"
             >
-                {images.slice(0, 2).map((image, index) => (
+                {images.slice(0, ln).map((image, index) => (
                     <SwiperSlide key={image.id}>
                         <div className="w-full">
                             <Image
