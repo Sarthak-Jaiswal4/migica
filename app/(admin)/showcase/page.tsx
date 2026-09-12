@@ -1,25 +1,35 @@
 "use client";
 
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ChevronDown, ChevronUp, ImagePlus, Loader2, Pencil, Save, Trash2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Headers } from "@/components/Headers";
 import { Footer } from "@/components/Footer";
-import { AppImage as Image } from "@/components/AppImage";
+import { ShowcaseForm } from "@/components/admin/showcase/ShowcaseForm";
+import { ShowcaseItemList } from "@/components/admin/showcase/ShowcaseItemList";
+import { ShowcaseTabs } from "@/components/admin/showcase/ShowcaseTabs";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Exhibition, HappyCustomer } from "@/lib/showcase";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import type {
+  Exhibition,
+  ExhibitionForm,
+  HappyCustomer,
+  HappyCustomerForm,
+  HeroMedia,
+  HeroMediaForm,
+  ShowcaseItem,
+  ShowcaseType,
+  Testimonial,
+  TestimonialForm,
+} from "@/lib/showcase";
 
-type ShowcaseType = "happy-customers" | "exhibitions";
+const emptyHappy: HappyCustomerForm = { name: "", caption: "", image: "" };
+const emptyExhibition: ExhibitionForm = { title: "", location: "", description: "", image: "" };
+const emptyTestimonial: TestimonialForm = { name: "", detail: "", body: "", stars: 5 };
+const emptyHeroMedia: HeroMediaForm = { url: "", mediaType: "image", title: "", description: "", alt: "" };
+const showcaseTypes: ShowcaseType[] = ["hero-media", "happy-customers", "exhibitions", "testimonials"];
 
-const emptyHappy = { name: "", caption: "", image: "" };
-const emptyExhibition = { title: "", location: "", description: "", image: "" };
-
-async function uploadImage(file: File, folder: ShowcaseType) {
+async function uploadMedia(file: File, folder: "happy-customers" | "exhibitions" | "hero-media") {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("folder", folder);
@@ -33,24 +43,27 @@ export default function ShowcaseAdminPage() {
   const [type, setType] = useState<ShowcaseType>("happy-customers");
   const [customers, setCustomers] = useState<HappyCustomer[]>([]);
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [heroMedia, setHeroMedia] = useState<HeroMedia[]>([]);
   const [happyForm, setHappyForm] = useState(emptyHappy);
   const [exhibitionForm, setExhibitionForm] = useState(emptyExhibition);
+  const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
+  const [heroForm, setHeroForm] = useState(emptyHeroMedia);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useState("");
 
   const loadItems = async () => {
     setIsLoading(true);
     try {
-      const [customerResponse, exhibitionResponse] = await Promise.all([
-        fetch("/api/showcase/happy-customers"),
-        fetch("/api/showcase/exhibitions"),
-      ]);
-      const [customerData, exhibitionData] = await Promise.all([customerResponse.json(), exhibitionResponse.json()]);
+      const responses = await Promise.all(showcaseTypes.map((itemType) => fetch(`/api/showcase/${itemType}`)));
+      const [heroData, customerData, exhibitionData, testimonialData] = await Promise.all(responses.map((response) => response.json()));
+      setHeroMedia(heroData.items || []);
       setCustomers(customerData.items || []);
       setExhibitions(exhibitionData.items || []);
+      setTestimonials(testimonialData.items || []);
     } finally {
       setIsLoading(false);
     }
@@ -65,28 +78,42 @@ export default function ShowcaseAdminPage() {
     setEditingId(null);
     setHappyForm(emptyHappy);
     setExhibitionForm(emptyExhibition);
+    setTestimonialForm(emptyTestimonial);
+    setHeroForm(emptyHeroMedia);
   };
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || type === "testimonials") return;
+    if (type === "hero-media" && file.type.startsWith("video/") && file.size > 25 * 1024 * 1024) {
+      alert("Hero videos must be 25 MB or smaller.");
+      event.target.value = "";
+      return;
+    }
+
     setIsUploading(true);
     try {
-      const image = await uploadImage(file, type);
-      if (type === "happy-customers") setHappyForm((form) => ({ ...form, image }));
-      else setExhibitionForm((form) => ({ ...form, image }));
+      const url = await uploadMedia(file, type);
+      if (type === "happy-customers") setHappyForm((form) => ({ ...form, image: url }));
+      else if (type === "exhibitions") setExhibitionForm((form) => ({ ...form, image: url }));
+      else setHeroForm((form) => ({ ...form, url, mediaType: file.type.startsWith("video/") ? "video" : "image" }));
     } catch {
-      alert("Image upload failed. Please try again.");
+      alert("Upload failed. Please try again.");
     } finally {
       setIsUploading(false);
       event.target.value = "";
     }
   };
 
+  const activeItems: ShowcaseItem[] = type === "happy-customers" ? customers : type === "exhibitions" ? exhibitions : type === "testimonials" ? testimonials : heroMedia;
+  const activeMediaUrl = type === "happy-customers" ? happyForm.image : type === "exhibitions" ? exhibitionForm.image : type === "hero-media" ? heroForm.url : "";
+  const cannotAddHeroMedia = type === "hero-media" && !editingId && heroMedia.length >= 5;
+
   const saveItem = async () => {
-    const payload = type === "happy-customers" ? happyForm : exhibitionForm;
-    const required = type === "happy-customers" ? happyForm.name : exhibitionForm.title;
-    if (!required || !payload.image) return;
+    const payload = type === "happy-customers" ? happyForm : type === "exhibitions" ? exhibitionForm : type === "testimonials" ? testimonialForm : heroForm;
+    const isValid = type === "happy-customers" ? happyForm.name && happyForm.image : type === "exhibitions" ? exhibitionForm.title && exhibitionForm.image : type === "testimonials" ? testimonialForm.name && testimonialForm.body : heroForm.url;
+    if (!isValid) return;
+
     setIsSaving(true);
     try {
       const response = await fetch(editingId ? `/api/showcase/${type}/${editingId}` : `/api/showcase/${type}`, {
@@ -104,99 +131,51 @@ export default function ShowcaseAdminPage() {
     }
   };
 
-  const editItem = (item: HappyCustomer | Exhibition) => {
+  const editItem = (item: ShowcaseItem) => {
     setEditingId(item.id);
-    if (type === "happy-customers") {
-      const customer = item as HappyCustomer;
-      setHappyForm({ name: customer.name, caption: customer.caption, image: customer.image });
-    } else {
-      const exhibition = item as Exhibition;
-      setExhibitionForm({ title: exhibition.title, location: exhibition.location, description: exhibition.description, image: exhibition.image });
-    }
+    if ("image" in item && "name" in item) setHappyForm({ name: item.name, caption: item.caption, image: item.image });
+    else if ("image" in item) setExhibitionForm({ title: item.title, location: item.location, description: item.description, image: item.image });
+    else if ("body" in item) setTestimonialForm({ name: item.name, detail: item.detail, body: item.body, stars: item.stars });
+    else setHeroForm({ url: item.url, mediaType: item.mediaType, title: item.title, description: item.description, alt: item.alt });
   };
 
   const deleteItem = async (id: string) => {
     if (!confirm("Delete this item?")) return;
-    await fetch(`/api/showcase/${type}/${id}`, { method: "DELETE" });
+    const response = await fetch(`/api/showcase/${type}/${id}`, { method: "DELETE" });
+    if (!response.ok) return alert("Could not delete this item. Please try again.");
     if (editingId === id) resetForm();
     await loadItems();
   };
 
   const reorderItems = async (from: number, to: number) => {
-    const currentItems = type === "happy-customers" ? customers : exhibitions;
-    if (to < 0 || to >= currentItems.length) return;
-    const reordered = [...currentItems];
+    if (to < 0 || to >= activeItems.length) return;
+    const reordered = [...activeItems];
     const [moved] = reordered.splice(from, 1);
     reordered.splice(to, 0, moved);
     if (type === "happy-customers") setCustomers(reordered as HappyCustomer[]);
-    else setExhibitions(reordered as Exhibition[]);
-    await Promise.all(reordered.map((item, index) => fetch(`/api/showcase/${type}/${item.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order: index }),
-    })));
+    else if (type === "exhibitions") setExhibitions(reordered as Exhibition[]);
+    else if (type === "testimonials") setTestimonials(reordered as Testimonial[]);
+    else setHeroMedia(reordered as HeroMedia[]);
+    await Promise.all(reordered.map((item, index) => fetch(`/api/showcase/${type}/${item.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order: index }) })));
   };
 
-  const activeItems = type === "happy-customers" ? customers : exhibitions;
-  const activeImage = type === "happy-customers" ? happyForm.image : exhibitionForm.image;
+  const title = (item: ShowcaseItem) => "body" in item ? item.name : "name" in item ? item.name : "url" in item ? item.title || "Hero media" : item.title;
+  const subtitle = (item: ShowcaseItem) => "body" in item ? item.detail : "caption" in item ? item.caption : "url" in item ? item.description : item.location;
+  const filteredItems = activeItems.filter((item) => `${title(item)} ${subtitle(item)} ${"body" in item ? item.body : "alt" in item ? item.alt : ""}`.toLowerCase().includes(search.toLowerCase()));
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Headers />
-      <main className="mx-auto w-full max-w-6xl flex-grow px-4 pb-12 pt-24">
-        <Button variant="ghost" className="mb-6 px-0" onClick={() => router.push("/allproduct")}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to products
-        </Button>
-        <div className="mb-8 flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Showcase Management</h1>
-          <p className="text-muted-foreground">Manage the customer photos and exhibition cards shown across the site.</p>
-        </div>
-
-        <Tabs value={type} onValueChange={(value) => { setType(value as ShowcaseType); resetForm(); }}>
-          <TabsList className="mb-6 h-11">
-            <TabsTrigger value="happy-customers">Happy Customers</TabsTrigger>
-            <TabsTrigger value="exhibitions">Exhibitions</TabsTrigger>
-          </TabsList>
-          {["happy-customers", "exhibitions"].map((tab) => (
-            <TabsContent key={tab} value={tab}>
-              <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-                <Card className="h-fit">
-                  <CardHeader><CardTitle>{editingId ? "Edit item" : "Add item"}</CardTitle></CardHeader>
-                  <CardContent className="space-y-5">
-                    <button type="button" onClick={() => inputRef.current?.click()} className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg border border-dashed border-border bg-muted/40">
-                      {activeImage ? <Image src={activeImage} alt="Upload preview" fill className="object-cover" /> : isUploading ? <Loader2 className="animate-spin" /> : <ImagePlus className="h-7 w-7 text-muted-foreground" />}
-                    </button>
-                    <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-                    {type === "happy-customers" ? <>
-                      <div className="space-y-2"><Label htmlFor="customer-name">Customer name</Label><Input id="customer-name" value={happyForm.name} onChange={(e) => setHappyForm({ ...happyForm, name: e.target.value })} /></div>
-                      <div className="space-y-2"><Label htmlFor="customer-caption">Caption</Label><Textarea id="customer-caption" value={happyForm.caption} onChange={(e) => setHappyForm({ ...happyForm, caption: e.target.value })} /></div>
-                    </> : <>
-                      <div className="space-y-2"><Label htmlFor="exhibition-title">Title</Label><Input id="exhibition-title" value={exhibitionForm.title} onChange={(e) => setExhibitionForm({ ...exhibitionForm, title: e.target.value })} /></div>
-                      <div className="space-y-2"><Label htmlFor="exhibition-location">Location</Label><Input id="exhibition-location" value={exhibitionForm.location} onChange={(e) => setExhibitionForm({ ...exhibitionForm, location: e.target.value })} /></div>
-                      <div className="space-y-2"><Label htmlFor="exhibition-description">Description</Label><Textarea id="exhibition-description" value={exhibitionForm.description} onChange={(e) => setExhibitionForm({ ...exhibitionForm, description: e.target.value })} /></div>
-                    </>}
-                    <div className="flex gap-3"><Button className="flex-1" onClick={saveItem} disabled={isSaving || isUploading}><Save className="mr-2 h-4 w-4" />{isSaving ? "Saving..." : editingId ? "Save changes" : "Add item"}</Button>{editingId && <Button variant="outline" onClick={resetForm}>Cancel</Button>}</div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader><CardTitle>Display order</CardTitle></CardHeader>
-                  <CardContent className="space-y-3">
-                    {isLoading ? <div className="flex justify-center py-10"><Loader2 className="animate-spin" /></div> : activeItems.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">No items yet. Add the first one from the form.</p> : activeItems.map((item, index) => (
-                      <div key={item.id} className="flex items-center gap-4 rounded-lg border border-border p-3">
-                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted"><Image src={item.image} alt="" fill className="object-cover" /></div>
-                        <div className="min-w-0 flex-1"><p className="truncate font-semibold">{"name" in item ? item.name : item.title}</p><p className="truncate text-sm text-muted-foreground">{"caption" in item ? item.caption : item.location}</p></div>
-                        <div className="flex items-center gap-1"><Button size="icon" variant="ghost" aria-label="Move earlier" disabled={index === 0} onClick={() => reorderItems(index, index - 1)}><ChevronUp className="h-4 w-4" /></Button><Button size="icon" variant="ghost" aria-label="Move later" disabled={index === activeItems.length - 1} onClick={() => reorderItems(index, index + 1)}><ChevronDown className="h-4 w-4" /></Button><Button size="icon" variant="ghost" aria-label="Edit" onClick={() => editItem(item)}><Pencil className="h-4 w-4" /></Button><Button size="icon" variant="ghost" aria-label="Delete" onClick={() => deleteItem(item.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button></div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </main>
-      <Footer />
-    </div>
-  );
+  return <div className="flex min-h-screen max-w-full flex-col overflow-x-hidden bg-background">
+    <Headers />
+    <main className="mx-auto w-full min-w-0 max-w-6xl flex-grow overflow-x-hidden px-4 pb-12 pt-24">
+      <Button variant="ghost" className="mb-6 px-0" onClick={() => router.push("/allproduct")}><ArrowLeft className="mr-2 h-4 w-4" /> Back to products</Button>
+      <div className="mb-8"><h1 className="text-3xl font-bold">Showcase Management</h1><p className="text-muted-foreground">Manage hero media, customer photos, exhibitions, and About-page testimonials.</p></div>
+      <Tabs value={type} onValueChange={(value) => { setType(value as ShowcaseType); resetForm(); }}>
+        <ShowcaseTabs />
+        {showcaseTypes.map((tab) => <TabsContent key={tab} value={tab} className="w-full min-w-0 max-w-full overflow-x-hidden"><div className="grid w-full min-w-0 max-w-full gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
+          <ShowcaseForm type={type} editing={Boolean(editingId)} isSaving={isSaving} isUploading={isUploading} cannotAddHeroMedia={cannotAddHeroMedia} activeMediaUrl={activeMediaUrl} happyForm={happyForm} exhibitionForm={exhibitionForm} testimonialForm={testimonialForm} heroForm={heroForm} onHappyChange={setHappyForm} onExhibitionChange={setExhibitionForm} onTestimonialChange={setTestimonialForm} onHeroChange={setHeroForm} onUpload={handleUpload} onSave={saveItem} onCancel={resetForm} />
+          <ShowcaseItemList items={activeItems} filteredItems={filteredItems} isLoading={isLoading} search={search} onSearchChange={setSearch} onMove={reorderItems} onEdit={editItem} onDelete={deleteItem} title={title} subtitle={subtitle} />
+        </div></TabsContent>)}
+      </Tabs>
+    </main>
+    <Footer />
+  </div>;
 }

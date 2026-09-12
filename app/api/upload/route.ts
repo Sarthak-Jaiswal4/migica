@@ -23,12 +23,24 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const requestedFolder = formData.get("folder");
-    const folder = requestedFolder === "happy-customers" || requestedFolder === "exhibitions"
+    const folder = requestedFolder === "happy-customers" || requestedFolder === "exhibitions" || requestedFolder === "hero-media"
       ? requestedFolder
       : "products";
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    const isVideo = file.type.startsWith("video/");
+    const allowsVideo = folder === "hero-media" || folder === "products";
+    if (!file.type.startsWith("image/") && !(allowsVideo && isVideo)) {
+      return NextResponse.json({ error: "Please upload an image or video file" }, { status: 400 });
+    }
+    if (folder === "hero-media" && isVideo && file.size > 25 * 1024 * 1024) {
+      return NextResponse.json({ error: "Hero videos must be 25 MB or smaller" }, { status: 400 });
+    }
+    if (folder === "products" && isVideo && file.size > 20 * 1024 * 1024) {
+      return NextResponse.json({ error: "Product videos must be 20 MB or smaller" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -44,7 +56,7 @@ export async function POST(req: NextRequest) {
         .upload_stream(
           {
             folder: `silver_star/${folder}`,
-            resource_type: "image",
+            resource_type: isVideo ? "video" : "image",
           },
           (error, result) => {
             if (error) reject(error);

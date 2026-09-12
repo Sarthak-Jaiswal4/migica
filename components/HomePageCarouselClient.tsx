@@ -20,6 +20,7 @@ if (typeof window !== "undefined") {
 
 export type HeroSlide = {
   imageSrc: string;
+  mediaType?: "image" | "video";
   imageAlt: string;
   eyebrow: string;
   headline: string;
@@ -68,14 +69,18 @@ export function HomePageCarouselClient({ slides }: { slides: HeroSlide[] }) {
           <SwiperSlide key={slide.headline} className="relative h-full w-full overflow-hidden">
             <div className="relative h-full w-full">
               <div className="absolute inset-0 parallax-bg">
-                <Image
-                  src={slide.imageSrc}
-                  alt={slide.imageAlt}
-                  fill
-                  className="object-cover object-center"
-                  sizes="100vw"
-                  priority={index === 0}
-                />
+                {slide.mediaType === "video" ? (
+                  <video src={slide.imageSrc} autoPlay muted loop playsInline className="h-full w-full object-cover object-center" aria-label={slide.imageAlt} />
+                ) : (
+                  <Image
+                    src={slide.imageSrc}
+                    alt={slide.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="100vw"
+                    priority={index === 0}
+                  />
+                )}
               </div>
               <div
                 className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/25 md:bg-gradient-to-r md:from-black/70 md:via-black/35 md:to-black/10"

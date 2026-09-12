@@ -10,54 +10,54 @@ type Exhibition = ExhibitionRecord & {
   objectPosition?: string;
 };
 
-const fallbackExhibitions: Exhibition[] = [
-  {
-    id: "fallback-1",
-    title: "Dayal Gateway Paradise Mothers Day Event 2026",
-    location: "Bandra, Mumbai",
-    description: "Our first major public exhibition. 200+ visitors in a single afternoon, 3 wholesale inquiries.",
-    image: "/my-4.jpeg",
-    alt: "Silver Star booth at Makers Market Mumbai",
-    order: 0,
-    objectPosition: "top",
-  },
-  {
-    id: "fallback-2",
-    title: "Craft Collective Goa 2023",
-    location: "Panaji, Goa",
-    description: "Beachside pop-up with five other indie studios. Introduced the linen scarf for the first time.",
-    image: "/my-1.jpeg",
-    alt: "Silver Star pop-up at Craft Collective Goa",
-    order: 1,
-  },
-  {
-    id: "fallback-3",
-    title: "Diwali Festive Edit 2023",
-    location: "Hilton Garden, Lucknow",
-    description: "Curated gifting sets, festive editions, and the debut of brass taper holders.",
-    image: "/my-2.jpeg",
-    alt: "Silver Star festive gifting display during Diwali edit",
-    order: 2,
-  },
-  {
-    id: "fallback-4",
-    title: "Artisan Fair 2024",
-    location: "Shalimar Gateway mall, Lucknow",
-    description: "North India debut. Introduced the jewellery line alongside candles and scarves.",
-    image: "/my-3.jpeg",
-    alt: "Silver Star artisan fair booth",
-    order: 3,
-  },
-  {
-    id: "fallback-5",
-    title: "Teej Festive Exhibition 2026",
-    location: "Casayan Inn hotel, Lucknow",
-    description: "Award received by Mayor of Lucknow. Winner Festive Queen, Best Rampwalk and Best Performer.",
-    image: "/my-5.jpeg",
-    alt: "Silver Star Teej festive exhibition",
-    order: 4,
-  },
-];
+// const fallbackExhibitions: Exhibition[] = [
+//   {
+//     id: "fallback-1",
+//     title: "Dayal Gateway Paradise Mothers Day Event 2026",
+//     location: "Bandra, Mumbai",
+//     description: "Our first major public exhibition. 200+ visitors in a single afternoon, 3 wholesale inquiries.",
+//     image: "/my-4.jpeg",
+//     alt: "Silver Star booth at Makers Market Mumbai",
+//     order: 0,
+//     objectPosition: "top",
+//   },
+//   {
+//     id: "fallback-2",
+//     title: "Craft Collective Goa 2023",
+//     location: "Panaji, Goa",
+//     description: "Beachside pop-up with five other indie studios. Introduced the linen scarf for the first time.",
+//     image: "/my-1.jpeg",
+//     alt: "Silver Star pop-up at Craft Collective Goa",
+//     order: 1,
+//   },
+//   {
+//     id: "fallback-3",
+//     title: "Diwali Festive Edit 2023",
+//     location: "Hilton Garden, Lucknow",
+//     description: "Curated gifting sets, festive editions, and the debut of brass taper holders.",
+//     image: "/my-2.jpeg",
+//     alt: "Silver Star festive gifting display during Diwali edit",
+//     order: 2,
+//   },
+//   {
+//     id: "fallback-4",
+//     title: "Artisan Fair 2024",
+//     location: "Shalimar Gateway mall, Lucknow",
+//     description: "North India debut. Introduced the jewellery line alongside candles and scarves.",
+//     image: "/my-3.jpeg",
+//     alt: "Silver Star artisan fair booth",
+//     order: 3,
+//   },
+//   {
+//     id: "fallback-5",
+//     title: "Teej Festive Exhibition 2026",
+//     location: "Casayan Inn hotel, Lucknow",
+//     description: "Award received by Mayor of Lucknow. Winner Festive Queen, Best Rampwalk and Best Performer.",
+//     image: "/my-5.jpeg",
+//     alt: "Silver Star Teej festive exhibition",
+//     order: 4,
+//   },
+// ];
 
 function ExhibitionCard({ ex }: { ex: Exhibition }) {
   return (
@@ -87,7 +87,7 @@ function ExhibitionCard({ ex }: { ex: Exhibition }) {
 export function ExhibitionGallery() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [items, setItems] = useState<Exhibition[]>(fallbackExhibitions);
+  const [items, setItems] = useState<Exhibition[] | []>([]);
   const sliderRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dragStart = useRef(0);

@@ -3,9 +3,11 @@ import { jwtVerify } from "jose";
 import connectDB from "@/lib/mongodb";
 import HappyCustomer from "@/models/HappyCustomer";
 import Exhibition from "@/models/Exhibition";
+import Testimonial from "@/models/Testimonial";
+import HeroMedia from "@/models/HeroMedia";
 import type { Model } from "mongoose";
 
-const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition } as const;
+const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition, testimonials: Testimonial, "hero-media": HeroMedia } as const;
 type ShowcaseRecord = { image: string; order: number; [key: string]: unknown };
 
 function getModel(type: string): Model<ShowcaseRecord> | undefined {

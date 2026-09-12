@@ -2,43 +2,56 @@
 
 import { Quote } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { Testimonial } from "@/lib/showcase";
 
-const testimonials = [
+const fallbackTestimonials: Testimonial[] = [
   {
+    id: "fallback-1",
     body: "I've bought candles from a dozen brands. Silver Star is the only one where the scent actually matches what's described on the label — Monsoon Oud smells like rain, petrichor, and something almost resinous. Genuinely different.",
     name: "Divya R.",
     detail: "Mumbai · Regular customer since 2021",
     stars: 5,
+    order: 0,
   },
   {
+    id: "fallback-2",
     body: "Ordered a personalised gifting set for my sister's wedding. Priya replied to my custom-note request within an hour. The packaging was so beautiful the bride cried before even opening it.",
     name: "Arjun M.",
     detail: "Delhi · Wedding gifting",
     stars: 5,
+    order: 1,
   },
   {
+    id: "fallback-3",
     body: "The linen scarf I bought two years ago has been through two monsoon seasons and countless washes. Still soft, no pilling. I've recommended it to at least eight people.",
     name: "Sonal K.",
     detail: "Pune · Loyal customer",
     stars: 5,
+    order: 2,
   },
   {
+    id: "fallback-4",
     body: "We stock Silver Star at our Goa property. Guests always ask where the candles are from — it's the first thing they notice in the room. We've reordered four times this year.",
     name: "The Fig & Palm Hotel",
     detail: "Boutique hotel, Goa · B2B partner",
     stars: 5,
+    order: 3,
   },
   {
+    id: "fallback-5",
     body: "Tried the cedar votives on a whim at the Bangalore pop-up. Now I burn one every evening while working. The throw is small but the mood it sets is something else entirely.",
     name: "Kavya S.",
     detail: "Bengaluru · Studio customer",
     stars: 5,
+    order: 4,
   },
   {
+    id: "fallback-6",
     body: "What sets Silver Star apart isn't just the product — it's the honesty. No fake five-star theatre, no over-promising. Just really good things made by real people.",
     name: "Rohit & Neha",
     detail: "Chennai · Gift buyers",
     stars: 5,
+    order: 5,
   },
 ];
 
@@ -54,7 +67,7 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-function TestimonialCard({ t }: { t: typeof testimonials[0] }) {
+function TestimonialCard({ t }: { t: Testimonial }) {
   return (
     <article className="h-full rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col">
       <Quote className="h-7 w-7 text-amber-900/10 mb-3 shrink-0" strokeWidth={1} aria-hidden />
@@ -74,8 +87,18 @@ function TestimonialCard({ t }: { t: typeof testimonials[0] }) {
 
 export function AboutTestimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
   const sliderRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    fetch("/api/showcase/testimonials")
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (data?.items?.length) setTestimonials(data.items as Testimonial[]);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -97,7 +120,7 @@ export function AboutTestimonials() {
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [testimonials.length]);
 
   function scrollToSlide(i: number) {
     const card = cardRefs.current[i];

@@ -15,6 +15,10 @@ import { ChevronLeft, Save, Trash2, Upload, AlertCircle, Loader2 } from 'lucide-
 import { AppImage as Image } from '@/components/AppImage'
 import { ProductImageGallery } from '@/components/admin/ProductImageGallery'
 
+function isVideoUrl(url: string) {
+    return url.includes("/video/upload/") || /\.(mp4|webm|mov)(?:\?|$)/i.test(url)
+}
+
 async function uploadToCloudinary(file: File): Promise<string> {
     const formData = new FormData()
     formData.append("file", file)
@@ -99,13 +103,18 @@ export default function EditProductPage() {
     async function handleMainImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
         if (!file) return
+        if (file.type.startsWith("video/") && file.size > 20 * 1024 * 1024) {
+            alert("Product videos must be 20 MB or smaller.")
+            e.target.value = ""
+            return
+        }
         setIsUploading(true)
         try {
             const url = await uploadToCloudinary(file)
             setProduct(prev => prev ? { ...prev, image: url } : null)
         } catch (error) {
             console.error("Upload error:", error)
-            alert("Failed to upload image. Make sure Cloudinary is configured.")
+            alert("Failed to upload media. Make sure Cloudinary is configured.")
         } finally {
             setIsUploading(false)
             if (mainImageInputRef.current) mainImageInputRef.current.value = ""
@@ -115,6 +124,11 @@ export default function EditProductPage() {
     async function handleGalleryImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
         if (!file) return
+        if (file.type.startsWith("video/") && file.size > 20 * 1024 * 1024) {
+            alert("Product videos must be 20 MB or smaller.")
+            e.target.value = ""
+            return
+        }
         setIsUploading(true)
         try {
             const url = await uploadToCloudinary(file)
@@ -125,7 +139,7 @@ export default function EditProductPage() {
             })
         } catch (error) {
             console.error("Upload error:", error)
-            alert("Failed to upload image. Make sure Cloudinary is configured.")
+            alert("Failed to upload media. Make sure Cloudinary is configured.")
         } finally {
             setIsUploading(false)
             if (galleryImageInputRef.current) galleryImageInputRef.current.value = ""
@@ -169,8 +183,8 @@ export default function EditProductPage() {
                     <div className='lg:w-1/3 space-y-6'>
                         <Card className='border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden'>
                             <CardHeader>
-                                <CardTitle className='text-xl'>Product Images</CardTitle>
-                                <CardDescription>Upload and manage product images via Cloudinary</CardDescription>
+                                <CardTitle className='text-xl'>Product Media</CardTitle>
+                                <CardDescription>Upload and manage images or videos (videos max 20 MB).</CardDescription>
                             </CardHeader>
                             <CardContent className='space-y-4'>
                                 {/* Main Image */}
@@ -180,7 +194,7 @@ export default function EditProductPage() {
                                 >
                                     {product.image ? (
                                         <>
-                                            <Image src={product.image} alt={product.name} fill className='object-cover' />
+                                            {isVideoUrl(product.image) ? <video src={product.image} muted playsInline className='h-full w-full object-cover' /> : <Image src={product.image} alt={product.name} fill className='object-cover' />}
                                             <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
                                                 <Button size='sm' className='bg-card text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg'>
                                                     {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
@@ -203,7 +217,7 @@ export default function EditProductPage() {
                                     <input
                                         ref={mainImageInputRef}
                                         type="file"
-                                        accept="image/*"
+                                        accept="image/*,video/*"
                                         className="hidden"
                                         onChange={handleMainImageUpload}
                                     />
@@ -220,7 +234,7 @@ export default function EditProductPage() {
                                     <input
                                         ref={galleryImageInputRef}
                                         type="file"
-                                        accept="image/*"
+                                        accept="image/*,video/*"
                                         className="hidden"
                                         onChange={handleGalleryImageUpload}
                                     />

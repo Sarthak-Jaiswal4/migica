@@ -68,7 +68,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   },
   "fashion-accessories": {
     variant: "split-image-right",
-    image: "/3.jpeg",
+    image: "/Gemini_Generated_Image_g5h7lmg5h7lmg5h7.png",
     imageAlt: "Fashion accessories — sunglasses, belt, hair accessories styled together",
     objectPosition: "center",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-square lg:aspect-auto",

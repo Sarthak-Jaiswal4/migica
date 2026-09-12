@@ -3,6 +3,10 @@
 import { ChevronLeft, ChevronRight, GripVertical, Plus, X } from "lucide-react";
 import { AppImage as Image } from "@/components/AppImage";
 
+function isVideo(url: string) {
+  return url.includes("/video/upload/") || /\.(mp4|webm|mov)(?:\?|$)/i.test(url);
+}
+
 type ProductImageGalleryProps = {
   images: string[];
   isUploading: boolean;
@@ -48,7 +52,7 @@ export function ProductImageGallery({
               canReorder ? "cursor-grab active:cursor-grabbing" : ""
             }`}
           >
-            <Image src={image} alt={`Gallery image ${index + 1}`} fill className="object-cover" />
+            {isVideo(image) ? <video src={image} muted playsInline className="h-full w-full object-cover" /> : <Image src={image} alt={`Gallery image ${index + 1}`} fill className="object-cover" />}
             {canReorder && (
               <div className="absolute left-1 top-1 hidden h-6 w-6 items-center justify-center rounded-full bg-black/65 text-white opacity-0 transition-opacity sm:flex sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
                 <GripVertical size={14} aria-hidden="true" />
@@ -88,13 +92,13 @@ export function ProductImageGallery({
         ))}
         <button
           type="button"
-          aria-label="Add gallery image"
+          aria-label="Add gallery image or video"
           className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-amber-500 hover:text-amber-500 transition-all disabled:cursor-not-allowed disabled:opacity-60"
           onClick={onAddImage}
           disabled={isUploading}
         >
           <Plus size={20} aria-hidden="true" />
-          <span className="text-[10px] uppercase font-black">Add</span>
+          <span className="text-[10px] uppercase font-black">Add media</span>
         </button>
       </div>
     </div>

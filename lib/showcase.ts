@@ -14,3 +14,29 @@ export type Exhibition = {
   image: string;
   order: number;
 };
+
+export type Testimonial = {
+  id: string;
+  body: string;
+  name: string;
+  detail: string;
+  stars: number;
+  order: number;
+};
+
+export type HeroMedia = {
+  id: string;
+  url: string;
+  mediaType: "image" | "video";
+  title: string;
+  description: string;
+  alt: string;
+  order: number;
+};
+
+export type ShowcaseType = "happy-customers" | "exhibitions" | "testimonials" | "hero-media";
+export type ShowcaseItem = HappyCustomer | Exhibition | Testimonial | HeroMedia;
+export type HappyCustomerForm = Omit<HappyCustomer, "id" | "order">;
+export type ExhibitionForm = Omit<Exhibition, "id" | "order">;
+export type TestimonialForm = Omit<Testimonial, "id" | "order">;
+export type HeroMediaForm = Omit<HeroMedia, "id" | "order">;

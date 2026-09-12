@@ -3,9 +3,11 @@ import { jwtVerify } from "jose";
 import connectDB from "@/lib/mongodb";
 import HappyCustomer from "@/models/HappyCustomer";
 import Exhibition from "@/models/Exhibition";
+import Testimonial from "@/models/Testimonial";
+import HeroMedia from "@/models/HeroMedia";
 import type { Model } from "mongoose";
 
-const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition } as const;
+const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition, testimonials: Testimonial, "hero-media": HeroMedia } as const;
 type ShowcaseType = keyof typeof models;
 type ShowcaseRecord = { image: string; order: number; [key: string]: unknown };
 
@@ -48,6 +50,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ typ
   if (!Model) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!(await isAdmin(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   await connectDB();
+  if (type === "hero-media" && await Model.countDocuments() >= 5) {
+    return NextResponse.json({ error: "A maximum of five hero media items is allowed" }, { status: 400 });
+  }
   const body = await req.json();
   const order = await Model.countDocuments();
   const item = await Model.create({ ...body, order });

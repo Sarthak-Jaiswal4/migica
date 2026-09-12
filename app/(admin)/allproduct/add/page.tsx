@@ -27,6 +27,10 @@ type NewProductPayload = {
   quantity: number;
 };
 
+function isVideoUrl(url: string) {
+  return url.includes("/video/upload/") || /\.(mp4|webm|mov)(?:\?|$)/i.test(url);
+}
+
 async function uploadToCloudinary(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("file", file);
@@ -70,13 +74,18 @@ export default function AddProductPage() {
   async function handleMainImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.type.startsWith("video/") && file.size > 20 * 1024 * 1024) {
+      alert("Product videos must be 20 MB or smaller.");
+      e.target.value = "";
+      return;
+    }
     setIsUploading(true);
     try {
       const url = await uploadToCloudinary(file);
       setMainImage(url);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image. Make sure Cloudinary is configured.");
+      alert("Failed to upload media. Make sure Cloudinary is configured.");
     } finally {
       setIsUploading(false);
       if (mainImageInputRef.current) mainImageInputRef.current.value = "";
@@ -86,13 +95,18 @@ export default function AddProductPage() {
   async function handleGalleryImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.type.startsWith("video/") && file.size > 20 * 1024 * 1024) {
+      alert("Product videos must be 20 MB or smaller.");
+      e.target.value = "";
+      return;
+    }
     setIsUploading(true);
     try {
       const url = await uploadToCloudinary(file);
       setGalleryImages((prev) => [...prev, url]);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image. Make sure Cloudinary is configured.");
+      alert("Failed to upload media. Make sure Cloudinary is configured.");
     } finally {
       setIsUploading(false);
       if (galleryImageInputRef.current) galleryImageInputRef.current.value = "";
@@ -154,9 +168,9 @@ export default function AddProductPage() {
           <div className="lg:w-1/3 space-y-6">
             <Card className="border-none shadow-xl bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden">
               <CardHeader>
-                <CardTitle className="text-xl">Product Images</CardTitle>
+                <CardTitle className="text-xl">Product Media</CardTitle>
                 <CardDescription className="font-semibold text-muted-foreground">
-                  Upload images to Cloudinary. They will be auto-optimised for the storefront.
+                  Upload images or videos. Product videos must be 20 MB or smaller.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -167,7 +181,7 @@ export default function AddProductPage() {
                 >
                   {mainImage ? (
                     <>
-                      <Image src={mainImage} alt="Main product image" fill className="object-cover" />
+                      {isVideoUrl(mainImage) ? <video src={mainImage} muted playsInline className="h-full w-full object-cover" /> : <Image src={mainImage} alt="Main product image" fill className="object-cover" />}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button size="sm" className="bg-card text-black hover:bg-neutral-100 rounded-full font-bold shadow-lg">
                           Change Image
@@ -181,7 +195,7 @@ export default function AddProductPage() {
                       ) : (
                         <>
                           <Upload className="h-10 w-10" />
-                          <span className="text-sm font-semibold">Upload main image</span>
+                          <span className="text-sm font-semibold">Upload main media</span>
                         </>
                       )}
                     </div>
@@ -189,7 +203,7 @@ export default function AddProductPage() {
                   <input
                     ref={mainImageInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     className="hidden"
                     onChange={handleMainImageUpload}
                   />
@@ -206,7 +220,7 @@ export default function AddProductPage() {
                   <input
                     ref={galleryImageInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     className="hidden"
                     onChange={handleGalleryImageUpload}
                   />

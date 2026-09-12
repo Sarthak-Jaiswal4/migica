@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { HomePageCarouselClient, HeroSlide } from "./HomePageCarouselClient";
+import type { HeroMedia } from "@/lib/showcase";
 
 const slides: HeroSlide[] = [
   {
@@ -22,5 +26,27 @@ const slides: HeroSlide[] = [
 ];
 
 export function HomePageCarosol() {
-  return <HomePageCarouselClient slides={slides} />;
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(slides);
+
+  useEffect(() => {
+    fetch("/api/showcase/hero-media")
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (data?.items?.length) {
+          setHeroSlides((data.items as HeroMedia[]).map((item) => ({
+            imageSrc: item.url,
+            mediaType: item.mediaType,
+            imageAlt: item.alt || item.title || "Silver Star collection",
+            eyebrow: "Silver Star",
+            headline: item.title || "For the evenings you don't want to end.",
+            body: item.description || "Hand-poured light, metal and cloth we actually live with.",
+            primaryHref: "/shop/all",
+            primaryLabel: "Wander the shelves",
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  return <HomePageCarouselClient slides={heroSlides} />;
 }
