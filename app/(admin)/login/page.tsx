@@ -41,7 +41,7 @@ export default function LoginPage() {
             // We keep loading true while we redirect
             const searchParams = new URLSearchParams(window.location.search)
             const redirectUrl = searchParams.get('redirect') || '/'
-            router.push(redirectUrl)
+            router.push(data.requiresPhoneVerification ? `/verify-phone?next=${encodeURIComponent(redirectUrl)}` : redirectUrl)
         } catch (err) {
             console.error('Login error:', err)
             setError('Connection error. Please check if the server is running.')

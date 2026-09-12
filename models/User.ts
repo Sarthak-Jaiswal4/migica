@@ -9,6 +9,8 @@ export interface IUser extends Document {
   city?: string;
   zipCode?: string;
   country?: string;
+  phone?: string;
+  phoneVerified?: boolean;
   createdAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -32,6 +34,8 @@ const UserSchema = new Schema<IUser>(
     city: { type: String },
     zipCode: { type: String },
     country: { type: String },
+    phone: { type: String, trim: true },
+    phoneVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

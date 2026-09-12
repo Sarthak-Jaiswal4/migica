@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const user = await User.findById(decoded.userId).select(
-      "email name address city zipCode country"
+      "email name address city zipCode country phone phoneVerified"
     );
 
     if (!user) {
@@ -33,10 +33,12 @@ export async function GET(req: NextRequest) {
         city: user.city || "",
         zipCode: user.zipCode || "",
         country: user.country || "",
+        phone: user.phone || "",
+        phoneVerified: user.phoneVerified === true,
         isAdmin: decoded.isAdmin ?? false,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Profile fetch error:", error);
     return NextResponse.json(
       { error: "Internal server error" },

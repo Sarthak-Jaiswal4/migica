@@ -32,6 +32,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+    if (!user.phoneVerified) {
+      return NextResponse.json({ error: "Verify your phone number before checkout" }, { status: 403 });
+    }
 
     // Update user with address
     user.name = name || user.name;
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
     let cartHtml = `<h2>Order Summary</h2><ul>`;
     let total = 0;
     if (items && Array.isArray(items)) {
-        for (const item of items) {
+        for (const item of items as Array<{ name: string; quantity: number; price: number }>) {
             cartHtml += `<li>${item.name} x ${item.quantity} - ₹${(item.price * item.quantity).toFixed(2)}</li>`;
             total += item.price * item.quantity;
         }
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
     // Create Order in DB
     const newOrder = new Order({
       user: user._id,
-      items: items.map((i: any) => ({
+      items: (items as Array<{ id?: string; _id?: string; productId?: string; name: string; price: number; quantity: number; image: string }>).map((i) => ({
         productId: i.id || i._id || i.productId || "unknown",
         name: i.name,
         price: i.price,
@@ -85,6 +88,16 @@ export async function POST(req: NextRequest) {
       status: "pending",
     });
     await newOrder.save();
+
+    // Temporary UPI ID. Set BUSINESS_UPI_ID before accepting live payments.
+    const upiId = process.env.BUSINESS_UPI_ID || "silverstar@upi";
+    const orderReference = `SS-${newOrder._id.toString().slice(-8).toUpperCase()}`;
+    const upiUrl = new URL("upi://pay");
+    upiUrl.searchParams.set("pa", upiId);
+    upiUrl.searchParams.set("pn", "Silver Star");
+    upiUrl.searchParams.set("am", finalTotal.toFixed(2));
+    upiUrl.searchParams.set("cu", "INR");
+    upiUrl.searchParams.set("tn", `Order ${orderReference}`);
 
     const htmlContent = `
       <h1>Hello ${user.name || "Customer"},</h1>
@@ -111,8 +124,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ message: "Checkout successful" }, { status: 200 });
-  } catch (error: any) {
+    return NextResponse.json({
+      message: "Checkout successful",
+      payment: { orderReference, amount: finalTotal, upiUrl: upiUrl.toString() },
+    }, { status: 200 });
+  } catch (error: unknown) {
     console.error("Checkout error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     // Set token in httpOnly cookie
     const response = NextResponse.json(
-      { message: "Login successful", userId: user._id },
+      { message: "Login successful", userId: user._id, requiresPhoneVerification: user.phoneVerified !== true },
       { status: 200 }
     );
 
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Login error:", error);
     return NextResponse.json(
       { error: "Internal server error" },

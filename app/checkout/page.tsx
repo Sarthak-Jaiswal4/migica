@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { SHIPPING_COST } from '@/lib/constants'
 import Link from 'next/link'
+import QRCode from 'qrcode'
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012";
 
@@ -67,6 +68,7 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState('')
   const [discountAmount, setDiscountAmount] = useState(0)
   const [error, setError] = useState('')
+  const [payment, setPayment] = useState<{ orderReference: string; amount: number; upiUrl: string; qrCode: string } | null>(null)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -75,6 +77,10 @@ export default function CheckoutPage() {
         if (res.ok) {
           const data = await res.json()
           const u = data.user
+          if (!u.phoneVerified) {
+            router.replace('/verify-phone?required=1&next=%2Fcheckout')
+            return
+          }
           if (u.address || u.city || u.zipCode || u.country) {
             setFormData({
               name: u.name || '', address: u.address || '',
@@ -89,7 +95,7 @@ export default function CheckoutPage() {
       finally { setFetchingAddress(false) }
     }
     fetchProfile()
-  }, [])
+  }, [router])
 
   const subtotal = totalPrice()
   const shipping = items.length > 0 ? SHIPPING_COST : 0
@@ -109,7 +115,7 @@ export default function CheckoutPage() {
     setFormData({ ...formData, [e.target.id]: e.target.value })
 
   /* ── Generate WhatsApp URL with Full Product Details ─────────── */
-  const getWhatsAppUrl = () => {
+  const getWhatsAppUrl = (upiUrl?: string) => {
     const formattedPhone = WHATSAPP_NUMBER.replace(/[^0-9]/g, '')
     
     // Detailed list of each item with price and quantity
@@ -137,7 +143,7 @@ export default function CheckoutPage() {
     msg += `• *City:* ${formData.city || 'N/A'} - ${formData.zipCode || 'N/A'}\n`
     msg += `• *Country:* ${formData.country || 'India'}\n\n`
     msg += `════════════════════════════════════\n`
-    msg += `Hi Silver Star! I would like to place and pay for this order on WhatsApp. Please share your payment / UPI details so I can complete it.`
+    msg += upiUrl ? `Payment link for this order: ${upiUrl}\n\nI will complete payment and share confirmation here.` : `Hi Silver Star! I would like to place and pay for this order on WhatsApp. Please share your payment / UPI details so I can complete it.`
 
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`
   }
@@ -166,13 +172,9 @@ export default function CheckoutPage() {
     setError('')
     setLoading(true)
 
-    // Open WhatsApp immediately to avoid popup blockers
-    const whatsappUrl = getWhatsAppUrl()
-    window.open(whatsappUrl, '_blank')
-
     try {
       // Record the order in database
-      await fetch('/api/checkout', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -182,14 +184,18 @@ export default function CheckoutPage() {
           discountAmount
         }),
       })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Checkout failed')
+
+      const qrCode = await QRCode.toDataURL(data.payment.upiUrl, { width: 360, margin: 2 })
+      setPayment({ ...data.payment, qrCode })
+      window.open(getWhatsAppUrl(data.payment.upiUrl), '_blank')
 
       setSuccess(true)
       clearCart()
     } catch (err) {
       console.error('Checkout error:', err)
-      // Even if background API fails, user has already opened WhatsApp to complete order
-      setSuccess(true)
-      clearCart()
+      setError(err instanceof Error ? err.message : 'Could not create your order. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -271,6 +277,7 @@ export default function CheckoutPage() {
                 style={{ animation:'fadeUp 0.5s ease-out 1.6s both' }}>
                 Your order details have been sent to WhatsApp and our team. We look forward to fulfilling your pieces.
               </p>
+              {payment && <div className="mt-6 rounded-2xl border border-[#E8D5C8] bg-white p-4 shadow-sm"><p className="text-sm font-semibold">Pay ₹{payment.amount.toFixed(2)} via UPI</p><p className="mt-1 text-xs text-muted-foreground">Order {payment.orderReference}</p><img src={payment.qrCode} alt={`UPI QR code for ${payment.orderReference}`} className="mx-auto my-3 h-48 w-48" /><a href={payment.upiUrl} className="text-sm font-medium text-[#C9956C] underline">Open UPI app</a><p className="mt-3 text-xs text-amber-700">Temporary payment ID: silverstar@upi. Replace it with your business UPI ID before accepting live payments.</p></div>}
               <Button onClick={() => router.push('/shop/all')}
                 className="mt-8 h-12 px-10 bg-[#C9956C] text-white hover:bg-[#B8845A] rounded-xl font-semibold shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98]"
                 style={{ animation:'fadeUp 0.5s ease-out 1.8s both' }}>
