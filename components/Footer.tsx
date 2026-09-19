@@ -1,6 +1,4 @@
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Instagram, Twitter, Facebook, Mail, MapPin, Phone, Youtube } from "lucide-react"
+import { Instagram, Facebook, MapPin, Youtube } from "lucide-react"
 import Link from "next/link"
 
 export function Footer() {
@@ -61,19 +59,21 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Newsletter */}
+                    {/* Contact */}
                     <div className="space-y-6">
-                        <h3 className="text-lg font-bold">Newsletter</h3>
-                        <p className="text-sm text-muted-foreground">Join our mailing list for weekly updates and exclusive magic.</p>
-                        <div className="flex flex-col gap-3">
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="bg-neutral-800 border-neutral-700 text-white rounded-xl h-12 focus-visible:ring-amber-500"
-                            />
-                            <Button className="w-full bg-[#F0DDD0] text-[#3D2314] border border-[#DEC4B4] hover:bg-[#E8D0C0] hover:text-[#2C1810] h-12 rounded-xl font-bold transition-all">
-                                Subscribe
-                            </Button>
+                        <h3 className="text-lg font-bold">Contact Us</h3>
+                        <div className="space-y-4 text-sm text-neutral-300">
+                            <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Owner</p>
+                                <p className="mt-1 font-medium text-white">Shalini Agarwal</p>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                {/* <MapPin size={18} className="mt-0.5 shrink-0 text-amber-400" /> */}
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Address</p>
+                                    <p className="mt-1 leading-relaxed">Arjunganj, Lucknow</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

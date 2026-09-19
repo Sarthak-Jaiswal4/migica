@@ -8,6 +8,7 @@ import { CartSheet } from "./SideCart";
 import { useUserStore } from "@/store/store";
 import { WishlistSignupNudge } from "@/components/WishlistSignupNudge";
 import { CategoryNavDropdown } from "@/components/CategoryNavDropdown";
+import { ContactUsOverlay } from "@/components/ContactUsOverlay";
 import { SHOP_CATEGORIES, getShopPath } from "@/lib/categories";
 import {
     AlertDialog,
@@ -28,6 +29,8 @@ export function Headers() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
     const [isDesktopCategoriesOpen, setIsDesktopCategoriesOpen] = useState(false);
+    const [isContactOpen, setIsContactOpen] = useState(false);
+    const [isContactClosing, setIsContactClosing] = useState(false);
     const mobileMainPanelRef = useRef<HTMLDivElement>(null);
     const mobileCategoriesPanelRef = useRef<HTMLDivElement>(null);
     const desktopCategoriesPanelRef = useRef<HTMLDivElement>(null);
@@ -100,6 +103,17 @@ export function Headers() {
         setIsMobileCategoriesOpen(false);
     };
 
+    const openContact = () => {
+        closeMobileMenu();
+        setIsContactClosing(false);
+        setIsContactOpen(true);
+    };
+
+    const closeContact = () => {
+        setIsContactClosing(true);
+        window.setTimeout(() => { setIsContactOpen(false); setIsContactClosing(false); }, 480);
+    };
+
     // Style for header backgrounds based on scroll & pathname
     const desktopHeaderBg = pathname === "/"
         ? (isScrolled ? "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-card/30 backdrop-blur-none duration-300 ease-in invert")
@@ -136,6 +150,7 @@ export function Headers() {
                         >
                             About
                         </span>
+                        <span className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors" onClick={openContact}>Contact Us</span>
                         <span onMouseEnter={() => setIsDesktopCategoriesOpen(true)} className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors flex items-center gap-1">
                             Categories
                             <svg className={`w-3 h-3 opacity-60 transition-transform ${isDesktopCategoriesOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -216,7 +231,7 @@ export function Headers() {
                         <button
                             type="button"
                             onClick={() => router.push("/wishlist")}
-                            className="relative flex h-10 w-10 items-center justify-center rounded-full text-rose-700 shadow-sm transition-all hover:border-rose-300 hover:bg-rose-100 hover:shadow"
+                            className="relative flex h-10 w-10 items-center justify-center rounded-full text-rose-700 transition-all hover:border-rose-300 hover:bg-rose-100 hover:shadow"
                             aria-label={`Wishlist${wishlistCount > 0 ? `, ${wishlistCount} items` : ""}`}
                         >
                             <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "hover:fill-rose-600 hover:text-rose-600" : ""}`} strokeWidth={2} />
@@ -298,6 +313,7 @@ export function Headers() {
                                         <MobileMenuLink label="Home" onClick={() => { closeMobileMenu(); router.push("/"); }} />
                                         <button type="button" onClick={() => setIsMobileCategoriesOpen(true)} className="flex w-full items-center justify-between border-b border-border py-5 text-left text-base font-medium"><span>Shop</span><ChevronRight size={20} /></button>
                                         <MobileMenuLink label="About" onClick={() => { closeMobileMenu(); router.push("/about"); }} />
+                                        <MobileMenuLink label="Contact us" onClick={openContact} />
                                         <MobileMenuLink label="Wishlist" onClick={() => { closeMobileMenu(); router.push("/wishlist"); }} />
                                         {isLoggedIn && <MobileMenuLink label="My orders" onClick={() => { closeMobileMenu(); router.push("/my-orders"); }} />}
                                         {isAdmin && <><MobileMenuLink label="Products" onClick={() => { closeMobileMenu(); router.push("/allproduct"); }} /><MobileMenuLink label="Manage orders" onClick={() => { closeMobileMenu(); router.push("/orders"); }} /><MobileMenuLink label="Showcase" onClick={() => { closeMobileMenu(); router.push("/showcase"); }} /></>}
@@ -344,6 +360,7 @@ export function Headers() {
             </AlertDialog>
 
             <WishlistSignupNudge />
+            {isContactOpen && <ContactUsOverlay closing={isContactClosing} onClose={closeContact} />}
         </>
     )
 }
