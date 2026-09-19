@@ -11,6 +11,8 @@ import { ShowcaseTabs } from "@/components/admin/showcase/ShowcaseTabs";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import type {
+  Certificate,
+  CertificateForm,
   Exhibition,
   ExhibitionForm,
   HappyCustomer,
@@ -27,9 +29,10 @@ const emptyHappy: HappyCustomerForm = { name: "", caption: "", image: "" };
 const emptyExhibition: ExhibitionForm = { title: "", location: "", description: "", image: "" };
 const emptyTestimonial: TestimonialForm = { name: "", detail: "", body: "", stars: 5 };
 const emptyHeroMedia: HeroMediaForm = { url: "", mediaType: "image", title: "", description: "", alt: "" };
-const showcaseTypes: ShowcaseType[] = ["hero-media", "happy-customers", "exhibitions", "testimonials"];
+const emptyCertificate: CertificateForm = { title: "", issuer: "", awardedOn: "", description: "", image: "" };
+const showcaseTypes: ShowcaseType[] = ["hero-media", "happy-customers", "exhibitions", "certificates", "testimonials"];
 
-async function uploadMedia(file: File, folder: "happy-customers" | "exhibitions" | "hero-media") {
+async function uploadMedia(file: File, folder: "happy-customers" | "exhibitions" | "hero-media" | "certificates") {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("folder", folder);
@@ -45,10 +48,12 @@ export default function ShowcaseAdminPage() {
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [heroMedia, setHeroMedia] = useState<HeroMedia[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [happyForm, setHappyForm] = useState(emptyHappy);
   const [exhibitionForm, setExhibitionForm] = useState(emptyExhibition);
   const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
   const [heroForm, setHeroForm] = useState(emptyHeroMedia);
+  const [certificateForm, setCertificateForm] = useState(emptyCertificate);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -59,10 +64,11 @@ export default function ShowcaseAdminPage() {
     setIsLoading(true);
     try {
       const responses = await Promise.all(showcaseTypes.map((itemType) => fetch(`/api/showcase/${itemType}`)));
-      const [heroData, customerData, exhibitionData, testimonialData] = await Promise.all(responses.map((response) => response.json()));
+      const [heroData, customerData, exhibitionData, certificateData, testimonialData] = await Promise.all(responses.map((response) => response.json()));
       setHeroMedia(heroData.items || []);
       setCustomers(customerData.items || []);
       setExhibitions(exhibitionData.items || []);
+      setCertificates(certificateData.items || []);
       setTestimonials(testimonialData.items || []);
     } finally {
       setIsLoading(false);
@@ -80,6 +86,7 @@ export default function ShowcaseAdminPage() {
     setExhibitionForm(emptyExhibition);
     setTestimonialForm(emptyTestimonial);
     setHeroForm(emptyHeroMedia);
+    setCertificateForm(emptyCertificate);
   };
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +103,7 @@ export default function ShowcaseAdminPage() {
       const url = await uploadMedia(file, type);
       if (type === "happy-customers") setHappyForm((form) => ({ ...form, image: url }));
       else if (type === "exhibitions") setExhibitionForm((form) => ({ ...form, image: url }));
+      else if (type === "certificates") setCertificateForm((form) => ({ ...form, image: url }));
       else setHeroForm((form) => ({ ...form, url, mediaType: file.type.startsWith("video/") ? "video" : "image" }));
     } catch {
       alert("Upload failed. Please try again.");
@@ -105,13 +113,13 @@ export default function ShowcaseAdminPage() {
     }
   };
 
-  const activeItems: ShowcaseItem[] = type === "happy-customers" ? customers : type === "exhibitions" ? exhibitions : type === "testimonials" ? testimonials : heroMedia;
-  const activeMediaUrl = type === "happy-customers" ? happyForm.image : type === "exhibitions" ? exhibitionForm.image : type === "hero-media" ? heroForm.url : "";
+  const activeItems: ShowcaseItem[] = type === "happy-customers" ? customers : type === "exhibitions" ? exhibitions : type === "certificates" ? certificates : type === "testimonials" ? testimonials : heroMedia;
+  const activeMediaUrl = type === "happy-customers" ? happyForm.image : type === "exhibitions" ? exhibitionForm.image : type === "certificates" ? certificateForm.image : type === "hero-media" ? heroForm.url : "";
   const cannotAddHeroMedia = type === "hero-media" && !editingId && heroMedia.length >= 5;
 
   const saveItem = async () => {
-    const payload = type === "happy-customers" ? happyForm : type === "exhibitions" ? exhibitionForm : type === "testimonials" ? testimonialForm : heroForm;
-    const isValid = type === "happy-customers" ? happyForm.name && happyForm.image : type === "exhibitions" ? exhibitionForm.title && exhibitionForm.image : type === "testimonials" ? testimonialForm.name && testimonialForm.body : heroForm.url;
+    const payload = type === "happy-customers" ? happyForm : type === "exhibitions" ? exhibitionForm : type === "certificates" ? certificateForm : type === "testimonials" ? testimonialForm : heroForm;
+    const isValid = type === "happy-customers" ? happyForm.name && happyForm.image : type === "exhibitions" ? exhibitionForm.title && exhibitionForm.image : type === "certificates" ? certificateForm.title && certificateForm.image : type === "testimonials" ? testimonialForm.name && testimonialForm.body : heroForm.url;
     if (!isValid) return;
 
     setIsSaving(true);
@@ -133,7 +141,8 @@ export default function ShowcaseAdminPage() {
 
   const editItem = (item: ShowcaseItem) => {
     setEditingId(item.id);
-    if ("image" in item && "name" in item) setHappyForm({ name: item.name, caption: item.caption, image: item.image });
+    if ("issuer" in item) setCertificateForm({ title: item.title, issuer: item.issuer, awardedOn: item.awardedOn, description: item.description, image: item.image });
+    else if ("image" in item && "name" in item) setHappyForm({ name: item.name, caption: item.caption, image: item.image });
     else if ("image" in item) setExhibitionForm({ title: item.title, location: item.location, description: item.description, image: item.image });
     else if ("body" in item) setTestimonialForm({ name: item.name, detail: item.detail, body: item.body, stars: item.stars });
     else setHeroForm({ url: item.url, mediaType: item.mediaType, title: item.title, description: item.description, alt: item.alt });
@@ -154,24 +163,25 @@ export default function ShowcaseAdminPage() {
     reordered.splice(to, 0, moved);
     if (type === "happy-customers") setCustomers(reordered as HappyCustomer[]);
     else if (type === "exhibitions") setExhibitions(reordered as Exhibition[]);
+    else if (type === "certificates") setCertificates(reordered as Certificate[]);
     else if (type === "testimonials") setTestimonials(reordered as Testimonial[]);
     else setHeroMedia(reordered as HeroMedia[]);
     await Promise.all(reordered.map((item, index) => fetch(`/api/showcase/${type}/${item.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order: index }) })));
   };
 
   const title = (item: ShowcaseItem) => "body" in item ? item.name : "name" in item ? item.name : "url" in item ? item.title || "Hero media" : item.title;
-  const subtitle = (item: ShowcaseItem) => "body" in item ? item.detail : "caption" in item ? item.caption : "url" in item ? item.description : item.location;
-  const filteredItems = activeItems.filter((item) => `${title(item)} ${subtitle(item)} ${"body" in item ? item.body : "alt" in item ? item.alt : ""}`.toLowerCase().includes(search.toLowerCase()));
+  const subtitle = (item: ShowcaseItem) => "body" in item ? item.detail : "caption" in item ? item.caption : "issuer" in item ? [item.issuer, item.awardedOn].filter(Boolean).join(" · ") : "url" in item ? item.description : item.location;
+  const filteredItems = activeItems.filter((item) => `${title(item)} ${subtitle(item)} ${"body" in item ? item.body : "description" in item ? item.description : "alt" in item ? item.alt : ""}`.toLowerCase().includes(search.toLowerCase()));
 
   return <div className="flex min-h-screen max-w-full flex-col overflow-x-hidden bg-background">
     <Headers />
     <main className="mx-auto w-full min-w-0 max-w-6xl flex-grow overflow-x-hidden px-4 pb-12 pt-24">
       <Button variant="ghost" className="mb-6 px-0" onClick={() => router.push("/allproduct")}><ArrowLeft className="mr-2 h-4 w-4" /> Back to products</Button>
-      <div className="mb-8"><h1 className="text-3xl font-bold">Showcase Management</h1><p className="text-muted-foreground">Manage hero media, customer photos, exhibitions, and About-page testimonials.</p></div>
+      <div className="mb-8"><h1 className="text-3xl font-bold">Showcase Management</h1><p className="text-muted-foreground">Manage hero media, customer photos, exhibitions, certificates, and About-page testimonials.</p></div>
       <Tabs value={type} onValueChange={(value) => { setType(value as ShowcaseType); resetForm(); }}>
         <ShowcaseTabs />
         {showcaseTypes.map((tab) => <TabsContent key={tab} value={tab} className="w-full min-w-0 max-w-full overflow-x-hidden"><div className="grid w-full min-w-0 max-w-full gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
-          <ShowcaseForm type={type} editing={Boolean(editingId)} isSaving={isSaving} isUploading={isUploading} cannotAddHeroMedia={cannotAddHeroMedia} activeMediaUrl={activeMediaUrl} happyForm={happyForm} exhibitionForm={exhibitionForm} testimonialForm={testimonialForm} heroForm={heroForm} onHappyChange={setHappyForm} onExhibitionChange={setExhibitionForm} onTestimonialChange={setTestimonialForm} onHeroChange={setHeroForm} onUpload={handleUpload} onSave={saveItem} onCancel={resetForm} />
+          <ShowcaseForm type={type} editing={Boolean(editingId)} isSaving={isSaving} isUploading={isUploading} cannotAddHeroMedia={cannotAddHeroMedia} activeMediaUrl={activeMediaUrl} happyForm={happyForm} exhibitionForm={exhibitionForm} testimonialForm={testimonialForm} heroForm={heroForm} certificateForm={certificateForm} onHappyChange={setHappyForm} onExhibitionChange={setExhibitionForm} onTestimonialChange={setTestimonialForm} onHeroChange={setHeroForm} onCertificateChange={setCertificateForm} onUpload={handleUpload} onSave={saveItem} onCancel={resetForm} />
           <ShowcaseItemList items={activeItems} filteredItems={filteredItems} isLoading={isLoading} search={search} onSearchChange={setSearch} onMove={reorderItems} onEdit={editItem} onDelete={deleteItem} title={title} subtitle={subtitle} />
         </div></TabsContent>)}
       </Tabs>

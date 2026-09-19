@@ -70,8 +70,8 @@ export const CardComponent = ({ product, compact = false }: { product: any; comp
                     {/* Price and Action */}
                     <div className="flex items-start w-full flex-col gap-2 sm:gap-0 pt-2 sm:pt-2">
                         <div className="flex items-center gap-2 pb-2 px-2">
-                            <span className="text-lg sm:text-lg font-semibold tracking-tight text-foreground">₹{product.price}</span>
-                            <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-2">₹{product.originalPrice || 699}</span>
+                            <span className="text-lg sm:text-lg font-normal tracking-tight text-foreground">₹{product.price}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-1">₹{product.originalPrice || 699}</span>
                         </div>
                         <AddToCartButton
                             product={{

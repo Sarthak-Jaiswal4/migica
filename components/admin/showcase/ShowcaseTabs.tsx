@@ -5,6 +5,7 @@ const tabs: { value: ShowcaseType; label: string }[] = [
   { value: "hero-media", label: "Hero Media" },
   { value: "happy-customers", label: "Happy Customers" },
   { value: "exhibitions", label: "Exhibitions" },
+  { value: "certificates", label: "Certificates" },
   { value: "testimonials", label: "Testimonials" },
 ];
 

@@ -34,9 +34,12 @@ export type HeroMedia = {
   order: number;
 };
 
-export type ShowcaseType = "happy-customers" | "exhibitions" | "testimonials" | "hero-media";
-export type ShowcaseItem = HappyCustomer | Exhibition | Testimonial | HeroMedia;
+export type Certificate = { id: string; title: string; issuer: string; awardedOn: string; description: string; image: string; order: number };
+
+export type ShowcaseType = "happy-customers" | "exhibitions" | "testimonials" | "hero-media" | "certificates";
+export type ShowcaseItem = HappyCustomer | Exhibition | Testimonial | HeroMedia | Certificate;
 export type HappyCustomerForm = Omit<HappyCustomer, "id" | "order">;
 export type ExhibitionForm = Omit<Exhibition, "id" | "order">;
 export type TestimonialForm = Omit<Testimonial, "id" | "order">;
 export type HeroMediaForm = Omit<HeroMedia, "id" | "order">;
+export type CertificateForm = Omit<Certificate, "id" | "order">;

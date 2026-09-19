@@ -141,7 +141,7 @@ export default async function ProductPage(props: PageProps) {
 
             <Headers />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-x-clip">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-26 overflow-x-clip">
                 {/* Breadcrumb */}
                 <Breadcrumb className="mb-8">
                     <BreadcrumbList>

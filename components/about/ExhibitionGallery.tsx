@@ -157,7 +157,7 @@ export function ExhibitionGallery() {
 
   return (
     <section
-      className="w-full bg-[#EDE8E2] py-20 md:py-14 border-y border-border/60"
+      className="w-full bg-[#EDE8E2] py-20 md:py-12 border-y border-border/60"
       aria-labelledby="exhibition-heading"
     >
       <div className="mx-auto max-w-6xl">

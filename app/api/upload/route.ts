@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const requestedFolder = formData.get("folder");
-    const folder = requestedFolder === "happy-customers" || requestedFolder === "exhibitions" || requestedFolder === "hero-media"
+    const folder = requestedFolder === "happy-customers" || requestedFolder === "exhibitions" || requestedFolder === "hero-media" || requestedFolder === "certificates"
       ? requestedFolder
       : "products";
 

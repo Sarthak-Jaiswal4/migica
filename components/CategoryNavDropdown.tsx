@@ -11,11 +11,10 @@ export function CategoryNavDropdown() {
     SHOP_CATEGORIES.find((c) => c.slug === activeSlug) ?? SHOP_CATEGORIES[0];
 
   return (
-    <div
-      className="flex w-[min(92vw,720px)] gap-0 overflow-hidden rounded-xl border border-border bg-card shadow-lg"
-      onMouseLeave={() => setActiveSlug(null)}
-    >
-      <div className="w-[200px] shrink-0 border-r border-border bg-neutral-50/80 p-2">
+    <div className="w-full border-t border-border bg-card" onMouseLeave={() => setActiveSlug(null)}>
+      <div className="flex min-h-[350px] w-full gap-0">
+      <div className="w-[230px] shrink-0 border-r border-border bg-[#F5EEE8] p-3">
+        <p className="px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Shop by category</p>
         {SHOP_CATEGORIES.map((cat) => (
           <Link
             key={cat.slug}
@@ -38,34 +37,11 @@ export function CategoryNavDropdown() {
         </Link>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col p-4">
-        <div className="mb-3 flex items-start gap-4">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg">
-            <Image
-              src={active.image}
-              alt={active.label}
-              fill
-              className="object-cover"
-              sizes="80px"
-            />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {active.label}
-            </p>
-            <p className="mt-1 text-sm text-neutral-600 leading-snug">
-              {active.description}
-            </p>
-            <Link
-              href={getShopPath(active.slug)}
-              className="mt-2 inline-block text-sm font-semibold text-foreground underline-offset-4 hover:underline"
-            >
-              Shop all {active.label.toLowerCase()} →
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-1">
+      <div className="flex min-w-0 flex-1 gap-8 px-8 py-7">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{active.label}</p>
+          <p className="mt-2 max-w-md text-sm leading-snug text-neutral-600">{active.description}</p>
+          <div className="mt-4 grid grid-cols-2 gap-x-2 gap-y-1">
           {active.subcategories.map((sub) => (
             <Link
               key={sub.slug}
@@ -75,7 +51,22 @@ export function CategoryNavDropdown() {
               {sub.label}
             </Link>
           ))}
+          </div>
+          <Link
+            href={getShopPath(active.slug)}
+            className="mt-5 inline-block text-sm font-semibold text-foreground underline underline-offset-4 hover:text-amber-700"
+          >
+            Shop all {active.label.toLowerCase()} →
+          </Link>
         </div>
+        <Link href={getShopPath(active.slug)} className="group relative h-64 w-52 shrink-0 overflow-hidden rounded-2xl bg-muted">
+          <Image src={active.image} alt={active.label} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="208px" />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-4 pt-12">
+            <p className="font-[style] text-2xl font-semibold text-white">{active.label}</p>
+            <p className="mt-1 text-xs font-medium text-white/85">Explore collection →</p>
+          </div>
+        </Link>
+      </div>
       </div>
     </div>
   );

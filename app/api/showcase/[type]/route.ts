@@ -5,9 +5,10 @@ import HappyCustomer from "@/models/HappyCustomer";
 import Exhibition from "@/models/Exhibition";
 import Testimonial from "@/models/Testimonial";
 import HeroMedia from "@/models/HeroMedia";
+import Certificate from "@/models/Certificate";
 import type { Model } from "mongoose";
 
-const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition, testimonials: Testimonial, "hero-media": HeroMedia } as const;
+const models = { "happy-customers": HappyCustomer, exhibitions: Exhibition, testimonials: Testimonial, "hero-media": HeroMedia, certificates: Certificate } as const;
 type ShowcaseType = keyof typeof models;
 type ShowcaseRecord = { image: string; order: number; [key: string]: unknown };
 

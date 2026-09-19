@@ -3,6 +3,7 @@ import { Headers } from "@/components/Headers";
 import { Footer } from "@/components/Footer";
 import { AboutHero } from "@/components/about/AboutHero";
 import { OwnerSection } from "@/components/about/OwnerSection";
+import { CertificatesGallery } from "@/components/about/CertificatesGallery";
 import { JourneyTimeline } from "@/components/about/JourneyTimeline";
 import { ExhibitionGallery } from "@/components/about/ExhibitionGallery";
 import { AboutTestimonials } from "@/components/about/AboutTestimonials";
@@ -22,6 +23,7 @@ export default function AboutPage() {
       <main>
         <AboutHero />
         <OwnerSection />
+        <CertificatesGallery />
         <JourneyTimeline />
         <ExhibitionGallery />
         <HappyCustomers />

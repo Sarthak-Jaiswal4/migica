@@ -1,16 +1,14 @@
 "use client"
-import { AppImage as Image } from "@/components/AppImage";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import gsap from "gsap";
-import { Heart, LogOut, ShoppingCart, User, UserCheck, Package, LayoutGrid, Settings2, Images } from "lucide-react";
+import { ArrowLeft, ChevronRight, Heart, LogOut, ShoppingCart, User, UserCheck, Package, LayoutGrid, Settings2, Images } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "./ui/sheet";
-import { Button } from "./ui/button";
 import { CartSheet } from "./SideCart";
 import { useUserStore } from "@/store/store";
 import { WishlistSignupNudge } from "@/components/WishlistSignupNudge";
 import { CategoryNavDropdown } from "@/components/CategoryNavDropdown";
+import { SHOP_CATEGORIES, getShopPath } from "@/lib/categories";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -28,8 +26,11 @@ export function Headers() {
     const pathname = usePathname()
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isMobileAccountOpen, setIsMobileAccountOpen] = useState(false);
-    const mobileMenuItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
+    const [isDesktopCategoriesOpen, setIsDesktopCategoriesOpen] = useState(false);
+    const mobileMainPanelRef = useRef<HTMLDivElement>(null);
+    const mobileCategoriesPanelRef = useRef<HTMLDivElement>(null);
+    const desktopCategoriesPanelRef = useRef<HTMLDivElement>(null);
     const cartItemCount = useUserStore((state) => state.totalItems());
     const wishlistCount = useUserStore((state) => state.wishlistCount());
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,17 +58,46 @@ export function Headers() {
     }, []);
 
     useEffect(() => {
-        if (isMobileMenuOpen) {
-            gsap.fromTo(
-                mobileMenuItemsRef.current.filter(Boolean),
-                { y: 30, opacity: 0 },
-                { y: 0, opacity: 1, stagger: 0.1, duration: 0.4, ease: "power3.out" }
-            );
-        }
-    }, [isMobileMenuOpen]);
+        if (!isMobileMenuOpen) return;
+        const panel = isMobileCategoriesOpen ? mobileCategoriesPanelRef.current : mobileMainPanelRef.current;
+        const items = panel?.querySelectorAll("button");
+        if (!items?.length) return;
+
+        gsap.killTweensOf(items);
+        gsap.fromTo(items, { y: -16, opacity: 0 }, {
+            y: 0,
+            opacity: 1,
+            duration: 0.32,
+            stagger: 0.055,
+            delay: 0.12,
+            ease: "power3.out",
+        });
+    }, [isMobileMenuOpen, isMobileCategoriesOpen]);
+
+    useEffect(() => {
+        if (!isDesktopCategoriesOpen) return;
+        const items = desktopCategoriesPanelRef.current?.querySelectorAll("a, p");
+        if (!items?.length) return;
+
+        gsap.killTweensOf(items);
+        gsap.fromTo(items, { y: -12, opacity: 0 }, {
+            y: 0,
+            opacity: 1,
+            duration: 0.3,
+            stagger: 0.035,
+            delay: 0.08,
+            ease: "power3.out",
+        });
+    }, [isDesktopCategoriesOpen]);
 
     const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
+        setIsMobileMenuOpen((open) => !open);
+        setIsMobileCategoriesOpen(false);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+        setIsMobileCategoriesOpen(false);
     };
 
     // Style for header backgrounds based on scroll & pathname
@@ -85,8 +115,9 @@ export function Headers() {
         <>
             <header className="relative z-50">
                 {/* Desktop Header */}
-                <div className={`hidden md:grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto py-2 fixed top-4 left-0 right-0 rounded-2xl px-4 lg:px-6 min-[1200px]:px-8 ${desktopHeaderBg}`}>
-                    <div className="flex items-center gap-1 lg:gap-2 min-w-0 overflow-hidden">
+                <div onMouseLeave={() => setIsDesktopCategoriesOpen(false)} className={`hidden md:block w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl border border-border/40 ${desktopHeaderBg}`}>
+                    <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center px-6 py-2 lg:px-10">
+                    <div className="order-2 flex items-center justify-center gap-1 lg:gap-2 min-w-0 overflow-hidden">
                         <span
                             className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/' ? 'text-orange-500' : ''}`}
                             onClick={() => router.push("/")}
@@ -105,17 +136,10 @@ export function Headers() {
                         >
                             About
                         </span>
-                        <HoverCard openDelay={20} closeDelay={200}>
-                            <HoverCardTrigger asChild>
-                                <span className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors flex items-center gap-1">
-                                    Categories
-                                    <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </span>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="w-full h-full mt-2" align="center">
-                                <CategoryNavDropdown />
-                            </HoverCardContent>
-                        </HoverCard>
+                        <span onMouseEnter={() => setIsDesktopCategoriesOpen(true)} className="shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors flex items-center gap-1">
+                            Categories
+                            <svg className={`w-3 h-3 opacity-60 transition-transform ${isDesktopCategoriesOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        </span>
                         {isLoggedIn && (
                             <span
                                 className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/my-orders' ? 'text-orange-500' : ''}`}
@@ -150,10 +174,10 @@ export function Headers() {
                             </>
                         )}
                     </div>
-                    <div className="text-3xl min-[1200px]:text-4xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-center px-2 whitespace-nowrap" onClick={() => router.push("/")}>
+                    <div className="order-1 text-3xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-start pr-8 whitespace-nowrap" onClick={() => router.push("/")}>
                         <span>Silver Star</span>
                     </div>
-                    <div className="flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0">
+                    <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-8">
                         {!isLoggedIn && (
                             <User onClick={() => router.push("/login")} className="hover:cursor-pointer" strokeWidth={1.75} />
                         )}
@@ -216,10 +240,14 @@ export function Headers() {
                             <CartSheet />
                         </Sheet>
                     </div>
+                    </div>
+                    <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${isDesktopCategoriesOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                        <div ref={desktopCategoriesPanelRef} className="min-h-0 overflow-hidden"><CategoryNavDropdown /></div>
+                    </div>
                 </div>
 
                 {/* Mobile/Tablet Header */}
-                <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
+                <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-3 px-6">
                         <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
                             <span>Silver Star</span>
@@ -262,84 +290,29 @@ export function Headers() {
                         </div>
                     </div>
 
-                    {/* Mobile Dropdown Menu Options */}
-                    <div
-                        className={`overflow-hidden transition-all duration-1000 ease-in-out ${isMobileMenuOpen ? "h-auto opacity-100" : "max-h-0 opacity-0"}`}
-                    >
-                        <div className="flex flex-col gap-6 px-6 pb-12 pt-6 text-3xl tracking-tight font-semibold">
-                            {[
-                                { label: "Home", path: "/" },
-                                { label: "Shop", path: "/shop/all" },
-                                { label: "About", path: "/about" },
-                                { label: "Wishlist", path: "/wishlist" },
-                                ...(isLoggedIn ? [{ label: "My Orders", path: "/my-orders" }] : []),
-                                ...(isAdmin ? [
-                                    { label: "All Products", path: "/allproduct" },
-                                    { label: "Manage Orders", path: "/orders" },
-                                    { label: "Showcase", path: "/showcase" }
-                                ] : []),
-                                ...(isLoggedIn
-                                    ? [
-                                        { label: "Account", path: "/profile", custom: "account" },
-                                        { label: "Log Out", path: "/logout", custom: "logout" }
-                                    ]
-                                    : [{ label: "Login", path: "/login", custom: "login" }]
-                                ),
-                            ].map((item, i) => {
-                                // Handle custom click logic for Account, Log Out, and Login
-                                if (item.custom === "logout") {
-                                    return (
-                                        <div
-                                            key={item.label}
-                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                            className="cursor-pointer text-red-500 hover:text-red-600 will-change-transform"
-                                            onClick={() => { setIsMobileMenuOpen(false); setShowLogoutDialog(true); }}
-                                        >
-                                            {item.label}
+                    <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${isMobileMenuOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                        <div className="min-h-0 overflow-hidden">
+                            <nav className="h-[min(68vh,540px)] border-t border-border bg-card text-foreground">
+                                <div className={`flex h-full w-[200%] transition-transform duration-500 ease-out ${isMobileCategoriesOpen ? "-translate-x-1/2" : "translate-x-0"}`}>
+                                    <div ref={mobileMainPanelRef} className="flex h-full w-1/2 flex-col overflow-y-auto px-6 py-2">
+                                        <MobileMenuLink label="Home" onClick={() => { closeMobileMenu(); router.push("/"); }} />
+                                        <button type="button" onClick={() => setIsMobileCategoriesOpen(true)} className="flex w-full items-center justify-between border-b border-border py-5 text-left text-base font-medium"><span>Shop</span><ChevronRight size={20} /></button>
+                                        <MobileMenuLink label="About" onClick={() => { closeMobileMenu(); router.push("/about"); }} />
+                                        <MobileMenuLink label="Wishlist" onClick={() => { closeMobileMenu(); router.push("/wishlist"); }} />
+                                        {isLoggedIn && <MobileMenuLink label="My orders" onClick={() => { closeMobileMenu(); router.push("/my-orders"); }} />}
+                                        {isAdmin && <><MobileMenuLink label="Products" onClick={() => { closeMobileMenu(); router.push("/allproduct"); }} /><MobileMenuLink label="Manage orders" onClick={() => { closeMobileMenu(); router.push("/orders"); }} /><MobileMenuLink label="Showcase" onClick={() => { closeMobileMenu(); router.push("/showcase"); }} /></>}
+                                        <div className="mt-auto border-t border-border py-5">
+                                            {isLoggedIn ? <button type="button" onClick={() => { closeMobileMenu(); router.push("/profile"); }} className="flex items-center gap-3 text-sm font-semibold"><UserCheck size={20} className="text-emerald-700" /> My account</button> : <button type="button" onClick={() => { closeMobileMenu(); router.push("/login"); }} className="flex items-center gap-3 text-sm font-semibold"><User size={20} /> Log in</button>}
                                         </div>
-                                    );
-                                }
-                                if (item.custom === "account") {
-                                    return (
-                                        <div
-                                            key={item.label}
-                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                            className={`cursor-pointer will-change-transform transition-colors ${pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'}`}
-                                            onClick={() => { setIsMobileMenuOpen(false); router.push(item.path); }}
-                                        >
-                                            {item.label}
-                                        </div>
-                                    );
-                                }
-                                if (item.custom === "login") {
-                                    return (
-                                        <div
-                                            key={item.label}
-                                            ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                            className="cursor-pointer hover:text-orange-500 will-change-transform"
-                                            onClick={() => { setIsMobileMenuOpen(false); router.push(item.path); }}
-                                        >
-                                            {item.label}
-                                        </div>
-                                    );
-                                }
-                                // Default menu item
-                                return (
-                                    <div
-                                        key={item.label}
-                                        ref={(el) => { mobileMenuItemsRef.current[i] = el; }}
-                                        className={`cursor-pointer will-change-transform transition-colors ${pathname === item.path ? 'text-orange-500' : 'hover:text-orange-500'}`}
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            router.push(item.path);
-                                        }}
-                                    >
-                                        {item.label}
                                     </div>
-                                );
-                            })}
+                                    <div ref={mobileCategoriesPanelRef} className="h-full w-1/2 overflow-y-auto px-6 py-2">
+                                        <button type="button" onClick={() => setIsMobileCategoriesOpen(false)} className="flex w-full items-center gap-3 border-b border-border py-5 text-left text-sm font-semibold uppercase tracking-[0.15em]"><ArrowLeft size={19} /> Shop</button>
+                                        {SHOP_CATEGORIES.map((category) => <button key={category.slug} type="button" onClick={() => { closeMobileMenu(); router.push(getShopPath(category.slug)); }} className="flex w-full items-center justify-between border-b border-border py-5 text-left text-base font-medium"><span>{category.label}</span><ChevronRight size={20} className="text-muted-foreground" /></button>)}
+                                        <button type="button" onClick={() => { closeMobileMenu(); router.push("/shop/all"); }} className="mt-5 w-full rounded-xl bg-[#E7D2C3] px-4 py-3 text-sm font-semibold text-[#3D2314]">View all collections</button>
+                                    </div>
+                                </div>
+                            </nav>
                         </div>
-
                     </div>
                 </div>
             </header>
@@ -373,4 +346,8 @@ export function Headers() {
             <WishlistSignupNudge />
         </>
     )
+}
+
+function MobileMenuLink({ label, onClick }: { label: string; onClick: () => void }) {
+    return <button type="button" onClick={onClick} className="flex w-full items-center justify-between border-b border-border py-5 text-left text-base font-medium"><span>{label}</span><ChevronRight size={20} className="text-muted-foreground" /></button>;
 }

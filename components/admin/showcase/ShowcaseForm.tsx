@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { ExhibitionForm, HappyCustomerForm, HeroMediaForm, ShowcaseType, TestimonialForm } from "@/lib/showcase";
+import type { CertificateForm, ExhibitionForm, HappyCustomerForm, HeroMediaForm, ShowcaseType, TestimonialForm } from "@/lib/showcase";
 
 type Props = {
   type: ShowcaseType;
@@ -19,10 +19,12 @@ type Props = {
   exhibitionForm: ExhibitionForm;
   testimonialForm: TestimonialForm;
   heroForm: HeroMediaForm;
+  certificateForm: CertificateForm;
   onHappyChange: (form: HappyCustomerForm) => void;
   onExhibitionChange: (form: ExhibitionForm) => void;
   onTestimonialChange: (form: TestimonialForm) => void;
   onHeroChange: (form: HeroMediaForm) => void;
+  onCertificateChange: (form: CertificateForm) => void;
   onUpload: (event: ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -53,6 +55,7 @@ export function ShowcaseForm(props: Props) {
         {type === "hero-media" && <HeroFields {...props} />}
         {type === "happy-customers" && <HappyFields {...props} />}
         {type === "exhibitions" && <ExhibitionFields {...props} />}
+        {type === "certificates" && <CertificateFields {...props} />}
         {type === "testimonials" && <TestimonialFields {...props} />}
 
         <div className="flex gap-3">
@@ -76,6 +79,10 @@ function HappyFields({ happyForm, onHappyChange }: Props) {
 
 function ExhibitionFields({ exhibitionForm, onExhibitionChange }: Props) {
   return <><Field label="Title" id="exhibition-title"><Input id="exhibition-title" value={exhibitionForm.title} onChange={(e) => onExhibitionChange({ ...exhibitionForm, title: e.target.value })} /></Field><Field label="Location" id="exhibition-location"><Input id="exhibition-location" value={exhibitionForm.location} onChange={(e) => onExhibitionChange({ ...exhibitionForm, location: e.target.value })} /></Field><Field label="Description" id="exhibition-description"><Textarea id="exhibition-description" value={exhibitionForm.description} onChange={(e) => onExhibitionChange({ ...exhibitionForm, description: e.target.value })} /></Field></>;
+}
+
+function CertificateFields({ certificateForm, onCertificateChange }: Props) {
+  return <><Field label="Certificate, award, or degree title" id="certificate-title"><Input id="certificate-title" value={certificateForm.title} onChange={(e) => onCertificateChange({ ...certificateForm, title: e.target.value })} /></Field><Field label="Issued by / awarding organisation" id="certificate-issuer"><Input id="certificate-issuer" value={certificateForm.issuer} onChange={(e) => onCertificateChange({ ...certificateForm, issuer: e.target.value })} /></Field><Field label="Date or year awarded" id="certificate-date"><Input id="certificate-date" placeholder="2026 or June 2026" value={certificateForm.awardedOn} onChange={(e) => onCertificateChange({ ...certificateForm, awardedOn: e.target.value })} /></Field><Field label="Description" id="certificate-description"><Textarea id="certificate-description" value={certificateForm.description} onChange={(e) => onCertificateChange({ ...certificateForm, description: e.target.value })} /></Field></>;
 }
 
 function TestimonialFields({ testimonialForm, onTestimonialChange }: Props) {
