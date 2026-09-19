@@ -6,9 +6,10 @@ export async function HomePageCarosalHook():Promise<HeroSlide[]>{
     try {
         let slides:HeroSlide[]=[]
 
-        const response =await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/showcase/hero-media`,
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.silverstar.live";
+        const response =await fetch(`${baseUrl.replace(/\/$/, "")}/api/showcase/hero-media`,
             {
-                cache: "no-store",
+                next: { revalidate: 60 },
             }
         );
     
