@@ -2,6 +2,7 @@ import { HomePageCarosol } from '../../components/HomePageCarosol'
 import { Headers } from '../../components/Headers'
 import { MidPageBestSellers } from '../../components/MidPageBestSellers'
 import { CraftStorySection } from '../../components/CraftStorySection'
+import { NewArrivalsSection } from '../../components/NewArrivalsSection'
 import { CategoriesShop } from '../../components/CategoriesShop'
 import { CompleteTheSetSection } from '../../components/CompleteTheSetSection'
 import { Testimonials } from '../../components/Testimonials'
@@ -9,6 +10,7 @@ import { Footer } from '../../components/Footer'
 import { CategoryGrid } from '../../components/CategoryGrid'
 import { HappyCustomers } from '../../components/HappyCustomers'
 import { ExhibitionGallery } from '@/components/about/ExhibitionGallery'
+import { AboutTestimonials } from '@/components/about/AboutTestimonials'
 
 function HomeScreen() {
   return (
@@ -21,11 +23,12 @@ function HomeScreen() {
         </div>
         <CategoryGrid />
         <CraftStorySection />
+        <NewArrivalsSection />
         <CategoriesShop midPageSlot={<MidPageBestSellers />} />
         <CompleteTheSetSection />
         <HappyCustomers />
         <ExhibitionGallery/>
-        <Testimonials />
+        <AboutTestimonials />
         <Footer />
       </div>
     </>

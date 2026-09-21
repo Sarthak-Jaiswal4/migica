@@ -6,6 +6,9 @@ import { AppImage as Image } from "@/components/AppImage"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import { WishlistButton } from "@/components/WishlistButton"
 import Link from "next/link"
+import type { Product } from "@/lib/product"
+
+type CardProduct = Product | ({ id: string } & Record<string, unknown>);
 
 function getHoverImage(product: {
     image?: string;
@@ -17,70 +20,85 @@ function getHoverImage(product: {
     return images.find((url) => url && url !== product.image) ?? images[1] ?? "";
 }
 
-export const CardComponent = ({ product, compact = false }: { product: any; compact?: boolean }) => {
-    const hoverImage = getHoverImage(product);
+export const CardComponent = ({
+    product,
+    compact = false,
+    featured = false,
+    hideDescription = false,
+}: {
+    product: CardProduct;
+    compact?: boolean;
+    /** A refined card surface for curated home-page edits. */
+    featured?: boolean;
+    /** Keep dense product shelves focused on the essential purchase details. */
+    hideDescription?: boolean;
+}) => {
+    // Related-product responses have a deliberately loose shape, while the catalogue supplies Product.
+    const item = product as Product;
+    const hoverImage = getHoverImage(item);
 
     return (
-        <Link href={`/product/${product.slug || product.id}`} className="block h-full w-full outline-none">
+        <Link href={`/product/${item.slug || item.id}`} className="block h-full w-full outline-none">
             <Card
-                className="group rounded-none p-0 border-0 shadow-none bg-transparent overflow-hidden transition-all duration-300 cursor-pointer relative h-full"
+                className={`group relative h-full cursor-pointer overflow-hidden border-0 p-0 shadow-none transition-all duration-300 ${compact ? "flex flex-col" : ""} ${featured ? "gap-3 rounded-2xl border border-border/70 bg-[#FFFBF7] hover:-translate-y-1 hover:shadow-md" : "rounded-none bg-transparent md:gap-4 gap-3"}`}
             >
                 {/* Image */}
-                <div className={`${compact ? 'h-44 sm:h-60' : 'h-60'} w-full overflow-hidden relative bg-white`}>
+                <div className={`${featured ? "h-40 sm:h-52" : compact ? "h-44 sm:h-60" : "h-60"} relative w-full overflow-hidden bg-white`}>
                     <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={product?.image} alt={product.name} className="object-cover" fill sizes="300px" />
+                            <Image src={item.image} alt={item.name} className="object-cover" fill sizes="300px" />
                         </div>
                         <div className="w-1/2 h-full relative flex-shrink-0">
-                            <Image src={hoverImage} alt={`${product.name} hover`} className="object-cover" fill sizes="300px" />
+                            <Image src={hoverImage} alt={`${item.name} hover`} className="object-cover" fill sizes="300px" />
                         </div>
                     </div>
-                    {!product.inStock && (
+                    {!item.inStock && (
                         <Badge className="absolute bottom-2 left-2 z-10 bg-red-500" variant="destructive">
                             Out of Stock
                         </Badge>
                     )}
-                    {product.rating >= 4.9 && (
+                    {item.rating >= 4.9 && (
                         <Badge className="absolute top-2 right-2 bg-black text-white z-10 rounded-full px-3 py-1 text-[11px] font-medium shadow-none border-0">
                             Best Seller
                         </Badge>
                     )}
-                    <WishlistButton product={product} />
+                    <WishlistButton product={item} />
                 </div>
 
-                <CardContent className="px-2 sm:px-3 pb-3 sm:pb-4 pt-1">
-                    <div className="w-full flex items-left flex-col gap-1">
-                        <h2 className="text-sm sm:text-lg font-medium sm:mb-1 text-foreground transition-colors text-left line-clamp-1">
-                            {product.name}
-                        </h2>
-                        <p className="text-muted-foreground text-[10px] sm:text-[12px] leading-tight text-left line-clamp-1 mb-2">
-                            {product.description || product.category}
-                        </p>
-                    </div>
-
+                <CardContent className={`px-2 md:px-[6px] pb-3 pt-1 sm:pb-4 ${compact ? "flex flex-1 flex-col" : ""} ${featured ? "mx-2 pb-3 pt-1.5 sm:p-4 sm:pt-2" : ""}`}>
                     {/* Subcategory pill */}
-                    {product.subcategory && (
-                        <div className="flex justify-start md:px-0 mb-1.5">
+                    {item.subcategory && (
+                        <div className="flex justify-start md:px-0 mb-3 md:mb-1">
                             <span className="font-[style] inline-flex items-center rounded-full border border-[#E8D5C8] bg-[#F7F0EA] px-2 py-[2px] text-[11px] sm:text-[12px] font-semibold tracking-wider text-[#8C6E5D]">
-                                {product.subcategory}
+                                {item.subcategory}
                             </span>
                         </div>
                     )}
+                    
+                    <div className="w-full flex items-left flex-col md:gap-0 gap-1">
+                        <h2 className="text-sm sm:text-lg font-medium sm:mb-1 text-foreground transition-colors text-left line-clamp-1">
+                            {item.name}
+                        </h2>
+                        <p className={`mb-2 text-left text-[10px] leading-tight text-muted-foreground line-clamp-1 sm:text-[12px] ${compact || hideDescription ? "hidden" : ""}`}>
+                            {item.description || item.category}
+                        </p>
+                    </div>
+
 
                     {/* Price and Action */}
-                    <div className="flex items-start w-full flex-col gap-2 sm:gap-0 pt-2 sm:pt-2">
-                        <div className="flex items-center gap-2 pb-2 px-2">
-                            <span className="text-lg sm:text-lg font-normal tracking-tight text-foreground">₹{product.price}</span>
-                            <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-1">₹{product.originalPrice || 699}</span>
+                    <div className={`flex w-full flex-col items-start gap-2 pt-2 sm:gap-0 sm:pt-2 ${compact ? "mt-auto" : ""} ${featured ? "pt-0" : "pt-2"}`}>
+                        <div className="flex items-center gap-2 pb-2">
+                            <span className="text-lg sm:text-lg font-normal tracking-tight text-foreground">₹{item.price}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-1">₹{item.originalPrice || 699}</span>
                         </div>
                         <AddToCartButton
                             product={{
-                                id: product.id,
-                                name: product.name,
-                                category: product.category,
-                                price: product.price,
-                                image: product.image,
-                                inStock: product.inStock,
+                                id: item.id,
+                                name: item.name,
+                                category: item.category,
+                                price: item.price,
+                                image: item.image,
+                                inStock: item.inStock,
                             }}
                             compact={compact}
                         />

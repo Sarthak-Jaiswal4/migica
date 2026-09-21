@@ -115,8 +115,6 @@ export function Headers() {
         window.setTimeout(() => { setIsContactOpen(false); setIsContactClosing(false); }, 480);
     };
 
-    const image='/logo.jpeg'
-
     // Style for header backgrounds based on scroll & pathname
     const desktopHeaderBg = pathname === "/"
         ? (isScrolled ? "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-card/30 backdrop-blur-none duration-300 ease-in invert")
@@ -267,21 +265,15 @@ export function Headers() {
                 {/* Mobile/Tablet Header */}
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-3 px-6">
-                        <div className="text-2xl font-bold tracking-tighter cursor-pointer bg-transparent" onClick={() => router.push("/")}>
-                        <Image
-                            src={image}
-                            alt="SilverStar"
-                            width={120}
-                            height={40}
-                            className="h-10 w-auto object-contain"
-                        />
+                        <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
+                            <span>Silver Star</span>
                         </div>
 
                         <div className="flex items-center gap-4">
                             <button
                                 type="button"
                                 onClick={() => router.push("/wishlist")}
-                                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-rose-700 shadow-sm transition-all hover:bg-rose-100 hover:shadow"
+                                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-rose-700 transition-all hover:bg-rose-100 hover:shadow"
                                 aria-label={`Wishlist${wishlistCount > 0 ? `, ${wishlistCount} items` : ""}`}
                             >
                                 <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "hover:fill-rose-600 hover:text-rose-600" : ""}`} strokeWidth={2} />

@@ -1,92 +1,110 @@
+'use client'
 import { Instagram, Facebook, MapPin, Youtube } from "lucide-react"
 import Link from "next/link"
+import { ContactUsOverlay } from "./ContactUsOverlay"
+import { useState } from "react";
 
 export function Footer() {
+    const [isContactOpen, setIsContactOpen] = useState(false);
+    const [isContactClosing, setIsContactClosing] = useState(false);
+
+    const openContact = () => {
+        setIsContactClosing(false);
+        setIsContactOpen(true);
+    };
+
+    const closeContact = () => {
+        setIsContactClosing(true);
+        window.setTimeout(() => { setIsContactOpen(false); setIsContactClosing(false); }, 480);
+    };
     return (
-        <footer className="w-full px-4 pb-8 pt-10 bg-background">
-            <div className="max-w-7xl mx-auto bg-neutral-900 text-white rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
-                {/* Background Decorative Elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full -mr-20 -mt-20" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full -ml-20 -mb-20" />
-                <div
-                    className="absolute inset-0 opacity-[0.6] mix-blend-overlay pointer-events-none"
-                    style={{ backgroundImage: "url('/gaussian-noise.png')", backgroundRepeat: 'repeat' }}
-                />
+        <>
+            <footer className="w-full px-4 pb-8 pt-10 bg-background">
+                <div className="max-w-7xl mx-auto bg-neutral-900 text-white rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
+                    {/* Background Decorative Elements */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full -mr-20 -mt-20" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full -ml-20 -mb-20" />
+                    <div
+                        className="absolute inset-0 opacity-[0.6] mix-blend-overlay pointer-events-none"
+                        style={{ backgroundImage: "url('/gaussian-noise.png')", backgroundRepeat: 'repeat' }}
+                    />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
-                    {/* Brand Section */}
-                    <div className="space-y-6">
-                        <h2 className="text-3xl font-black tracking-tight font-[style]">Silver Star</h2>
-                        <p className="text-muted-foreground text-sm leading-relaxed text-neutral tracking-wide font-medium max-w-xs">
-                            Hand-poured artisanal candles and premium luxury goods designed to bring a touch of magic to your everyday life.
-                        </p>
-                        <div className="flex gap-4">
-                            <a href="https://www.instagram.com/silverstar.live?stkn=MWluZ3M0NzJhcXBkeg%3D%3D&utm_source=qr" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
-                                <Instagram size={18} />
-                            </a>
-                            <a href="https://youtube.com/@silverstar.fashion?si=mOY5ReUv64t7fb2w" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
-                                <Youtube size={18} />
-                            </a>
-                            <a href="https://www.facebook.com/SilverStarCreation?mibextid=LQQJ4d" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
-                                <Facebook size={18} />
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div>
-                        <h3 className="text-lg font-bold mb-6">Shop</h3>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="/shop/candles" className="hover:text-amber-500 transition-colors">Candles</Link></li>
-                            <li><Link href="/shop/scarves" className="hover:text-amber-500 transition-colors">Scarves</Link></li>
-                            <li><Link href="/shop/jewellery" className="hover:text-amber-500 transition-colors">Jewellery</Link></li>
-                            <li><Link href="/shop/clothing" className="hover:text-amber-500 transition-colors">Clothing</Link></li>
-                            <li><Link href="/shop/gifts" className="hover:text-amber-500 transition-colors">Gifts</Link></li>
-                            <li><Link href="/shop/fashion-accessories" className="hover:text-amber-500 transition-colors">Fashion Accessories</Link></li>
-                            <li><Link href="/shop/all" className="hover:text-amber-500 transition-colors">Collections</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Support */}
-                    <div>
-                        <h3 className="text-lg font-bold mb-6">Support</h3>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="/about" className="hover:text-amber-500 transition-colors">About Us</Link></li>
-                            <li><Link href="/shipping-policy" className="hover:text-amber-500 transition-colors">Shipping Policy</Link></li>
-                            <li><Link href="/refund-policy" className="hover:text-amber-500 transition-colors">Refund Policy</Link></li>
-                            <li><Link href="/contact" className="hover:text-amber-500 transition-colors">Contact Us</Link></li>
-                            <li><Link href="/faqs" className="hover:text-amber-500 transition-colors">FAQs</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Contact */}
-                    <div className="space-y-6">
-                        <h3 className="text-lg font-bold">Contact Us</h3>
-                        <div className="space-y-4 text-sm text-neutral-300">
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Owner</p>
-                                <p className="mt-1 font-medium text-white">Shalini Agarwal</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+                        {/* Brand Section */}
+                        <div className="space-y-6">
+                            <h2 className="text-3xl font-black tracking-tight font-[style]">Silver Star</h2>
+                            <p className="text-muted-foreground text-sm leading-relaxed text-neutral tracking-wide font-medium max-w-xs">
+                                Thoughtfully curated candles, jewellery, clothing, scarves, gifts, and accessories for everyday moments and special occasions.
+                            </p>
+                            <div className="flex gap-4">
+                                <a href="https://www.instagram.com/silverstar.live?stkn=MWluZ3M0NzJhcXBkeg%3D%3D&utm_source=qr" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                                    <Instagram size={18} />
+                                </a>
+                                <a href="https://youtube.com/@silverstar.fashion?si=mOY5ReUv64t7fb2w" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                                    <Youtube size={18} />
+                                </a>
+                                <a href="https://www.facebook.com/SilverStarCreation?mibextid=LQQJ4d" className="p-2 border border-neutral-700 rounded-full hover:bg-card hover:text-black transition-all">
+                                    <Facebook size={18} />
+                                </a>
                             </div>
-                            <div className="flex items-start gap-3">
-                                {/* <MapPin size={18} className="mt-0.5 shrink-0 text-amber-400" /> */}
+                        </div>
+
+                        {/* Quick Links */}
+                        <div>
+                            <h3 className="text-lg font-bold mb-6">Shop</h3>
+                            <ul className="space-y-4 text-sm text-muted-foreground">
+                                <li><Link href="/shop/candles" className="hover:text-amber-500 transition-colors">Candles</Link></li>
+                                <li><Link href="/shop/scarves" className="hover:text-amber-500 transition-colors">Scarves</Link></li>
+                                <li><Link href="/shop/jewellery" className="hover:text-amber-500 transition-colors">Jewellery</Link></li>
+                                <li><Link href="/shop/clothing" className="hover:text-amber-500 transition-colors">Clothing</Link></li>
+                                <li><Link href="/shop/gifts" className="hover:text-amber-500 transition-colors">Gifts</Link></li>
+                                <li><Link href="/shop/fashion-accessories" className="hover:text-amber-500 transition-colors">Fashion Accessories</Link></li>
+                                <li><Link href="/shop/all" className="hover:text-amber-500 transition-colors">Collections</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Support */}
+                        <div>
+                            <h3 className="text-lg font-bold mb-6">Support</h3>
+                            <ul className="space-y-4 text-sm text-muted-foreground">
+                                <li><Link href="/about" className="hover:text-amber-500 transition-colors">About Us</Link></li>
+                                <li><Link href="/shipping-policy" className="hover:text-amber-500 transition-colors">Shipping Policy</Link></li>
+                                <li><Link href="/refund-policy" className="hover:text-amber-500 transition-colors">Refund Policy</Link></li>
+                                <li><Link href='#' onClick={openContact} className="hover:text-amber-500 transition-colors">Contact Us</Link></li>
+                                <li><Link href="/faqs" className="hover:text-amber-500 transition-colors">FAQs</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Contact */}
+                        <div className="space-y-6">
+                            <h3 className="text-lg font-bold">Contact Us</h3>
+                            <div className="space-y-4 text-sm text-neutral-300">
                                 <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Address</p>
-                                    <p className="mt-1 leading-relaxed">Arjunganj, Lucknow</p>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Owner</p>
+                                    <p className="mt-1 font-medium text-white">Shalini Agarwal</p>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    {/* <MapPin size={18} className="mt-0.5 shrink-0 text-amber-400" /> */}
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Address</p>
+                                        <p className="mt-1 leading-relaxed">Arjunganj, Lucknow</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="mt-16 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 text-xs text-muted-foreground">
-                    <p>© 2026 Silver Star Inc. All rights reserved.</p>
-                    <div className="flex gap-8">
-                        <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
-                        <Link href="/cookies-settings" className="hover:text-white transition-colors">Cookies Settings</Link>
+                    <div className="mt-16 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 text-xs text-muted-foreground">
+                        <p>© 2026 Silver Star Inc. All rights reserved.</p>
+                        <div className="flex gap-8">
+                            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                            <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+                            <Link href="/cookies-settings" className="hover:text-white transition-colors">Cookies Settings</Link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
+            {isContactOpen && <ContactUsOverlay closing={isContactClosing} onClose={closeContact} />}
+        </>
     )
 }
