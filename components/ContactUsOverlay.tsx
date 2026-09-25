@@ -12,7 +12,7 @@ export function ContactUsOverlay({ closing, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
-  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@silverstar.live";
+  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "silverstarshalu@gmail.com";
   const whatsappNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012").replace(/\D/g, "");
   const mapUrl = "https://www.google.com/maps/search/?api=1&query=Arjunganj%2C%20Lucknow";
 
@@ -33,7 +33,7 @@ export function ContactUsOverlay({ closing, onClose }: Props) {
           </div>
         </section>
         <section className="flex flex-col justify-center">
-          <div className="grid gap-6 sm:grid-cols-2 sm:gap-10">
+          <div className="grid gap-6 md:grid-cols-2 md:gap-10">
             <ContactLink label="Write us" href={`mailto:${email}`} external={false}>{email}</ContactLink>
             <ContactLink label="Talk to us" href={`https://wa.me/${whatsappNumber}`}><span>WhatsApp</span><span className="mt-1 block text-xs font-medium normal-case tracking-normal text-[#6E4C38]">Chat with Silver Star</span></ContactLink>
             <ContactLink label="Owner" href={`mailto:${email}`} external={false}>Shalini Agarwal</ContactLink>
@@ -47,5 +47,5 @@ export function ContactUsOverlay({ closing, onClose }: Props) {
 }
 
 function ContactLink({ label, href, children, external = true }: { label: string; href: string; children: React.ReactNode; external?: boolean }) {
-  return <a href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} className="group block border-b border-[#3D2314]/35 pb-4 transition hover:border-[#3D2314]"><p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8C6E5D]">{label}</p><div className="mt-2 text-sm font-semibold uppercase tracking-[0.06em] transition group-hover:text-[#8C6E5D] sm:text-base sm:tracking-[0.1em]">{children}</div></a>;
+  return <a href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} className="group block min-w-0 border-b border-[#3D2314]/35 pb-4 transition hover:border-[#3D2314]"><p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8C6E5D]">{label}</p><div className="mt-2 break-words text-sm font-semibold uppercase leading-relaxed tracking-[0.06em] transition group-hover:text-[#8C6E5D] sm:text-base sm:tracking-[0.1em]">{children}</div></a>;
 }
