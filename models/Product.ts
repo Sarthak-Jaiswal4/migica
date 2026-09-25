@@ -59,7 +59,8 @@ const ProductSchema = new Schema<IProduct>(
     },
     originalPrice: {
       type: Number,
-      default: 0,
+      required: [true, "Original price is required"],
+      min: [0, "Original price cannot be negative"],
     },
     images: {
       type: [String],

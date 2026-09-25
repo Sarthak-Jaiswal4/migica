@@ -20,6 +20,7 @@ type NewProductPayload = {
   subcategory: string;
   tags: string[];
   price: number;
+  originalPrice: number | "";
   rating: number;
   reviews: number;
   inStock: boolean;
@@ -56,6 +57,7 @@ export default function AddProductPage() {
     subcategory: "",
     tags: [],
     price: 0,
+    originalPrice: "",
     rating: 0,
     reviews: 0,
     inStock: true,
@@ -67,7 +69,11 @@ export default function AddProductPage() {
     const { name, value } = e.target;
     setProduct((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "quantity" || name === "rating" || name === "reviews" ? Number(value) : value,
+      [name]: name === "price" || name === "quantity" || name === "rating" || name === "reviews"
+        ? Number(value)
+        : name === "originalPrice"
+          ? value === "" ? "" : Number(value)
+          : value,
     }));
   };
 
@@ -276,6 +282,21 @@ export default function AddProductPage() {
                       className="h-12 bg-card border-border rounded-xl"
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="originalPrice" className="font-bold ml-1">
+                      Original Price (₹)
+                    </Label>
+                    <Input
+                      id="originalPrice"
+                      name="originalPrice"
+                      type="number"
+                      min="0"
+                      required
+                      value={product.originalPrice}
+                      onChange={handleInputChange}
+                      className="h-12 bg-card border-border rounded-xl"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -332,7 +353,7 @@ export default function AddProductPage() {
                 </Button>
                 <Button
                   className="bg-black text-white hover:bg-neutral-800 rounded-xl h-10 md:h-12 w-full md:w-auto px-8 font-bold flex gap-2 shadow-lg shadow-black/10"
-                  disabled={isSaving || !product.name}
+                  disabled={isSaving || !product.name || product.originalPrice === ""}
                   onClick={handleSave}
                 >
                   {isSaving ? "Adding..." : (

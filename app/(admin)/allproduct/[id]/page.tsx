@@ -62,7 +62,7 @@ export default function EditProductPage() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
-        setProduct(prev => prev ? { ...prev, [name]: name === 'price' || name === 'quantity' ? Number(value) : value } : null)
+        setProduct(prev => prev ? { ...prev, [name]: name === 'price' || name === 'originalPrice' || name === 'quantity' ? Number(value) : value } : null)
     }
 
     const handleSave = async () => {
@@ -296,6 +296,19 @@ export default function EditProductPage() {
                                             name='price'
                                             type='number'
                                             value={product.price}
+                                            onChange={handleInputChange}
+                                            className='h-12 bg-card border-border rounded-xl'
+                                        />
+                                    </div>
+                                    <div className='space-y-2'>
+                                        <Label htmlFor='originalPrice' className='font-bold ml-1'>Original Price (₹)</Label>
+                                        <Input
+                                            id='originalPrice'
+                                            name='originalPrice'
+                                            type='number'
+                                            min='0'
+                                            required
+                                            value={product.originalPrice ?? 0}
                                             onChange={handleInputChange}
                                             className='h-12 bg-card border-border rounded-xl'
                                         />
