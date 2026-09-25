@@ -54,15 +54,13 @@ export function ProductTabs({ product }: ProductTabsProps) {
               What Makes It Special
             </h3>
             <p className="leading-relaxed tracking-wide text-neutral-600">
-              {product.name} is part of our living catalog: details and inventory are maintained in
-              our database, while photography is rendered from curated assets in the public gallery
-              so the storefront stays fast and consistent.
+              Each piece is made in small batches, by hand — not mass-produced. Colours, textures,
+              and finishing can vary slightly from piece to piece, which is part of what makes it
+              genuinely handmade rather than machine-perfect.
             </p>
             <p className="mt-4 leading-relaxed tracking-wide text-neutral-600">
-              {showScentProfile
-                ? "Read the scent profile and features tabs for specifics."
-                : "Review the product details and features for specifics."} If something feels unclear,
-              reach out before you buy—we are happy to help you pick the right piece.
+              Have a question before you buy — sizing, customisation, or delivery timing? Message us
+              directly; we&apos;d rather help you get it right than have you guess.
             </p>
           </div>
         </div>

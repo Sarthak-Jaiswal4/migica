@@ -39,6 +39,8 @@ export function serializeProduct(doc: MongoDoc): Product {
     price: Number(doc.price ?? 0),
     originalPrice:
       doc.originalPrice != null ? Number(doc.originalPrice) : undefined,
+    shortDescription:
+      doc.shortDescription != null ? String(doc.shortDescription) : undefined,
     description:
       doc.description != null ? String(doc.description) : undefined,
     image,

@@ -21,6 +21,7 @@ type NewProductPayload = {
   tags: string[];
   price: number;
   originalPrice: number | "";
+  shortDescription: string;
   rating: number;
   reviews: number;
   inStock: boolean;
@@ -58,6 +59,7 @@ export default function AddProductPage() {
     tags: [],
     price: 0,
     originalPrice: "",
+    shortDescription: "",
     rating: 0,
     reviews: 0,
     inStock: true,
@@ -300,8 +302,26 @@ export default function AddProductPage() {
                 </div>
 
                 <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <Label htmlFor="shortDescription" className="font-bold ml-1">
+                      Short Description
+                    </Label>
+                    <span className="text-xs text-muted-foreground">{product.shortDescription.length}/150</span>
+                  </div>
+                  <Textarea
+                    id="shortDescription"
+                    name="shortDescription"
+                    placeholder="A concise product summary shown beside the price..."
+                    value={product.shortDescription}
+                    onChange={handleInputChange}
+                    maxLength={150}
+                    className="min-h-[84px] bg-card border-border rounded-2xl resize-none p-4"
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="description" className="font-bold ml-1">
-                    Description
+                    Full Description
                   </Label>
                   <Textarea
                     id="description"

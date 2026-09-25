@@ -316,7 +316,23 @@ export default function EditProductPage() {
                                 </div>
 
                                 <div className='space-y-2'>
-                                    <Label htmlFor='description' className='font-bold ml-1'>Description</Label>
+                                    <div className='flex items-center justify-between gap-3'>
+                                        <Label htmlFor='shortDescription' className='font-bold ml-1'>Short Description</Label>
+                                        <span className='text-xs text-muted-foreground'>{(product.shortDescription ?? '').length}/150</span>
+                                    </div>
+                                    <Textarea
+                                        id='shortDescription'
+                                        name='shortDescription'
+                                        placeholder='A concise product summary shown beside the price...'
+                                        value={product.shortDescription ?? ''}
+                                        onChange={handleInputChange}
+                                        maxLength={150}
+                                        className='min-h-[84px] bg-card border-border rounded-2xl resize-none p-4'
+                                    />
+                                </div>
+
+                                <div className='space-y-2'>
+                                    <Label htmlFor='description' className='font-bold ml-1'>Full Description</Label>
                                     <Textarea
                                         id='description'
                                         name='description'

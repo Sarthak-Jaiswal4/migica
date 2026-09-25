@@ -9,6 +9,7 @@ export type Product = {
   tags?: string[];
   price: number;
   originalPrice?: number;
+  shortDescription?: string;
   description?: string;
   image: string;
   images?: string[];

@@ -7,6 +7,7 @@ export interface IProduct extends Document {
   subcategory?: string;
   tags?: string[];
   price: number;
+  shortDescription?: string;
   description: string;
   originalPrice?: number;
   images: string[];
@@ -52,6 +53,12 @@ const ProductSchema = new Schema<IProduct>(
       type: Number,
       required: [true, "Price is required"],
       min: [0, "Price cannot be negative"],
+    },
+    shortDescription: {
+      type: String,
+      trim: true,
+      maxlength: [150, "Short description cannot exceed 150 characters"],
+      default: "",
     },
     description: {
       type: String,

@@ -26,6 +26,7 @@ type RawProduct = {
     category: string;
     price: number;
     originalPrice?: number;
+    shortDescription?: string;
     description?: string;
     image: string;
     images?: string[];
@@ -44,6 +45,7 @@ type ProductDetail = {
     category: string;
     price: number;
     originalPrice?: number;
+    shortDescription?: string;
     description?: string;
     image: string;
     images: { id: string; url: string; alt: string }[];
@@ -71,6 +73,7 @@ function normalize(p: RawProduct): ProductDetail {
         category: p.category,
         price: p.price,
         originalPrice: p.originalPrice,
+        shortDescription: p.shortDescription,
         description: p.description,
         image: p.image,
         images: urls.map((url, i) => ({ id: `img-${i}`, url, alt: `${p.name} — ${i + 1}` })),
@@ -229,7 +232,7 @@ export default async function ProductPage(props: PageProps) {
 
                                 <div className="border-l border-neutral-900/20 pl-4 sm:pl-5 mb-4">
                                     <p className="font-[style] text-[20px] font-normal italic leading-[1.65] text-neutral-700 tracking-wide">
-                                        {product.description}
+                                        {product.shortDescription || product.description}
                                     </p>
                                 </div>
                             </div>
