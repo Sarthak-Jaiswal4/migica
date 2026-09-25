@@ -213,6 +213,9 @@ export const PRODUCT_TAG_OPTIONS = [
   { value: "new-arrival", label: "New arrival" },
   { value: "bestseller", label: "Bestseller" },
   { value: "featured", label: "Featured" },
+  { value: "under-200", label: "Under ₹200" },
   { value: "under-500", label: "Under ₹500" },
   { value: "under-1000", label: "Under ₹1000" },
+  { value: "under-1500", label: "Under ₹1500" },
+  { value: "under-2000", label: "Under ₹2000" },
 ] as const;

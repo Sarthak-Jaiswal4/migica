@@ -1,13 +1,19 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useCallback, useTransition, useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { ArrowDownUp, Check, ChevronLeft, Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   Select,
   SelectContent,
@@ -49,7 +55,22 @@ function useShopQueryParams() {
     [router, searchParams]
   );
 
-  return { pushQuery, pushPath };
+  const pushRoute = useCallback(
+    (path: string, updates: Record<string, string | null>) => {
+      const params = new URLSearchParams(searchParams.toString());
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null || value === "") params.delete(key);
+        else params.set(key, value);
+      }
+      const qs = params.toString();
+      startTransition(() => {
+        router.push(qs ? `${path}?${qs}` : path);
+      });
+    },
+    [router, searchParams]
+  );
+
+  return { pushQuery, pushPath, pushRoute };
 }
 
 type HeaderBarProps = {
@@ -253,6 +274,164 @@ export function ShopSidebar({
   );
 }
 
+const SORT_OPTIONS = [
+  { value: "featured", label: "Featured" },
+  { value: "price-low", label: "Price: Low to High" },
+  { value: "price-high", label: "Price: High to Low" },
+  { value: "rating", label: "Highest Rated" },
+] as const;
+
+type MobileFilterSheetProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  categories: CategoryDef[];
+  activeCategory: string | null;
+  initialMinPrice: number;
+  initialMaxPrice: number;
+  maxProductPrice: number;
+};
+
+function MobileFilterSheet({
+  open,
+  onOpenChange,
+  categories,
+  activeCategory,
+  initialMinPrice,
+  initialMaxPrice,
+  maxProductPrice,
+}: MobileFilterSheetProps) {
+  const { pushRoute } = useShopQueryParams();
+  const [category, setCategory] = useState(activeCategory ?? "all");
+  const [priceRange, setPriceRange] = useState([initialMinPrice, initialMaxPrice]);
+
+  useEffect(() => {
+    if (!open) {
+      setCategory(activeCategory ?? "all");
+      setPriceRange([initialMinPrice, initialMaxPrice]);
+    }
+  }, [activeCategory, initialMaxPrice, initialMinPrice, open]);
+
+  const applyFilters = () => {
+    pushRoute(category === "all" ? "/shop/all" : getShopPath(category), {
+      minPrice: priceRange[0] === 0 ? null : String(priceRange[0]),
+      maxPrice: priceRange[1] === maxProductPrice ? null : String(priceRange[1]),
+    });
+    onOpenChange(false);
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        showCloseButton={false}
+        className="h-[100dvh] w-full max-w-none gap-0 overflow-hidden rounded-none border-0 p-0 lg:hidden"
+      >
+        <div className="flex items-center gap-3 border-b px-4 py-4">
+          <button
+            type="button"
+            aria-label="Close filters"
+            onClick={() => onOpenChange(false)}
+            className="rounded-full p-2 transition-colors hover:bg-neutral-100"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <div>
+            <SheetTitle className="text-lg">Filters</SheetTitle>
+            <SheetDescription>Refine the products you see.</SheetDescription>
+          </div>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-8 overflow-y-auto px-5 py-6">
+          <section>
+            <h3 className="mb-3 font-semibold">Category</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setCategory("all")}
+                className={`rounded-xl border px-3 py-3 text-left text-sm font-medium transition-colors ${
+                  category === "all" ? "border-neutral-900 bg-neutral-900 text-white" : "border-border bg-card"
+                }`}
+              >
+                All collections
+              </button>
+              {categories.map((item) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  onClick={() => setCategory(item.slug)}
+                  className={`rounded-xl border px-3 py-3 text-left text-sm font-medium transition-colors ${
+                    category === item.slug ? "border-neutral-900 bg-neutral-900 text-white" : "border-border bg-card"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="mb-5 flex items-center justify-between">
+              <h3 className="font-semibold">Price range</h3>
+              <span className="text-sm text-muted-foreground">₹{priceRange[0]} – ₹{priceRange[1]}</span>
+            </div>
+            <Slider
+              min={0}
+              max={maxProductPrice}
+              step={100}
+              value={priceRange}
+              onValueChange={setPriceRange}
+            />
+          </section>
+        </div>
+
+        <div className="border-t bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <Button className="h-12 w-full rounded-xl" onClick={applyFilters}>
+            Apply filters
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+type MobileSortSheetProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialSort: string;
+};
+
+function MobileSortSheet({ open, onOpenChange, initialSort }: MobileSortSheetProps) {
+  const { pushQuery } = useShopQueryParams();
+
+  const chooseSort = (value: string) => {
+    pushQuery({ sort: value === "featured" ? null : value });
+    onOpenChange(false);
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="bottom" className="gap-0 rounded-t-3xl p-0 lg:hidden">
+        <div className="border-b px-5 py-4">
+          <SheetTitle>Sort products</SheetTitle>
+        </div>
+        <div className="p-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          {SORT_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => chooseSort(option.value)}
+              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-medium hover:bg-neutral-100"
+            >
+              {option.label}
+              {initialSort === option.value ? <Check className="size-4" /> : null}
+            </button>
+          ))}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 type ShopFiltersShellProps = {
   categories: CategoryDef[];
   activeCategory: string | null;
@@ -282,10 +461,25 @@ export function ShopFiltersShell({
   maxProductPrice,
   children,
 }: ShopFiltersShellProps) {
-  const [showFilters, setShowFilters] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileSortOpen, setMobileSortOpen] = useState(false);
+  const [showMobileBar, setShowMobileBar] = useState(false);
+  const mobileBarTriggerRef = useRef<HTMLDivElement>(null);
   const categoryDef = activeCategory
     ? categories.find((c) => c.slug === activeCategory)
     : null;
+
+  useEffect(() => {
+    const trigger = mobileBarTriggerRef.current;
+    if (!trigger) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowMobileBar(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(trigger);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -294,10 +488,12 @@ export function ShopFiltersShell({
         pageSubtitle={pageSubtitle}
         initialSearch={initialSearch}
         initialSort={initialSort}
-        onMobileToggle={() => setShowFilters((v) => !v)}
+        onMobileToggle={() => setMobileFiltersOpen(true)}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div ref={mobileBarTriggerRef} className="h-px lg:hidden" aria-hidden="true" />
+
+      <div className="max-w-7xl mx-auto px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <ShopSidebar
             categories={categories}
@@ -306,7 +502,7 @@ export function ShopFiltersShell({
             initialMinPrice={initialMinPrice}
             initialMaxPrice={initialMaxPrice}
             maxProductPrice={maxProductPrice}
-            show={showFilters}
+            show={false}
           />
           <div className="flex-1 min-w-0">
             {categoryDef ? (
@@ -319,6 +515,36 @@ export function ShopFiltersShell({
           </div>
         </div>
       </div>
+
+      <MobileFilterSheet
+        open={mobileFiltersOpen}
+        onOpenChange={setMobileFiltersOpen}
+        categories={categories}
+        activeCategory={activeCategory}
+        initialMinPrice={initialMinPrice}
+        initialMaxPrice={initialMaxPrice}
+        maxProductPrice={maxProductPrice}
+      />
+      <MobileSortSheet
+        open={mobileSortOpen}
+        onOpenChange={setMobileSortOpen}
+        initialSort={initialSort}
+      />
+
+      {showMobileBar ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-md gap-3">
+            <Button variant="outline" className="h-11 flex-1 rounded-xl" onClick={() => setMobileSortOpen(true)}>
+              <ArrowDownUp className="mr-2 size-4" />
+              Sort
+            </Button>
+            <Button className="h-11 flex-1 rounded-xl" onClick={() => setMobileFiltersOpen(true)}>
+              <SlidersHorizontal className="mr-2 size-4" />
+              Filter
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
