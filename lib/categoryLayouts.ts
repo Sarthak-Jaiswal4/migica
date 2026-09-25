@@ -52,7 +52,7 @@ const LAYOUTS: Record<string, CategoryLayoutConfig> = {
   },
   clothing: {
     variant: "split-image-left",
-    image: "/Gemini_Generated_Image_jc73sjc73sjc73sj.png",
+    image: "/clothing_women.jpeg",
     imageAlt: "Person wearing a t-shirt in a candid everyday setting",
     objectPosition: "center 6%",
     imageFrameClass: "min-h-[200px] w-full lg:min-h-[280px] lg:h-full aspect-[4/5] lg:aspect-auto",
