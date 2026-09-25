@@ -277,7 +277,7 @@ export default async function ProductPage(props: PageProps) {
                                 <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
                                     <Truck className="w-6 h-6 mb-2 text-foreground" />
                                     <span className="text-[10px] font-black uppercase text-muted-foreground mb-1">Shipping</span>
-                                    <span className="text-xs font-bold leading-tight">Free over ₹1,999</span>
+                                    <span className="text-xs font-bold leading-tight">Free over ₹999</span>
                                 </div>
                                 <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-card border border-border shadow-sm">
                                     <Shield className="w-6 h-6 mb-2 text-foreground" />

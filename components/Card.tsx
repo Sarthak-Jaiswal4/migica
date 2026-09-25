@@ -40,7 +40,7 @@ export const CardComponent = ({
     return (
         <Link href={`/product/${item.slug || item.id}`} className="block h-full w-full outline-none">
             <Card
-                className={`group relative h-full cursor-pointer overflow-hidden border-0 p-0 shadow-none transition-all duration-300 ${compact ? "flex flex-col" : ""} ${featured ? "gap-3 rounded-2xl border border-border/70 bg-[#FFFBF7] hover:-translate-y-1 hover:shadow-md" : "rounded-none bg-transparent md:gap-4 gap-3"}`}
+                className={`group relative h-full cursor-pointer overflow-hidden border-0 p-0 shadow-none transition-all duration-300 ${compact ? "flex flex-col " : ""} ${featured ? "gap-2 rounded-2xl border border-border/70 bg-[#FFFBF7] hover:-translate-y-1 hover:shadow-md" : "rounded-none bg-transparent md:gap-2 gap-2"}`}
             >
                 {/* Image */}
                 <div className={`${featured ? "h-40 sm:h-52" : compact ? "h-44 sm:h-60" : "h-60"} relative w-full overflow-hidden bg-white`}>
@@ -65,11 +65,11 @@ export const CardComponent = ({
                     <WishlistButton product={item} />
                 </div>
 
-                <CardContent className={`px-2 md:px-[6px] pb-3 pt-1 sm:pb-4 ${compact ? "flex flex-1 flex-col" : ""} ${featured ? "mx-2 pb-3 pt-1.5 sm:p-4 sm:pt-2" : ""}`}>
+                <CardContent className={`px-0 md:px-[3px] pb-3 pt-2 sm:pb-4 ${compact ? "flex flex-1 flex-col" : ""} ${featured ? "mx-2 pb-3 pt-0 sm:p-4 sm:pt-2" : ""}`}>
                     {/* Subcategory pill */}
                     {item.subcategory && (
-                        <div className="flex justify-start md:px-0 mb-3 md:mb-1">
-                            <span className="font-[style] inline-flex items-center rounded-full border border-[#E8D5C8] bg-[#F7F0EA] px-2 py-[2px] text-[11px] sm:text-[12px] font-semibold tracking-wider text-[#8C6E5D]">
+                        <div className="flex justify-start md:px-0 mb-1 md:mb-[1px]">
+                            <span className="font-medium text-black/60 py-[1px] md:text-[14px] text-[14px] ">
                                 {item.subcategory}
                             </span>
                         </div>
@@ -86,9 +86,9 @@ export const CardComponent = ({
 
 
                     {/* Price and Action */}
-                    <div className={`flex w-full flex-col items-start gap-2 pt-2 sm:gap-0 sm:pt-2 ${compact ? "mt-auto" : ""} ${featured ? "pt-0" : "pt-2"}`}>
-                        <div className="flex items-center gap-2 pb-2">
-                            <span className="text-lg sm:text-lg font-normal tracking-tight text-foreground">₹{item.price}</span>
+                    <div className={`flex w-full flex-col items-start gap-2 pt-2 sm:gap-0 sm:pt-1 ${compact ? "mt-0 pt-0" : ""} ${featured ? "pt-0" : "pt-1"}`}>
+                        <div className="flex items-center gap-2 md:pb-1 sm:pb-0">
+                            <span className="text-md sm:text-md font-normal tracking-tight text-foreground">₹{item.price}</span>
                             <span className="text-xs sm:text-sm text-muted-foreground line-through decoration-1">₹{item.originalPrice || 699}</span>
                         </div>
                         <AddToCartButton
