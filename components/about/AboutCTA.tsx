@@ -30,9 +30,9 @@ export function AboutCTA() {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-700/10 blur-[100px] rounded-full -ml-16 -mb-16" />
 
           <div className="relative z-10 flex flex-col items-center text-center gap-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
+            {/* <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
               Let's connect
-            </p>
+            </p> */}
             <h2
               id="cta-heading"
               className="font-[style] text-4xl font-semibold tracking-tight text-white sm:text-5xl max-w-2xl leading-[1.1]"
@@ -41,7 +41,7 @@ export function AboutCTA() {
             </h2>
             <p className="text-base text-white/65 max-w-lg leading-relaxed">
               Curious about a product, a custom order, or just want to know what went into a
-              particular scent blend? Write to us. Priya reads every message.
+              particular scent blend? Shop from us.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
@@ -51,22 +51,6 @@ export function AboutCTA() {
               >
                 Shop the collection
               </Link>
-              <a
-                href="mailto:hello@silverstar.live"
-                className="inline-flex h-12 items-center gap-2 rounded-full border border-white/30 px-8 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                <Mail size={15} />
-                Say hello
-              </a>
-              <a
-                href="https://instagram.com/silverstar"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors"
-                aria-label="Follow on Instagram"
-              >
-                <Instagram size={18} />
-              </a>
             </div>
 
             {/* Stats row */}
