@@ -37,7 +37,7 @@ export function ContactUsOverlay({ closing, onClose }: Props) {
             <ContactLink label="Write us" href={`mailto:${email}`} external={false}>{email}</ContactLink>
             <ContactLink label="Talk to us" href={`https://wa.me/${whatsappNumber}`}><span>WhatsApp</span><span className="mt-1 block text-xs font-medium normal-case tracking-normal text-[#6E4C38]">Chat with Silver Star</span></ContactLink>
             <ContactLink label="Owner" href={`mailto:${email}`} external={false}>Shalini Agarwal</ContactLink>
-            <ContactLink label="Location" href={mapUrl}><span>Arjunganj, Lucknow</span><span className="mt-1 block text-xs font-medium normal-case tracking-normal text-[#6E4C38]">Open in Google Maps</span></ContactLink>
+            <ContactLink label="Location" href={mapUrl}><span>Omaxe R2 Arjunganj, Lucknow</span><span className="mt-1 block text-xs font-medium normal-case tracking-normal text-[#6E4C38]">Open in Google Maps</span></ContactLink>
           </div>
           <p className="mt-16 max-w-sm text-sm leading-relaxed text-[#6E4C38]">For product questions, gifting requests, or order support, choose the contact method that works best for you.</p>
         </section>

@@ -3,6 +3,10 @@ import { AppImage as Image } from "@/components/AppImage";
 import { Instagram, Mail } from "lucide-react";
 
 export function AboutCTA() {
+
+  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "silverstarshalu@gmail.com";
+  const whatsappNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012").replace(/\D/g, "");
+
   return (
     <section className="w-full md:px-4 pb-16 bg-background" aria-labelledby="cta-heading">
       <div className="mx-auto max-w-6xl">
@@ -30,9 +34,9 @@ export function AboutCTA() {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-700/10 blur-[100px] rounded-full -ml-16 -mb-16" />
 
           <div className="relative z-10 flex flex-col items-center text-center gap-8">
-            {/* <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300/80">
               Let's connect
-            </p> */}
+            </p>
             <h2
               id="cta-heading"
               className="font-[style] text-4xl font-semibold tracking-tight text-white sm:text-5xl max-w-2xl leading-[1.1]"
@@ -51,7 +55,36 @@ export function AboutCTA() {
               >
                 Shop the collection
               </Link>
+              <a
+                href="https://www.instagram.com/silverstar.live?stkn=MWluZ3M0NzJhcXBkeg%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-white/30 px-7 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram size={18} />
+                Instagram
+              </a>
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-white/30 px-7 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                aria-label="WhatsApp"
+              >
+                WhatsApp
+              </a>
+              <a
+                href={`mailto:${email}`}
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-white/30 px-7 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                aria-label="Email"
+              >
+                <Mail size={18} />
+                Email
+              </a>
             </div>
+       
+       
 
             {/* Stats row */}
             <div className="mt-6 w-full grid grid-cols-2 gap-px rounded-2xl overflow-hidden border border-white/10 sm:grid-cols-4">

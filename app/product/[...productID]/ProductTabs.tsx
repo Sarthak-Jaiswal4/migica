@@ -22,7 +22,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
   return (
     <Tabs defaultValue="description" className="mb-16">
       <TabsList className="flex h-auto min-h-11 w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto overflow-y-hidden rounded-xl border border-border bg-neutral-100/80 p-1 [scrollbar-width:thin] backdrop-blur-sm sm:min-h-12 sm:gap-2 sm:rounded-2xl sm:p-1.5 lg:overflow-x-visible">
-        <TabsTrigger
+        {/* <TabsTrigger
           value="description"
           className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
         >
@@ -35,7 +35,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
           >
             Scent Profile
           </TabsTrigger>
-        )}
+        )} */}
         <TabsTrigger
           value="reviews"
           className="h-auto min-h-10 shrink-0 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-md sm:min-h-11 sm:rounded-xl sm:px-6 sm:py-3 sm:text-base"
@@ -44,7 +44,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="description" className="mt-6">
+      {/* <TabsContent value="description" className="mt-6">
         <div className="space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm sm:rounded-2xl sm:p-10">
           <div className="prose max-w-none">
             <p className="text-lg leading-relaxed tracking-wide text-neutral-700">
@@ -64,9 +64,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
             </p>
           </div>
         </div>
-      </TabsContent>
+      </TabsContent> */}
 
-      {showScentProfile && (
+      {/* {showScentProfile && (
         <TabsContent value="scent" className="mt-6">
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-8">
             <div className="space-y-6">
@@ -87,7 +87,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
             </div>
           </div>
         </TabsContent>
-      )}
+      )} */}
 
       <TabsContent value="reviews" className="mt-6">
         <div className="space-y-6 rounded-xl border border-border bg-card p-4 tracking-wide shadow-sm sm:rounded-2xl sm:p-8">
