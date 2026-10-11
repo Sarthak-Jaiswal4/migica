@@ -190,12 +190,9 @@ export function Headers() {
                             </>
                         )}
                     </div>
-                    <div className="order-1 flex h-10 w-36 shrink-0 cursor-pointer items-center gap-1" onClick={() => router.push("/")}>
+                    <div className="order-1 flex h-10 w-40 shrink-0 cursor-pointer items-center" onClick={() => router.push("/")}>
                         {/* <span>Silver Star</span> */}
-                        <AppImage src="/favicon.png" alt="Silver Star emblem" width={64} height={64} className="h-8 w-8 shrink-0 object-contain" />
-                        <span className="block h-10 w-24 shrink-0 overflow-hidden relative">
-                            <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="h-10 w-36 max-w-none -translate-x-6 object-contain top-2 left-1 scale-115 absolute " />
-                        </span>
+                        <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-145 left-2 absolute w-40 object-contain" />
                     </div>
                     <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-5 min-[1200px]:pl-6">
                         {!isLoggedIn && (
@@ -269,12 +266,9 @@ export function Headers() {
                 {/* Mobile/Tablet Header */}
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-4 px-6">
-                        <div className="flex h-10 w-36 shrink-0 cursor-pointer items-center gap-1" onClick={() => router.push("/")}>
+                        <div className="flex h-10 w-40 shrink-0 cursor-pointer relative" onClick={() => router.push("/")}>
                             {/* <span>Silver Star</span> */}
-                            <AppImage src="/favicon.png" alt="Silver Star emblem" width={64} height={64} className="h-8 w-8 shrink-0 object-contain" />
-                            <span className="block h-10 w-24 shrink-0 overflow-hidden relative">
-                                <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="h-10 w-36 max-w-none -translate-x-6 object-contain top-2 left-1 scale-115 absolute " />
-                            </span>
+                            <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-140 top-1 right-6 absolute w-40 object-contain" />
                         </div>
 
                         <div className="flex items-center gap-4">
