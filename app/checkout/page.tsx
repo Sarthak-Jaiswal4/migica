@@ -17,9 +17,6 @@ import {
 } from 'lucide-react'
 import { SHIPPING_COST } from '@/lib/constants'
 import Link from 'next/link'
-import QRCode from 'qrcode'
-
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919005320012";
 
 /* ─── tiny helper: labelled input field ─────────────────────────── */
 function Field({
@@ -59,7 +56,6 @@ export default function CheckoutPage() {
     name: '', address: '', city: '', zipCode: '', country: '',
   })
   const [loading, setLoading] = useState(false)
-  const [fetchingAddress, setFetchingAddress] = useState(true)
   const [hasSavedAddress, setHasSavedAddress] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -68,7 +64,7 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState('')
   const [discountAmount, setDiscountAmount] = useState(0)
   const [error, setError] = useState('')
-  const [payment, setPayment] = useState<{ orderReference: string; amount: number; upiUrl: string; qrCode: string } | null>(null)
+  const [payment, setPayment] = useState<{ whatsappSent: boolean } | null>(null)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -92,7 +88,6 @@ export default function CheckoutPage() {
           }
         }
       } catch { /* silently ignore */ }
-      finally { setFetchingAddress(false) }
     }
     fetchProfile()
   }, [router])
@@ -114,46 +109,8 @@ export default function CheckoutPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.id]: e.target.value })
 
-  /* ── Generate WhatsApp URL with Full Product Details ─────────── */
-  const getWhatsAppUrl = (upiUrl?: string) => {
-    const formattedPhone = WHATSAPP_NUMBER.replace(/[^0-9]/g, '')
-    
-    // Detailed list of each item with price and quantity
-    const itemsDetailList = items.length > 0
-      ? items.map((item, idx) => 
-          `${idx + 1}. *${item.name}*\n   Qty: ${item.quantity} × ₹${item.price.toFixed(2)} = ₹${(item.price * item.quantity).toFixed(2)}`
-        ).join('\n\n')
-      : 'No items in cart'
-
-    let msg = `✨ *NEW ORDER - SILVER STAR* ✨\n`
-    msg += `════════════════════════════════════\n\n`
-    msg += `🛍️ *PRODUCTS DETAILS:*\n\n${itemsDetailList}\n\n`
-    msg += `────────────────────────────────────\n`
-    msg += `💰 *ORDER SUMMARY:*\n`
-    msg += `• Subtotal: ₹${subtotal.toFixed(2)}\n`
-    if (couponApplied) {
-      msg += `• Coupon (${couponCode}): -₹${discountAmount.toFixed(2)}\n`
-    }
-    msg += `• Delivery: ${shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}\n`
-    msg += `• *Total Amount to Pay: ₹${total.toFixed(2)}*\n`
-    msg += `────────────────────────────────────\n\n`
-    msg += `📍 *DELIVERY DETAILS:*\n`
-    msg += `• *Name:* ${formData.name || 'Customer'}\n`
-    msg += `• *Address:* ${formData.address || 'N/A'}\n`
-    msg += `• *City:* ${formData.city || 'N/A'} - ${formData.zipCode || 'N/A'}\n`
-    msg += `• *Country:* ${formData.country || 'India'}\n\n`
-    msg += `════════════════════════════════════\n`
-    msg += upiUrl ? `Payment link for this order: ${upiUrl}\n\nI will complete payment and share confirmation here.` : `Hi Silver Star! I would like to place and pay for this order on WhatsApp. Please share your payment / UPI details so I can complete it.`
-
-    return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`
-  }
-
   /* ── Handle Pay on WhatsApp (Place order & launch WhatsApp) ──── */
   const handlePayOnWhatsApp = async () => {
-    if (!WHATSAPP_NUMBER) {
-      setError('WhatsApp checkout is not configured yet. Please contact the store for assistance.')
-      return
-    }
     if (items.length === 0) {
       setError('Your cart is empty. Please add items to cart before completing your order.')
       return
@@ -187,9 +144,7 @@ export default function CheckoutPage() {
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Checkout failed')
 
-      const qrCode = await QRCode.toDataURL(data.payment.upiUrl, { width: 360, margin: 2 })
-      setPayment({ ...data.payment, qrCode })
-      window.open(getWhatsAppUrl(data.payment.upiUrl), '_blank')
+      setPayment(data.payment)
 
       setSuccess(true)
       clearCart()
@@ -275,9 +230,8 @@ export default function CheckoutPage() {
                 style={{ animation:'fadeUp 0.5s ease-out 1.4s both' }}>Order Initiated!</h2>
               <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base"
                 style={{ animation:'fadeUp 0.5s ease-out 1.6s both' }}>
-                Your order details have been sent to WhatsApp and our team. We look forward to fulfilling your pieces.
+                {payment?.whatsappSent ? "Your order details and payment QR have been sent by Silver Star on WhatsApp." : "Your order has been placed. Our team will contact you on WhatsApp with payment details."}
               </p>
-              {payment && <div className="mt-6 rounded-2xl border border-[#E8D5C8] bg-white p-4 shadow-sm"><p className="text-sm font-semibold">Pay ₹{payment.amount.toFixed(2)} via UPI</p><p className="mt-1 text-xs text-muted-foreground">Order {payment.orderReference}</p><img src={payment.qrCode} alt={`UPI QR code for ${payment.orderReference}`} className="mx-auto my-3 h-48 w-48" /><a href={payment.upiUrl} className="text-sm font-medium text-[#C9956C] underline">Open UPI app</a><p className="mt-3 text-xs text-amber-700">Temporary payment ID: silverstar@upi. Replace it with your business UPI ID before accepting live payments.</p></div>}
               <Button onClick={() => router.push('/shop/all')}
                 className="mt-8 h-12 px-10 bg-[#C9956C] text-white hover:bg-[#B8845A] rounded-xl font-semibold shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98]"
                 style={{ animation:'fadeUp 0.5s ease-out 1.8s both' }}>

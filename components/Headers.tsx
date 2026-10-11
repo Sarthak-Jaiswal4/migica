@@ -22,6 +22,7 @@ import {
 } from "./ui/alert-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
+import { AppImage } from "./AppImage";
 
 export function Headers() {
     const router = useRouter()
@@ -191,7 +192,8 @@ export function Headers() {
                         )}
                     </div>
                     <div className="order-1 text-3xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-start pr-8 whitespace-nowrap" onClick={() => router.push("/")}>
-                        <span>Silver Star</span>
+                        {/* <span>Silver Star</span> */}
+                        <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="w-40 h-10 top-4 left-3 scale-125 absolute z-10 object-contain" />
                     </div>
                     <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-8">
                         {!isLoggedIn && (
@@ -264,9 +266,10 @@ export function Headers() {
 
                 {/* Mobile/Tablet Header */}
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
-                    <div className="flex items-center justify-between py-3 px-6">
+                    <div className="flex items-center justify-between py-4 px-6">
                         <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
-                            <span>Silver Star</span>
+                            {/* <span>Silver Star</span> */}
+                            <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="w-40 h-10 top-6 left-3 scale-125 absolute -z-10 object-contain" />
                         </div>
 
                         <div className="flex items-center gap-4">

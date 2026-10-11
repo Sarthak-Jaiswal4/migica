@@ -4,6 +4,8 @@ import User from "@/models/User";
 import Order from "@/models/Order";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
+import { SignJWT } from "jose";
+import { sendWhatsAppPayment } from "@/lib/whatsapp";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -99,6 +101,13 @@ export async function POST(req: NextRequest) {
     upiUrl.searchParams.set("cu", "INR");
     upiUrl.searchParams.set("tn", `Order ${orderReference}`);
 
+    const paymentSecret = new TextEncoder().encode(process.env.PAYMENT_LINK_SECRET || JWT_SECRET);
+    const paymentToken = await new SignJWT({ orderId: newOrder._id.toString(), orderReference, amount: finalTotal, upiUrl: upiUrl.toString() })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("7d")
+      .sign(paymentSecret);
+
     const htmlContent = `
       <h1>Hello ${user.name || "Customer"},</h1>
       <p>Thank you for your order!</p>
@@ -124,9 +133,25 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    let whatsappSent = false;
+    try {
+      const result = await sendWhatsAppPayment({
+        phone: user.phone || "",
+        customerName: user.name || name || "Customer",
+        orderReference,
+        amount: finalTotal,
+        paymentToken,
+        upiUrl: upiUrl.toString(),
+      });
+      whatsappSent = result.sent;
+    } catch (error) {
+      // The order remains valid even if Meta is temporarily unavailable.
+      console.error("WhatsApp payment message error:", error);
+    }
+
     return NextResponse.json({
       message: "Checkout successful",
-      payment: { orderReference, amount: finalTotal, upiUrl: upiUrl.toString() },
+      payment: { orderReference, amount: finalTotal, upiUrl: upiUrl.toString(), whatsappSent },
     }, { status: 200 });
   } catch (error: unknown) {
     console.error("Checkout error:", error);
