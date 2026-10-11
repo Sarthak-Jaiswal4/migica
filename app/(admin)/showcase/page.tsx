@@ -10,6 +10,7 @@ import { ShowcaseItemList } from "@/components/admin/showcase/ShowcaseItemList";
 import { ShowcaseTabs } from "@/components/admin/showcase/ShowcaseTabs";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { HERO_MEDIA_LIMIT } from "@/lib/showcase";
 import type {
   Certificate,
   CertificateForm,
@@ -115,7 +116,7 @@ export default function ShowcaseAdminPage() {
 
   const activeItems: ShowcaseItem[] = type === "happy-customers" ? customers : type === "exhibitions" ? exhibitions : type === "certificates" ? certificates : type === "testimonials" ? testimonials : heroMedia;
   const activeMediaUrl = type === "happy-customers" ? happyForm.image : type === "exhibitions" ? exhibitionForm.image : type === "certificates" ? certificateForm.image : type === "hero-media" ? heroForm.url : "";
-  const cannotAddHeroMedia = type === "hero-media" && !editingId && heroMedia.length >= 5;
+  const cannotAddHeroMedia = type === "hero-media" && !editingId && heroMedia.length >= HERO_MEDIA_LIMIT;
 
   const saveItem = async () => {
     const payload = type === "happy-customers" ? happyForm : type === "exhibitions" ? exhibitionForm : type === "certificates" ? certificateForm : type === "testimonials" ? testimonialForm : heroForm;

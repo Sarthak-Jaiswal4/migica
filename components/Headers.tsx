@@ -268,7 +268,7 @@ export function Headers() {
                     <div className="flex items-center justify-between py-4 px-6">
                         <div className="flex h-10 w-40 shrink-0 cursor-pointer relative" onClick={() => router.push("/")}>
                             {/* <span>Silver Star</span> */}
-                            <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-140 top-1 right-6 absolute w-40 object-contain" />
+                            <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-170 top-1 right-6 absolute w-40 object-contain" />
                         </div>
 
                         <div className="flex items-center gap-4">

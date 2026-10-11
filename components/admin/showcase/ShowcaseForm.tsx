@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { HERO_MEDIA_LIMIT } from "@/lib/showcase";
 import type { CertificateForm, ExhibitionForm, HappyCustomerForm, HeroMediaForm, ShowcaseType, TestimonialForm } from "@/lib/showcase";
 
 type Props = {
@@ -70,7 +71,7 @@ export function ShowcaseForm(props: Props) {
 }
 
 function HeroFields({ heroForm, onHeroChange, cannotAddHeroMedia }: Props) {
-  return <><p className="text-sm text-muted-foreground">Upload up to five hero images or videos. Hero videos must be 25 MB or smaller. The first item appears first on the homepage.</p>{cannotAddHeroMedia && <p className="text-sm font-medium text-amber-700">Five hero items are already uploaded. Delete one before adding another.</p>}<Field label="Heading" id="hero-title"><Input id="hero-title" value={heroForm.title} onChange={(e) => onHeroChange({ ...heroForm, title: e.target.value })} /></Field><Field label="Description" id="hero-description"><Textarea id="hero-description" value={heroForm.description} onChange={(e) => onHeroChange({ ...heroForm, description: e.target.value })} /></Field><Field label="Image/video description" id="hero-alt"><Input id="hero-alt" value={heroForm.alt} onChange={(e) => onHeroChange({ ...heroForm, alt: e.target.value })} /></Field></>;
+  return <><p className="text-sm text-muted-foreground">Upload up to {HERO_MEDIA_LIMIT} hero images or videos. Hero videos must be 25 MB or smaller. The first item appears first on the homepage.</p>{cannotAddHeroMedia && <p className="text-sm font-medium text-amber-700">{HERO_MEDIA_LIMIT} hero items are already uploaded. Delete one before adding another.</p>}<Field label="Heading" id="hero-title"><Input id="hero-title" value={heroForm.title} onChange={(e) => onHeroChange({ ...heroForm, title: e.target.value })} /></Field><Field label="Description" id="hero-description"><Textarea id="hero-description" value={heroForm.description} onChange={(e) => onHeroChange({ ...heroForm, description: e.target.value })} /></Field><Field label="Image/video description" id="hero-alt"><Input id="hero-alt" value={heroForm.alt} onChange={(e) => onHeroChange({ ...heroForm, alt: e.target.value })} /></Field></>;
 }
 
 function HappyFields({ happyForm, onHappyChange }: Props) {

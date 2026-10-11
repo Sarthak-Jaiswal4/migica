@@ -1,3 +1,5 @@
+export const HERO_MEDIA_LIMIT = 7;
+
 export type HappyCustomer = {
   id: string;
   name: string;
