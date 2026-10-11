@@ -176,7 +176,7 @@ export function Headers() {
                     </div>
                     <div className="order-1 flex h-10 w-40 shrink-0 cursor-pointer items-center" onClick={() => router.push("/")}>
                         {/* <span>Silver Star</span> */}
-                        <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-145 left-2 absolute w-40 object-contain" />
+                        <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-170 left-2 absolute w-40 object-contain" />
                     </div>
                     <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-5 min-[1200px]:pl-6">
                         {!isLoggedIn && (
@@ -252,7 +252,7 @@ export function Headers() {
                     <div className="flex items-center justify-between py-4 px-6">
                         <div className="flex h-10 w-40 shrink-0 cursor-pointer relative" onClick={() => router.push("/")}>
                             {/* <span>Silver Star</span> */}
-                            <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-170 top-1 right-6 absolute w-40 object-contain" />
+                            <AppImage src="/new_logo-removebg-preview.png" alt="Silver Star" width={780} height={250} className="h-10 scale-190 top-1 right-6 absolute w-40 object-contain" />
                         </div>
 
                         <div className="flex items-center gap-4">
