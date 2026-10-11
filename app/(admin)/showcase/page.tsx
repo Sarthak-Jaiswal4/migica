@@ -29,7 +29,7 @@ import type {
 const emptyHappy: HappyCustomerForm = { name: "", caption: "", image: "" };
 const emptyExhibition: ExhibitionForm = { title: "", location: "", description: "", image: "" };
 const emptyTestimonial: TestimonialForm = { name: "", detail: "", body: "", stars: 5 };
-const emptyHeroMedia: HeroMediaForm = { url: "", mediaType: "image", title: "", description: "", alt: "" };
+const emptyHeroMedia: HeroMediaForm = { url: "", mediaType: "image", title: "", description: "", alt: "", linkUrl: "/shop/all" };
 const emptyCertificate: CertificateForm = { title: "", issuer: "", awardedOn: "", description: "", image: "" };
 const showcaseTypes: ShowcaseType[] = ["hero-media", "happy-customers", "exhibitions", "certificates", "testimonials"];
 
@@ -146,7 +146,7 @@ export default function ShowcaseAdminPage() {
     else if ("image" in item && "name" in item) setHappyForm({ name: item.name, caption: item.caption, image: item.image });
     else if ("image" in item) setExhibitionForm({ title: item.title, location: item.location, description: item.description, image: item.image });
     else if ("body" in item) setTestimonialForm({ name: item.name, detail: item.detail, body: item.body, stars: item.stars });
-    else setHeroForm({ url: item.url, mediaType: item.mediaType, title: item.title, description: item.description, alt: item.alt });
+    else setHeroForm({ url: item.url, mediaType: item.mediaType, title: item.title, description: item.description, alt: item.alt, linkUrl: item.linkUrl || "/shop/all" });
   };
 
   const deleteItem = async (id: string) => {

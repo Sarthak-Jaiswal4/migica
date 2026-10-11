@@ -32,7 +32,7 @@ export async function HomePageCarosalHook():Promise<HeroSlide[]>{
                 eyebrow: "Silver Star",
                 headline: item.title || "For the evenings you don't want to end.",
                 body: item.description || "Hand-poured light, metal and cloth we actually live with.",
-                primaryHref: "/shop/all",
+                primaryHref: item.linkUrl || "/shop/all",
                 primaryLabel: "Wander the shelves",
               })));
             }

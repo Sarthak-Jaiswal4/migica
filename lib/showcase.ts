@@ -33,6 +33,7 @@ export type HeroMedia = {
   title: string;
   description: string;
   alt: string;
+  linkUrl: string;
   order: number;
 };
 

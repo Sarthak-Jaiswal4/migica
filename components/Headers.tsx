@@ -26,7 +26,6 @@ import { AppImage } from "./AppImage";
 export function Headers() {
     const router = useRouter()
     const pathname = usePathname()
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
     const [isDesktopCategoriesOpen, setIsDesktopCategoriesOpen] = useState(false);
@@ -51,14 +50,6 @@ export function Headers() {
                 }
             })
             .catch(() => { })
-    }, []);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     useEffect(() => {
@@ -115,16 +106,9 @@ export function Headers() {
         window.setTimeout(() => { setIsContactOpen(false); setIsContactClosing(false); }, 480);
     };
 
-    // Style for header backgrounds based on scroll & pathname
-    const desktopHeaderBg = pathname === "/"
-        ? (isScrolled ? "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg" : "bg-card/30 backdrop-blur-none duration-300 ease-in invert")
-        : "bg-card/50 backdrop-blur-md duration-300 ease-in text-black shadow-lg";
-
-    const mobileHeaderBg = pathname === "/"
-        ? (isScrolled || isMobileMenuOpen
-            ? "bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 duration-300 ease-in text-black shadow-lg"
-            : "bg-card/50 backdrop-blur-none duration-300 ease-in invert")
-        : "bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 duration-300 ease-in text-black shadow-lg";
+    // Keep the header appearance stable at the top of every page.
+    const desktopHeaderBg = "bg-card/50 backdrop-blur-md text-black shadow-lg";
+    const mobileHeaderBg = "bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 text-black shadow-lg";
 
     return (
         <>

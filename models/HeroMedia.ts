@@ -7,12 +7,13 @@ const HeroMediaSchema = new Schema(
     title: { type: String, default: "", trim: true },
     description: { type: String, default: "", trim: true },
     alt: { type: String, default: "", trim: true },
+    linkUrl: { type: String, default: "/shop/all", trim: true },
     order: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-const HeroMedia: Model<{ url: string; mediaType: "image" | "video"; title: string; description: string; alt: string; order: number }> =
+const HeroMedia: Model<{ url: string; mediaType: "image" | "video"; title: string; description: string; alt: string; linkUrl: string; order: number }> =
   mongoose.models.HeroMedia || mongoose.model("HeroMedia", HeroMediaSchema);
 
 export default HeroMedia;

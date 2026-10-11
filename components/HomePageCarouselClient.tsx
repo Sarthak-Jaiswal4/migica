@@ -86,6 +86,7 @@ export function HomePageCarouselClient({ slides }: { slides: HeroSlide[] }) {
                 className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/25 md:bg-gradient-to-r md:from-black/70 md:via-black/35 md:to-black/10"
                 aria-hidden
               />
+              <Link href={slide.primaryHref} className="absolute inset-0 z-[5]" aria-label={`View ${slide.headline}`} />
 
               <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 pb-28 pt-28 sm:px-10 sm:pb-32 md:justify-center md:pb-24 md:pl-14 md:pr-[42%] lg:pl-20">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70">{slide.eyebrow}</p>

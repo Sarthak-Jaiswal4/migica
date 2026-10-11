@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { HERO_MEDIA_LIMIT } from "@/lib/showcase";
+import { getShopPath, SHOP_CATEGORIES } from "@/lib/categories";
 import type { CertificateForm, ExhibitionForm, HappyCustomerForm, HeroMediaForm, ShowcaseType, TestimonialForm } from "@/lib/showcase";
 
 type Props = {
@@ -71,7 +72,7 @@ export function ShowcaseForm(props: Props) {
 }
 
 function HeroFields({ heroForm, onHeroChange, cannotAddHeroMedia }: Props) {
-  return <><p className="text-sm text-muted-foreground">Upload up to {HERO_MEDIA_LIMIT} hero images or videos. Hero videos must be 25 MB or smaller. The first item appears first on the homepage.</p>{cannotAddHeroMedia && <p className="text-sm font-medium text-amber-700">{HERO_MEDIA_LIMIT} hero items are already uploaded. Delete one before adding another.</p>}<Field label="Heading" id="hero-title"><Input id="hero-title" value={heroForm.title} onChange={(e) => onHeroChange({ ...heroForm, title: e.target.value })} /></Field><Field label="Description" id="hero-description"><Textarea id="hero-description" value={heroForm.description} onChange={(e) => onHeroChange({ ...heroForm, description: e.target.value })} /></Field><Field label="Image/video description" id="hero-alt"><Input id="hero-alt" value={heroForm.alt} onChange={(e) => onHeroChange({ ...heroForm, alt: e.target.value })} /></Field></>;
+  return <><p className="text-sm text-muted-foreground">Upload up to {HERO_MEDIA_LIMIT} hero images or videos. Hero videos must be 25 MB or smaller. The first item appears first on the homepage.</p>{cannotAddHeroMedia && <p className="text-sm font-medium text-amber-700">{HERO_MEDIA_LIMIT} hero items are already uploaded. Delete one before adding another.</p>}<Field label="Heading" id="hero-title"><Input id="hero-title" value={heroForm.title} onChange={(e) => onHeroChange({ ...heroForm, title: e.target.value })} /></Field><Field label="Description" id="hero-description"><Textarea id="hero-description" value={heroForm.description} onChange={(e) => onHeroChange({ ...heroForm, description: e.target.value })} /></Field><Field label="Image/video description" id="hero-alt"><Input id="hero-alt" value={heroForm.alt} onChange={(e) => onHeroChange({ ...heroForm, alt: e.target.value })} /></Field><Field label="Slider destination" id="hero-link-url"><select id="hero-link-url" value={heroForm.linkUrl || "/shop/all"} onChange={(e) => onHeroChange({ ...heroForm, linkUrl: e.target.value })} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"><option value="/shop/all">All products</option>{SHOP_CATEGORIES.map((category) => <optgroup key={category.slug} label={category.label}><option value={getShopPath(category.slug)}>{category.label} — all</option>{category.subcategories.map((subcategory) => <option key={subcategory.slug} value={getShopPath(category.slug, subcategory.slug)}>{subcategory.label}</option>)}</optgroup>)}</select></Field></>;
 }
 
 function HappyFields({ happyForm, onHappyChange }: Props) {
