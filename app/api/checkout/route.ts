@@ -4,8 +4,7 @@ import User from "@/models/User";
 import Order from "@/models/Order";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
-import { SignJWT } from "jose";
-import { sendWhatsAppPayment } from "@/lib/whatsapp";
+import { SHIPPING_COST } from "@/lib/constants";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -60,7 +59,7 @@ export async function POST(req: NextRequest) {
     else if (couponCode === "WELCOME20") discount = total * 0.20;
     
     // Add shipping cost logic to backend to be accurate
-    const shipping = items && items.length > 0 ? 50 : 0; // Assuming SHIPPING_COST is 50
+    const shipping = items && items.length > 0 ? SHIPPING_COST : 0;
     const finalTotal = Math.max(0, total - discount + shipping);
 
     if (discount > 0) {
@@ -101,13 +100,6 @@ export async function POST(req: NextRequest) {
     upiUrl.searchParams.set("cu", "INR");
     upiUrl.searchParams.set("tn", `Order ${orderReference}`);
 
-    const paymentSecret = new TextEncoder().encode(process.env.PAYMENT_LINK_SECRET || JWT_SECRET);
-    const paymentToken = await new SignJWT({ orderId: newOrder._id.toString(), orderReference, amount: finalTotal, upiUrl: upiUrl.toString() })
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime("7d")
-      .sign(paymentSecret);
-
     const htmlContent = `
       <h1>Hello ${user.name || "Customer"},</h1>
       <p>Thank you for your order!</p>
@@ -133,25 +125,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let whatsappSent = false;
-    try {
-      const result = await sendWhatsAppPayment({
-        phone: user.phone || "",
-        customerName: user.name || name || "Customer",
-        orderReference,
-        amount: finalTotal,
-        paymentToken,
-        upiUrl: upiUrl.toString(),
-      });
-      whatsappSent = result.sent;
-    } catch (error) {
-      // The order remains valid even if Meta is temporarily unavailable.
-      console.error("WhatsApp payment message error:", error);
-    }
-
     return NextResponse.json({
       message: "Checkout successful",
-      payment: { orderReference, amount: finalTotal, upiUrl: upiUrl.toString(), whatsappSent },
+      payment: { orderReference, amount: finalTotal, upiUrl: upiUrl.toString() },
     }, { status: 200 });
   } catch (error: unknown) {
     console.error("Checkout error:", error);

@@ -21,7 +21,6 @@ import {
     AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import Image from "next/image";
 import { AppImage } from "./AppImage";
 
 export function Headers() {
@@ -131,8 +130,8 @@ export function Headers() {
         <>
             <header className="relative z-50">
                 {/* Desktop Header */}
-                <div onMouseLeave={() => setIsDesktopCategoriesOpen(false)} className={`hidden md:block w-[92%] lg:w-[85%] min-[1200px]:w-[70%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl border border-border/40 ${desktopHeaderBg}`}>
-                    <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center px-6 py-2 lg:px-10">
+                <div onMouseLeave={() => setIsDesktopCategoriesOpen(false)} className={`hidden md:block w-[94%] lg:w-[94%] min-[1200px]:w-[93%] min-[1536px]:w-[88%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl border border-border/40 ${desktopHeaderBg}`}>
+                    <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center px-5 py-2 lg:px-6 min-[1200px]:px-8">
                     <div className="order-2 flex items-center justify-center gap-1 lg:gap-2 min-w-0 overflow-hidden">
                         <span
                             className={`shrink-0 px-3 py-2 rounded-lg hover:cursor-pointer hover:text-orange-500 text-base font-medium transition-colors ${pathname === '/' ? 'text-orange-500' : ''}`}
@@ -191,11 +190,14 @@ export function Headers() {
                             </>
                         )}
                     </div>
-                    <div className="order-1 text-3xl font-semibold tracking-tight cursor-pointer font-[style] justify-self-start pr-8 whitespace-nowrap" onClick={() => router.push("/")}>
+                    <div className="order-1 flex h-10 w-36 shrink-0 cursor-pointer items-center gap-1" onClick={() => router.push("/")}>
                         {/* <span>Silver Star</span> */}
-                        <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="w-40 h-10 top-4 left-3 scale-125 absolute z-10 object-contain" />
+                        <AppImage src="/favicon.png" alt="Silver Star emblem" width={64} height={64} className="h-8 w-8 shrink-0 object-contain" />
+                        <span className="block h-10 w-24 shrink-0 overflow-hidden relative">
+                            <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="h-10 w-36 max-w-none -translate-x-6 object-contain top-2 left-1 scale-115 absolute " />
+                        </span>
                     </div>
-                    <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-8">
+                    <div className="order-3 flex items-center justify-end gap-2 min-[1200px]:gap-3 min-w-0 pl-5 min-[1200px]:pl-6">
                         {!isLoggedIn && (
                             <User onClick={() => router.push("/login")} className="hover:cursor-pointer" strokeWidth={1.75} />
                         )}
@@ -267,9 +269,12 @@ export function Headers() {
                 {/* Mobile/Tablet Header */}
                 <div className={`md:hidden flex flex-col w-[90%] mx-auto fixed top-4 left-0 right-0 overflow-hidden rounded-2xl z-50 transition-all duration-300 ${mobileHeaderBg}`}>
                     <div className="flex items-center justify-between py-4 px-6">
-                        <div className="text-2xl font-bold tracking-tighter cursor-pointer" onClick={() => router.push("/")}>
+                        <div className="flex h-10 w-36 shrink-0 cursor-pointer items-center gap-1" onClick={() => router.push("/")}>
                             {/* <span>Silver Star</span> */}
-                            <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="w-40 h-10 top-6 left-3 scale-125 absolute -z-10 object-contain" />
+                            <AppImage src="/favicon.png" alt="Silver Star emblem" width={64} height={64} className="h-8 w-8 shrink-0 object-contain" />
+                            <span className="block h-10 w-24 shrink-0 overflow-hidden relative">
+                                <AppImage src="/logo.png" alt="Silver Star" width={400} height={100} className="h-10 w-36 max-w-none -translate-x-6 object-contain top-2 left-1 scale-115 absolute " />
+                            </span>
                         </div>
 
                         <div className="flex items-center gap-4">

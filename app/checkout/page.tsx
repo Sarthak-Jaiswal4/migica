@@ -64,7 +64,6 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState('')
   const [discountAmount, setDiscountAmount] = useState(0)
   const [error, setError] = useState('')
-  const [payment, setPayment] = useState<{ whatsappSent: boolean } | null>(null)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -130,6 +129,8 @@ export default function CheckoutPage() {
     setLoading(true)
 
     try {
+      const orderItems = items.map((item) => ({ ...item }))
+
       // Record the order in database
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -144,10 +145,35 @@ export default function CheckoutPage() {
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Checkout failed')
 
-      setPayment(data.payment)
+      const orderReference = data.payment?.orderReference as string | undefined
+
+      const itemLines = orderItems.map((item) =>
+        `• ${item.name} × ${item.quantity} — ₹${(item.price * item.quantity).toFixed(2)}`
+      )
+      const discountLine = discountAmount > 0
+        ? `\nDiscount: -₹${discountAmount.toFixed(2)}`
+        : ''
+      const message = [
+        'Hello Silver Star, I would like to pay for this order:',
+        '',
+        ...itemLines,
+        '',
+        `Subtotal: ₹${subtotal.toFixed(2)}${discountLine}`,
+        `Shipping: ₹${shipping.toFixed(2)}`,
+        `Total: ₹${total.toFixed(2)}`,
+        orderReference ? `Order reference: ${orderReference}` : '',
+        '',
+        'Delivery address:',
+        `${formData.name}`,
+        `${formData.address}, ${formData.city} - ${formData.zipCode}`,
+        formData.country,
+      ].filter(Boolean).join('\n')
+      const businessWhatsAppNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919208323399')
+        .replace(/\D/g, '')
 
       setSuccess(true)
       clearCart()
+      window.location.assign(`https://wa.me/${businessWhatsAppNumber}?text=${encodeURIComponent(message)}`)
     } catch (err) {
       console.error('Checkout error:', err)
       setError(err instanceof Error ? err.message : 'Could not create your order. Please try again.')
@@ -230,7 +256,7 @@ export default function CheckoutPage() {
                 style={{ animation:'fadeUp 0.5s ease-out 1.4s both' }}>Order Initiated!</h2>
               <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base"
                 style={{ animation:'fadeUp 0.5s ease-out 1.6s both' }}>
-                {payment?.whatsappSent ? "Your order details and payment QR have been sent by Silver Star on WhatsApp." : "Your order has been placed. Our team will contact you on WhatsApp with payment details."}
+                Your order is ready. WhatsApp is opening with your complete order details.
               </p>
               <Button onClick={() => router.push('/shop/all')}
                 className="mt-8 h-12 px-10 bg-[#C9956C] text-white hover:bg-[#B8845A] rounded-xl font-semibold shadow-lg shadow-[#C9956C]/25 transition-all active:scale-[0.98]"

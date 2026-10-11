@@ -21,6 +21,11 @@ export const metadata: Metadata = {
     template: "%s | Silver Star",
   },
   description: "Shop handcrafted soy candles, jewellery, scarves and gifts. Small-batch, thoughtfully made and delivered across India.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   keywords: ["candles", "artisanal", "luxury goods", "scarves", "jewelry", "Silver Star", "magica"],
   authors: [{ name: "Silver Star" }],
   creator: "Silver Star",
