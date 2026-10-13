@@ -12,7 +12,7 @@ import {
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react"
 import { AppImage as Image } from "@/components/AppImage"
 import { Separator } from "@/components/ui/separator"
-import { SHIPPING_COST } from "@/lib/constants"
+import { calculateShipping, FREE_SHIPPING_THRESHOLD } from "@/lib/constants"
 import { useUserStore } from "@/store/store"
 import { useRouter } from "next/navigation"
 
@@ -21,7 +21,7 @@ export function CartSheet() {
     const { items, incrementQuantity, decrementQuantity, removeItem, totalPrice } = useUserStore()
 
     const subtotal = totalPrice()
-    const shipping = items.length > 0 ? SHIPPING_COST : 0
+    const shipping = calculateShipping(subtotal)
     const total = subtotal + shipping
 
     return (
@@ -121,7 +121,7 @@ export function CartSheet() {
                             </div>
                             <div className="flex justify-between text-sm font-medium tracking-wide   text-muted-foreground">
                                 <span>Shipping</span>
-                                <span>₹{shipping.toFixed(2)}</span>
+                                <span className={shipping === 0 ? "font-semibold text-emerald-600" : ""}>{shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</span>
                             </div>
                             <Separator className="bg-neutral-200" />
                             <div className="flex justify-between text-lg font-bold tracking-wide text-foreground">
@@ -129,6 +129,11 @@ export function CartSheet() {
                                 <span>₹{total.toFixed(2)}</span>
                             </div>
                         </div>
+                        {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && (
+                            <p className="-mt-3 mb-4 text-xs text-muted-foreground">
+                                Add ₹{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for free shipping.
+                            </p>
+                        )}
                         <Button 
                             onClick={() => router.push('/checkout')}
                             className="w-full tracking-wide bg-orange-300 text-[#3D2314] border border-[#DEC4B4] hover:bg-orange-400/80 hover:text-[#2C1810] h-12 rounded-md font-semibold shadow-lg shadow-brand/20 transition-all active:scale-[0.98]"

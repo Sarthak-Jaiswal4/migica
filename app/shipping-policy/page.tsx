@@ -24,6 +24,9 @@ export default function ShippingPolicyPage() {
           <PolicySection title="Estimated delivery time">
             <p>Orders are generally delivered within <strong>5–7 business days</strong> after dispatch. Delivery estimates are provided as a guide and can vary depending on the delivery address, courier service, weather, holidays, or circumstances beyond our control.</p>
           </PolicySection>
+          <PolicySection title="Shipping charges">
+            <p>Shipping is free for orders of <strong>₹999 or more</strong>. A flat <strong>₹100</strong> shipping charge applies to orders below ₹999.</p>
+          </PolicySection>
           <PolicySection title="Address accuracy">
             <p>Please provide a complete and accurate delivery address, postal code, and contact number at checkout. Silver Star cannot be responsible for delays or failed deliveries caused by incomplete or incorrect address details.</p>
           </PolicySection>

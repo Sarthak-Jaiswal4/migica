@@ -4,7 +4,7 @@ import User from "@/models/User";
 import Order from "@/models/Order";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
-import { SHIPPING_COST } from "@/lib/constants";
+import { calculateShipping } from "@/lib/constants";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     else if (couponCode === "WELCOME20") discount = total * 0.20;
     
     // Add shipping cost logic to backend to be accurate
-    const shipping = items && items.length > 0 ? SHIPPING_COST : 0;
+    const shipping = calculateShipping(total);
     const finalTotal = Math.max(0, total - discount + shipping);
 
     if (discount > 0) {

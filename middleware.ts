@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 
 // Add the routes you want to protect with admin verification
 const adminProtectedRoutes = ['/allproduct', '/orders', '/showcase'];
-const userProtectedRoutes = ['/checkout', '/my-orders'];
+const userProtectedRoutes = ['/my-orders'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/allproduct/:path*', '/allproduct', '/checkout/:path*', '/checkout', '/orders/:path*', '/orders', '/my-orders/:path*', '/my-orders', '/showcase/:path*', '/showcase'],
+  matcher: ['/allproduct/:path*', '/allproduct', '/orders/:path*', '/orders', '/my-orders/:path*', '/my-orders', '/showcase/:path*', '/showcase'],
 };

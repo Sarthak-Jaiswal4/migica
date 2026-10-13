@@ -9,13 +9,17 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { AppImage as Image } from '@/components/AppImage'
 import {
   Loader2, MapPin, Package, Shield, ArrowLeft,
   Truck, Tag, CheckCircle2, Lock, Gift,
-  MessageCircle, AlertCircle
+  MessageCircle, AlertCircle, Wrench
 } from 'lucide-react'
-import { SHIPPING_COST } from '@/lib/constants'
+import { calculateShipping, FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import Link from 'next/link'
 
 /* ─── tiny helper: labelled input field ─────────────────────────── */
@@ -50,20 +54,21 @@ function Field({
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { items, totalPrice, clearCart } = useUserStore()
+  const { items, totalPrice } = useUserStore()
 
   const [formData, setFormData] = useState({
     name: '', address: '', city: '', zipCode: '', country: '',
   })
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [hasSavedAddress, setHasSavedAddress] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [success] = useState(false)
 
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
   const [couponError, setCouponError] = useState('')
   const [discountAmount, setDiscountAmount] = useState(0)
-  const [error, setError] = useState('')
+  const [error] = useState('')
+  const [showPaymentMaintenance, setShowPaymentMaintenance] = useState(false)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -92,8 +97,10 @@ export default function CheckoutPage() {
   }, [router])
 
   const subtotal = totalPrice()
-  const shipping = items.length > 0 ? SHIPPING_COST : 0
+  const shipping = calculateShipping(subtotal)
   const total = Math.max(0, subtotal - discountAmount + shipping)
+  const businessWhatsAppNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919208323399')
+    .replace(/\D/g, '')
 
   const handleApplyCoupon = () => {
     if (couponCode === 'SILVERSTAR10') {
@@ -108,78 +115,8 @@ export default function CheckoutPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.id]: e.target.value })
 
-  /* ── Handle Pay on WhatsApp (Place order & launch WhatsApp) ──── */
-  const handlePayOnWhatsApp = async () => {
-    if (items.length === 0) {
-      setError('Your cart is empty. Please add items to cart before completing your order.')
-      return
-    }
-    if (
-      !formData.name.trim() ||
-      !formData.address.trim() ||
-      !formData.city.trim() ||
-      !formData.zipCode.trim() ||
-      !formData.country.trim()
-    ) {
-      setError('Please fill in your complete delivery address before proceeding to WhatsApp.')
-      return
-    }
-
-    setError('')
-    setLoading(true)
-
-    try {
-      const orderItems = items.map((item) => ({ ...item }))
-
-      // Record the order in database
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          items,
-          couponCode: couponApplied ? couponCode : undefined,
-          discountAmount
-        }),
-      })
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || 'Checkout failed')
-
-      const orderReference = data.payment?.orderReference as string | undefined
-
-      const itemLines = orderItems.map((item) =>
-        `• ${item.name} × ${item.quantity} — ₹${(item.price * item.quantity).toFixed(2)}`
-      )
-      const discountLine = discountAmount > 0
-        ? `\nDiscount: -₹${discountAmount.toFixed(2)}`
-        : ''
-      const message = [
-        'Hello Silver Star, I would like to pay for this order:',
-        '',
-        ...itemLines,
-        '',
-        `Subtotal: ₹${subtotal.toFixed(2)}${discountLine}`,
-        `Shipping: ₹${shipping.toFixed(2)}`,
-        `Total: ₹${total.toFixed(2)}`,
-        orderReference ? `Order reference: ${orderReference}` : '',
-        '',
-        'Delivery address:',
-        `${formData.name}`,
-        `${formData.address}, ${formData.city} - ${formData.zipCode}`,
-        formData.country,
-      ].filter(Boolean).join('\n')
-      const businessWhatsAppNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919208323399')
-        .replace(/\D/g, '')
-
-      setSuccess(true)
-      clearCart()
-      window.location.assign(`https://wa.me/${businessWhatsAppNumber}?text=${encodeURIComponent(message)}`)
-    } catch (err) {
-      console.error('Checkout error:', err)
-      setError(err instanceof Error ? err.message : 'Could not create your order. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+  const handlePayOnWhatsApp = () => {
+    setShowPaymentMaintenance(true)
   }
 
   /* ─── SUCCESS SCREEN ─────────────────────────────────────────── */
@@ -359,7 +296,7 @@ export default function CheckoutPage() {
                   <div className="mx-7 mb-6 flex items-center gap-3 rounded-2xl bg-[#F4EFE8] border border-[#E8D5C8] px-5 py-4">
                     <Truck className="h-4 w-4 text-[#C9956C] shrink-0" />
                     <p className="text-xs text-[#7A5C47] leading-relaxed">
-                      <span className="font-semibold text-foreground">Free delivery</span> on orders above ₹1999 ·
+                      <span className="font-semibold text-foreground">Free delivery</span> on orders of ₹{FREE_SHIPPING_THRESHOLD.toLocaleString('en-IN')} or more ·
                       Standard delivery 3 – 5 business days across India
                     </p>
                   </div>
@@ -373,22 +310,6 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Mobile CTA */}
-                <div className="lg:hidden">
-                  <Button
-                    type="button"
-                    onClick={handlePayOnWhatsApp}
-                    disabled={loading}
-                    className="w-full h-14 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-base shadow-lg shadow-[#25D366]/25 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5 fill-current" />}
-                    {loading ? 'Opening WhatsApp...' : `Pay on WhatsApp · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
-                  </Button>
-                  <div className="flex items-center justify-center gap-2 mt-4 text-[#8C6E5D]">
-                    <Lock className="w-3 h-3" />
-                    <span className="text-[10px] uppercase tracking-widest font-bold">Secured Order Process</span>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -507,14 +428,14 @@ export default function CheckoutPage() {
                     className="hidden lg:flex w-full h-14 mt-3 items-center justify-center rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-base shadow-lg shadow-[#25D366]/20 transition-all active:scale-[0.98] cursor-pointer gap-2"
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5 fill-current" />}
-                    {loading ? 'Opening WhatsApp...' : `Pay on WhatsApp · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
+                    {loading ? 'Opening payment...' : `Payment · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
                   </Button>
 
                   {/* Trust row */}
                   <div className="flex items-center justify-center gap-4 pt-2">
                     <div className="flex items-center gap-1.5 text-[#8C6E5D]">
                       <Lock className="w-3 h-3" />
-                      <span className="text-[10px] uppercase tracking-widest font-bold">Direct WhatsApp Checkout</span>
+                      <span className="text-[10px] uppercase tracking-widest font-bold">WhatsApp order support</span>
                     </div>
                     <span className="text-[#E8D5C8]">·</span>
                     <div className="flex items-center gap-1.5 text-[#8C6E5D]">
@@ -522,6 +443,23 @@ export default function CheckoutPage() {
                       <span className="text-[10px] uppercase tracking-widest font-bold">100% Safe</span>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Mobile CTA — kept below the complete order summary */}
+              <div className="lg:hidden mt-4">
+                <Button
+                  type="button"
+                  onClick={handlePayOnWhatsApp}
+                  disabled={loading}
+                  className="w-full h-14 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-base shadow-lg shadow-[#25D366]/25 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5 fill-current" />}
+                  {loading ? 'Opening payment...' : `Payment · ₹${total > 0 ? total.toFixed(2) : '0.00'}`}
+                </Button>
+                <div className="flex items-center justify-center gap-2 mt-4 text-[#8C6E5D]">
+                  <Lock className="w-3 h-3" />
+                  <span className="text-[10px] uppercase tracking-widest font-bold">Secured Order Process</span>
                 </div>
               </div>
 
@@ -542,6 +480,35 @@ export default function CheckoutPage() {
       </main>
 
       <Footer />
+      <AlertDialog open={showPaymentMaintenance} onOpenChange={setShowPaymentMaintenance}>
+        <AlertDialogContent className="max-w-md overflow-hidden rounded-[2rem] border-[#E8D5C8] bg-[#FDFAF7] p-0 shadow-2xl shadow-[#2C1810]/20">
+          <div className="relative overflow-hidden px-7 pb-6 pt-8 text-center sm:px-10">
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-br from-[#F3E3D7] via-[#FAF5F0] to-[#EED3C1]" />
+            <div className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#C9956C]/30 bg-white text-[#B8845A] shadow-lg shadow-[#C9956C]/15">
+              <Wrench className="h-7 w-7" />
+            </div>
+            <AlertDialogHeader className="relative place-items-center text-center sm:place-items-center sm:text-center">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C9956C]">A small pause</p>
+              <AlertDialogTitle className="font-[style] text-3xl font-semibold tracking-tight text-[#2C1810]">
+                Payments are under maintenance
+              </AlertDialogTitle>
+              <AlertDialogDescription className="mt-3 max-w-sm text-center text-sm leading-relaxed text-[#7A5C47]">
+                We&apos;re making a few improvements to our payment service. Please chat with us on WhatsApp and we&apos;ll gladly help you place your order.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="relative mt-7 gap-3 sm:flex-col sm:items-stretch">
+              <AlertDialogAction asChild className="h-12 w-full rounded-xl bg-[#25D366] font-semibold text-white hover:bg-[#20bd5a]">
+                <a href={`https://wa.me/${businessWhatsAppNumber}?text=${encodeURIComponent('Hello Silver Star, I need help placing my order.')}`} target="_blank" rel="noreferrer">
+                  <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
+                </a>
+              </AlertDialogAction>
+              <AlertDialogCancel className="h-11 rounded-xl border-[#E8D5C8] bg-white text-[#7A5C47] hover:bg-[#F4EFE8] hover:text-[#2C1810]">
+                Continue browsing
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
